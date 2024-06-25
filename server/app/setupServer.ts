@@ -12,6 +12,7 @@ import { createAdapter } from '@socket.io/redis-adapter'
 import 'express-async-errors'
 
 import { config } from './config'
+import appRoutes from './routes'
 
 const SERVER_PORT = 8008
 
@@ -53,7 +54,9 @@ export class GeneSysServer {
     app.use(urlencoded({ extended: true, limit: '50mb' }))
   }
 
-  private routesMiddleware(app: Application): void {}
+  private routesMiddleware(app: Application): void {
+    appRoutes(app)
+  }
 
   private globalErrorHandler(app: Application): void {}
 

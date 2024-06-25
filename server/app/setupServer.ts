@@ -64,7 +64,7 @@ export class GeneSysServer {
 
   private startHttpServer(server: http.Server): void {
     server.listen(SERVER_PORT, () => {
-      console.log(`Server running on port: ${SERVER_PORT}`)
+      console.log(`Server running on port ${SERVER_PORT}`)
     })
   }
 }

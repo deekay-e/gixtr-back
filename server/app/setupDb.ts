@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 export default () => {
   const connect = () => {
-    mongoose.connect('mongodb://127.0.0.1:27017/gen_esys')
+    mongoose.connect('mongodb://127.0.0.1:27017/gen_e-sys')
       .then(() => {
         console.log('Connection to MongoDB was successful.')
       })

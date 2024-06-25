@@ -9,13 +9,15 @@ import HTTP_STATUS from 'http-status-codes'
 import { Server } from 'socket.io'
 import { createClient } from 'redis'
 import { createAdapter } from '@socket.io/redis-adapter'
+import Logger from 'bunyan'
 import 'express-async-errors'
 
-import { config } from './config'
 import appRoutes from './routes'
+import { config } from './config'
 import { CustomError, IErrorResponse } from './common/globals/helpers/error-handler'
 
 const SERVER_PORT = 8008
+const log: Logger = config.createLogger('server')
 
 export class GeneSysServer {
   private app: Application
@@ -66,7 +68,7 @@ export class GeneSysServer {
     })
 
     app.use((error: IErrorResponse, _req: Request, res: Response, next: NextFunction) => {
-      console.log(error)
+      log.error(error)
       if (error instanceof CustomError)
         return res.status(error.statusCode).json(error.serializeErrors())
       next()
@@ -80,7 +82,7 @@ export class GeneSysServer {
       this.startHttpServer(server)
       this.socketIOConnections(socketIO)
     } catch (error) {
-      console.log(error)
+      log.error(error)
     }
   }
 
@@ -99,9 +101,9 @@ export class GeneSysServer {
   }
 
   private startHttpServer(server: http.Server): void {
-    console.log(`Server has started with process ${process.pid}`)
+    log.info(`Server has started with process ${process.pid}`)
     server.listen(SERVER_PORT, () => {
-      console.log(`Server running on port ${SERVER_PORT}`)
+      log.info(`Server running on port ${SERVER_PORT}`)
     })
   }
 

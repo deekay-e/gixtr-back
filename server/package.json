@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "root.ts",
   "scripts": {
-    "dev": "nodemon -r tsconfig-paths/register app/root.ts"
+    "dev": "nodemon -r tsconfig-paths/register app/root.ts | ./node_modules/.bin/bunyan"
   },
   "keywords": [
     "Gen.eSys",
@@ -14,6 +14,7 @@
   "description": "Unleash the power to build effective systems",
   "dependencies": {
     "@socket.io/redis-adapter": "^8.3.0",
+    "bunyan": "^1.8.15",
     "compression": "^1.7.4",
     "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
@@ -28,6 +29,7 @@
     "socket.io": "^4.7.5"
   },
   "devDependencies": {
+    "@types/bunyan": "^1.8.11",
     "@types/compression": "^1.7.5",
     "@types/cookie-session": "^2.0.49",
     "@types/cors": "^2.8.17",

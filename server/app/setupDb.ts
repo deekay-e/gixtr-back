@@ -1,8 +1,10 @@
 import mongoose from 'mongoose'
 
+import { config } from './config'
+
 export default () => {
   const connect = () => {
-    mongoose.connect('mongodb://127.0.0.1:27017/gen_e-sys')
+    mongoose.connect(`${config.DATABASE_URL}`)
       .then(() => {
         console.log('Connection to MongoDB was successful.')
       })

@@ -1,7 +1,7 @@
 {
   "name": "gen.esys_server",
   "version": "1.0.0",
-  "main": "root.js",
+  "main": "root.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

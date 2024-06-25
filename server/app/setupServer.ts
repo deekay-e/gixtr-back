@@ -7,6 +7,8 @@ import compression from 'compression'
 import cookierSession from 'cookie-session'
 import HTTP_STATUS from 'http-status-codes'
 
+const SERVER_PORT = 8008
+
 export class GeneSysServer {
   private app: Application
 
@@ -49,9 +51,20 @@ export class GeneSysServer {
 
   private globalErrorHandler(app: Application): void {}
 
-  private startServer(app: Application): void {}
+  private startServer(app: Application): void {
+    try {
+      const server: http.Server = new http.Server(app)
+      this.startHttpServer(server)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   private createSocketIO(server: http.Server): void {}
 
-  private startHttpServer(server: http.Server): void {}
+  private startHttpServer(server: http.Server): void {
+    server.listen(SERVER_PORT, () => {
+      console.log('Server running on port: ', SERVER_PORT)
+    })
+  }
 }

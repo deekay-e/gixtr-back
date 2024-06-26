@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb'
 import { Request, Response } from 'express'
 import { UploadApiResponse } from 'cloudinary'
+import HTTP_STATUS from 'http-status-codes'
 
 import { signupSchema } from '@auth/schemas/signup'
 import { JoiValidator } from '@global/decorators/joi-validation'
@@ -33,6 +34,10 @@ export class Signup {
     ) as UploadApiResponse
     if (!result?.public_id)
       throw new BadRequestError('Error occurred during upload. Try again')
+
+    res.status(HTTP_STATUS.CREATED).json({ message: 'Create user successful',
+      authData
+    })
   }
 
   private signupData(data: ISignUpData): IAuthDocument {

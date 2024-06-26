@@ -12,9 +12,9 @@ import { createAdapter } from '@socket.io/redis-adapter'
 import Logger from 'bunyan'
 import 'express-async-errors'
 
-import appRoutes from './routes'
-import { config } from './config'
-import { CustomError, IErrorResponse } from './common/globals/helpers/error-handler'
+import appRoutes from '@/routes'
+import { config } from '@/config'
+import { CustomError, IErrorResponse } from '@global/helpers/error-handler'
 
 const SERVER_PORT = 8008
 const log: Logger = config.createLogger('server')

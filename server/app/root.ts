@@ -1,8 +1,8 @@
 import express, { Express } from 'express'
 
-import { GeneSysServer } from './setupServer'
-import getDbConn from './setupDb'
-import { config } from './config'
+import { config } from '@/config'
+import getDbConn from '@/setupDb'
+import { GeneSysServer } from '@/setupServer'
 
 class Application {
   public init(): void {

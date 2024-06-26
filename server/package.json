@@ -20,6 +20,7 @@
   "dependencies": {
     "@socket.io/redis-adapter": "^8.3.0",
     "bunyan": "^1.8.15",
+    "cloudinary": "^2.2.0",
     "compression": "^1.7.4",
     "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
@@ -47,6 +48,7 @@
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.3.2",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.10",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.5.2"
   }

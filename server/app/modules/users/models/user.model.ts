@@ -1,95 +1,36 @@
-import { ObjectId } from 'mongodb'
-import mongoose, { Document } from 'mongoose'
+import mongoose, { model, Model, Schema } from 'mongoose'
 
-export interface IUserDocument extends Document {
-  _id: string | ObjectId
-  authId: string | ObjectId
-  username?: string
-  email?: string
-  password?: string
-  avatarColor?: string
-  uId?: string
-  postsCount: number
-  work: string
-  school: string
-  quote: string
-  location: string
-  blocked: mongoose.Types.ObjectId[]
-  blockedBy: mongoose.Types.ObjectId[]
-  followersCount: number
-  followingCount: number
-  notifications: INotificationSettings
-  social: ISocialLinks
-  bgImageVersion: string
-  bgImageId: string
-  profilePicture: string
-  createdAt?: Date
-}
+import { IUserDocument } from '@user/interfaces/user.interface'
 
-export interface IResetPasswordParams {
-  username: string
-  email: string
-  ipaddress: string
-  date: string
-}
+const userSchema: Schema = new Schema({
+  authId: { type: mongoose.Schema.Types.ObjectId, ref: 'Auth', index: true },
+  profilePicture: { type: String, default: '' },
+  postsCount: { type: Number, default: 0 },
+  followersCount: { type: Number, default: 0 },
+  followingCount: { type: Number, default: 0 },
+  passwordResetToken: { type: String, default: '' },
+  passwordResetExpires: { type: Number },
+  blocked: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  blockedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  notifications: {
+    messages: { type: Boolean, default: true },
+    reactions: { type: Boolean, default: true },
+    comments: { type: Boolean, default: true },
+    follows: { type: Boolean, default: true }
+  },
+  social: {
+    facebook: { type: String, default: '' },
+    instagram: { type: String, default: '' },
+    twitter: { type: String, default: '' },
+    youtube: { type: String, default: '' }
+  },
+  work: { type: String, default: '' },
+  school: { type: String, default: '' },
+  location: { type: String, default: '' },
+  quote: { type: String, default: '' },
+  bgImageVersion: { type: String, default: '' },
+  bgImageId: { type: String, default: '' }
+})
 
-export interface INotificationSettings {
-  messages: boolean
-  reactions: boolean
-  comments: boolean
-  follows: boolean
-}
-
-export interface IBasicInfo {
-  quote: string
-  work: string
-  school: string
-  location: string
-}
-
-export interface ISocialLinks {
-  facebook: string
-  instagram: string
-  twitter: string
-  youtube: string
-}
-
-export interface ISearchUser {
-  _id: string
-  profilePicture: string
-  username: string
-  email: string
-  avatarColor: string
-}
-
-export interface ISocketData {
-  blockedUser: string
-  blockedBy: string
-}
-
-export interface ILogin {
-  userId: string
-}
-
-export interface IUserJobInfo {
-  key?: string
-  value?: string | ISocialLinks
-}
-
-export interface IUserJob {
-  keyOne?: string
-  keyTwo?: string
-  key?: string
-  value?: string | INotificationSettings | IUserDocument
-}
-
-export interface IEmailJob {
-  receiverEmail: string
-  template: string
-  subject: string
-}
-
-export interface IAllUsers {
-  users: IUserDocument[]
-  totalUsers: number
-}
+const UserModel: Model<IUserDocument> = model<IUserDocument>('User', userSchema, 'User')
+export { UserModel }

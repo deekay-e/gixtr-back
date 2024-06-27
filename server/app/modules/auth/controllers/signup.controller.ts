@@ -3,13 +3,18 @@ import HTTP_STATUS from 'http-status-codes'
 import { Request, Response } from 'express'
 import { UploadApiResponse } from 'cloudinary'
 
-import { signupSchema } from '@auth/schemas/signup'
-import { JoiValidator } from '@global/decorators/joi-validation'
-import { authService } from '@service/db/auth.service'
-import { BadRequestError } from '@global/helpers/error-handler'
-import { IAuthDocument, ISignUpData } from '@auth/interfaces/auth.interface'
 import { Utils } from '@global/helpers/utils'
+import { signupSchema } from '@auth/schemas/signup'
+import { authService } from '@service/db/auth.service'
 import { uploads } from '@global/helpers/cloudinary-upload'
+import { IUserDocument } from '@user/interfaces/user.interface'
+import { BadRequestError } from '@global/helpers/error-handler'
+import { JoiValidator } from '@global/decorators/joi-validation'
+import { IAuthDocument, ISignUpData } from '@auth/interfaces/auth.interface'
+import { UserCache } from '@service/redis/user.cache'
+import { config } from '@/config'
+
+const userCache: UserCache = new UserCache()
 
 export class Signup {
   @JoiValidator(signupSchema)
@@ -35,6 +40,12 @@ export class Signup {
     if (!result?.public_id)
       throw new BadRequestError('Error occurred during upload. Try again')
 
+    // Add user data to redis
+    const userData: IUserDocument = Signup.prototype.userData(authData, userObjectId)
+    userData.profilePicture
+      = `https://res.cloudinary.com/${config.CLOUD_NAME}/image/upload/v${result.version}/${userObjectId}`
+    await userCache.addUserToCache(`${userObjectId}`, uId, userData)
+
     res.status(HTTP_STATUS.CREATED).json({ message: 'Create user successful',
       authData
     })
@@ -51,5 +62,44 @@ export class Signup {
       avatarColor,
       createdAt: new Date()
     } as IAuthDocument
+  }
+
+  private userData(
+    data: IAuthDocument, userObjectId: ObjectId
+  ): IUserDocument {
+    const { _id, username, email, uId, password, avatarColor } = data
+    return {
+      _id: userObjectId,
+      authId: _id,
+      uId,
+      username: Utils.capitalize(username),
+      email,
+      password,
+      avatarColor,
+      profilePicture: '',
+      blocked: [],
+      blockedBy: [],
+      work: '',
+      location: '',
+      school: '',
+      quote: '',
+      bgImageVersion: '',
+      bgImageId: '',
+      followersCount: 0,
+      followingCount: 0,
+      postsCount: 0,
+      notifications: {
+        messages: true,
+        reactions: true,
+        comments: true,
+        follows: true
+      },
+      social: {
+        facebook: '',
+        instagram: '',
+        twitter: '',
+        youtube: ''
+      }
+    } as unknown as IUserDocument
   }
 }

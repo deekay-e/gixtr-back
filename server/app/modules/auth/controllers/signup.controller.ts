@@ -5,17 +5,22 @@ import HTTP_STATUS from 'http-status-codes'
 import { Request, Response } from 'express'
 import { UploadApiResponse } from 'cloudinary'
 
+import { config } from '@/config'
 import { Utils } from '@global/helpers/utils'
+<<<<<<< HEAD
 import { registerSchema } from '@auth/schemas/signup'
+=======
+import { signupSchema } from '@auth/schemas/signup'
+import { UserCache } from '@service/redis/user.cache'
+import { authQueue } from '@service/queues/auth.queue'
+import { userQueue } from '@service/queues/user.queue'
+>>>>>>> module-user
 import { authService } from '@service/db/auth.service'
 import { uploads } from '@global/helpers/cloudinary-upload'
 import { IUserDocument } from '@user/interfaces/user.interface'
 import { BadRequestError } from '@global/helpers/error-handler'
 import { JoiValidator } from '@global/decorators/joi-validation'
 import { IAuthDocument, ISignUpData } from '@auth/interfaces/auth.interface'
-import { UserCache } from '@service/redis/user.cache'
-import { config } from '@/config'
-import { authQueue } from '@service/queues/auth.queue'
 
 const userCache: UserCache = new UserCache()
 
@@ -53,6 +58,7 @@ export class Signup {
     // Add data to monogdb
     omit(userData, ['uId', 'username', 'email', 'avatarColor', 'password'])
     authQueue.addAuthUserJob('addToAuth', { value: userData })
+    userQueue.addUserJob('addToUser', { value: userData })
 
     const userJWT: string = authService.getToken(authData, userObjectId)
     req.session = { jwt: userJWT }

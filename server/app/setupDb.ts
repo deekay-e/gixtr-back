@@ -8,7 +8,8 @@ const log: Logger = config.createLogger('db')
 
 export default () => {
   const connect = () => {
-    mongoose.connect(`${config.DATABASE_URL}`)
+    mongoose
+      .connect(`${config.DATABASE_URL}`)
       .then(() => {
         log.info('Connection to MongoDB was successful.')
         redisConnection.connect()

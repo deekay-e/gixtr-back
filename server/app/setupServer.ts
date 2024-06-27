@@ -35,20 +35,24 @@ export class GeneSysServer {
   }
 
   private securityMiddleware(app: Application): void {
-    app.use(cookieSession({
-      name: 'session',
-      keys: [config.SECRET_KEY_ONE!, config.SECRET_KEY_TWO!],
-      maxAge: 24 * 7 * 3600000,
-      secure: config.NODE_ENV !== 'development'
-    }))
+    app.use(
+      cookieSession({
+        name: 'session',
+        keys: [config.SECRET_KEY_ONE!, config.SECRET_KEY_TWO!],
+        maxAge: 24 * 7 * 3600000,
+        secure: config.NODE_ENV !== 'development'
+      })
+    )
     app.use(hpp())
     app.use(helmet())
-    app.use(cors({
-      origin: config.CLIENT_URL,
-      credentials: true,
-      optionsSuccessStatus: 200,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-    }))
+    app.use(
+      cors({
+        origin: config.CLIENT_URL,
+        credentials: true,
+        optionsSuccessStatus: 200,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+      })
+    )
   }
 
   private standardMiddleware(app: Application): void {
@@ -63,8 +67,7 @@ export class GeneSysServer {
 
   private globalErrorHandler(app: Application): void {
     app.all('*', (req: Request, res: Response) => {
-      res.status(HTTP_STATUS.NOT_FOUND)
-        .json({ message: `${req.originalUrl} not found` })
+      res.status(HTTP_STATUS.NOT_FOUND).json({ message: `${req.originalUrl} not found` })
     })
 
     app.use((error: IErrorResponse, _req: Request, res: Response, next: NextFunction) => {

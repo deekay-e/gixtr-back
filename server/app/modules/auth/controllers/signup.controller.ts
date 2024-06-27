@@ -1,3 +1,4 @@
+import { omit } from 'lodash'
 import { ObjectId } from 'mongodb'
 import HTTP_STATUS from 'http-status-codes'
 import { Request, Response } from 'express'
@@ -13,6 +14,7 @@ import { JoiValidator } from '@global/decorators/joi-validation'
 import { IAuthDocument, ISignUpData } from '@auth/interfaces/auth.interface'
 import { UserCache } from '@service/redis/user.cache'
 import { config } from '@/config'
+import { authQueue } from '@service/queues/auth.queue'
 
 const userCache: UserCache = new UserCache()
 
@@ -23,8 +25,8 @@ export class Signup {
     const dupUser: IAuthDocument = await authService.getUser(username, email)
     if (dupUser) throw new BadRequestError('User already exists')
 
-    const authObjectId: ObjectId =  new ObjectId()
-    const userObjectId: ObjectId =  new ObjectId()
+    const authObjectId: ObjectId = new ObjectId()
+    const userObjectId: ObjectId = new ObjectId()
     const uId = `${Utils.genRandomInt(16)}`
     const authData: IAuthDocument = Signup.prototype.signupData({
       _id: authObjectId,
@@ -34,21 +36,24 @@ export class Signup {
       password,
       avatarColor
     })
-    const result: UploadApiResponse = await uploads(
-      avatarImage, `${userObjectId}`, true, true
-    ) as UploadApiResponse
-    if (!result?.public_id)
-      throw new BadRequestError('Error occurred during upload. Try again')
+    const result: UploadApiResponse = (await uploads(
+      avatarImage,
+      `${userObjectId}`,
+      true,
+      true
+    )) as UploadApiResponse
+    if (!result?.public_id) throw new BadRequestError('Error occurred during upload. Try again')
 
     // Add user data to redis
     const userData: IUserDocument = Signup.prototype.userData(authData, userObjectId)
-    userData.profilePicture
-      = `https://res.cloudinary.com/${config.CLOUD_NAME}/image/upload/v${result.version}/${userObjectId}`
+    userData.profilePicture =`https://res.cloudinary.com/${config.CLOUD_NAME}/image/upload/v${result.version}/${userObjectId}`
     await userCache.addUserToCache(`${userObjectId}`, uId, userData)
 
-    res.status(HTTP_STATUS.CREATED).json({ message: 'Create user successful',
-      authData
-    })
+    // Add data to monogdb
+    omit(userData, ['uId', 'username', 'email', 'avatarColor', 'password'])
+    authQueue.addAuthUserJob('addToAuth', { value: userData })
+
+    res.status(HTTP_STATUS.CREATED).json({ message: 'Create user successful', authData })
   }
 
   private signupData(data: ISignUpData): IAuthDocument {
@@ -64,9 +69,7 @@ export class Signup {
     } as IAuthDocument
   }
 
-  private userData(
-    data: IAuthDocument, userObjectId: ObjectId
-  ): IUserDocument {
+  private userData(data: IAuthDocument, userObjectId: ObjectId): IUserDocument {
     const { _id, username, email, uId, password, avatarColor } = data
     return {
       _id: userObjectId,

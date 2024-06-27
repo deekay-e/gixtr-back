@@ -1,15 +1,15 @@
 export class Utils {
-  static capitalize(str: string): string {
-    const value = str
+  static capitalize(str?: string): string {
+    const value = str ? str
       .toLowerCase()
       .split(' ')
       .map((val: string) => `${val.charAt(0).toUpperCase()}${val.slice(1).toLowerCase()}`)
-      .join(' ')
+      .join(' ') : ''
     return value
   }
 
-  static lowercase(str: string): string {
-    return str.toLowerCase()
+  static lowercase(str?: string): string {
+    return str ? str.toLowerCase() : ''
   }
 
   static genRandomInt(intLen: number): number {

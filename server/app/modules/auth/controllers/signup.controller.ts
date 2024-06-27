@@ -6,7 +6,7 @@ import { Request, Response } from 'express'
 import { UploadApiResponse } from 'cloudinary'
 
 import { Utils } from '@global/helpers/utils'
-import { signupSchema } from '@auth/schemas/signup'
+import { registerSchema } from '@auth/schemas/signup'
 import { authService } from '@service/db/auth.service'
 import { uploads } from '@global/helpers/cloudinary-upload'
 import { IUserDocument } from '@user/interfaces/user.interface'
@@ -20,7 +20,7 @@ import { authQueue } from '@service/queues/auth.queue'
 const userCache: UserCache = new UserCache()
 
 export class Signup {
-  @JoiValidator(signupSchema)
+  @JoiValidator(registerSchema)
   public async create(req: Request, res: Response): Promise<void> {
     const { username, password, email, avatarColor, avatarImage } = req.body
     const dupUser: IAuthDocument = await authService.getUser(username, email)
@@ -54,24 +54,11 @@ export class Signup {
     omit(userData, ['uId', 'username', 'email', 'avatarColor', 'password'])
     authQueue.addAuthUserJob('addToAuth', { value: userData })
 
-    const userJWT: string = Signup.prototype.signToken(authData, userObjectId)
+    const userJWT: string = authService.getToken(authData, userObjectId)
     req.session = { jwt: userJWT }
 
     res.status(HTTP_STATUS.CREATED)
       .json({ message: 'Create user successful', user: authData, token: userJWT })
-  }
-
-  private signToken(data: IAuthDocument, userObjectId: ObjectId): string {
-    return JWT.sign(
-      {
-        userId: userObjectId,
-        uId: data.uId,
-        email: data.email,
-        username: data.username,
-        avatarColor: data.avatarColor
-      },
-      config.JWT_TOKEN!
-    )
   }
 
   private signupData(data: ISignUpData): IAuthDocument {

@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
+import HTTP_STATUS from 'http-status-codes'
 import { Request, Response } from 'express'
 import { UploadApiResponse } from 'cloudinary'
-import HTTP_STATUS from 'http-status-codes'
 
 import { signupSchema } from '@auth/schemas/signup'
 import { JoiValidator } from '@global/decorators/joi-validation'

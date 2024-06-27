@@ -3,6 +3,10 @@ import { AuthModel } from '@auth/models/auth.model'
 import { IAuthDocument } from '@auth/interfaces/auth.interface'
 
 class AuthService {
+  public async createAuthUser(data: IAuthDocument): Promise<void> {
+    await AuthModel.create(data)
+  }
+
   public async getUser(username: string, email: string): Promise<IAuthDocument> {
     const query = {
       $or: [{ username: Utils.capitalize(username), email: Utils.lowercase(email) }]

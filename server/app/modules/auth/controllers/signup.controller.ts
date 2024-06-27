@@ -1,5 +1,6 @@
 import { omit } from 'lodash'
 import { ObjectId } from 'mongodb'
+import JWT from 'jsonwebtoken'
 import HTTP_STATUS from 'http-status-codes'
 import { Request, Response } from 'express'
 import { UploadApiResponse } from 'cloudinary'
@@ -53,7 +54,24 @@ export class Signup {
     omit(userData, ['uId', 'username', 'email', 'avatarColor', 'password'])
     authQueue.addAuthUserJob('addToAuth', { value: userData })
 
-    res.status(HTTP_STATUS.CREATED).json({ message: 'Create user successful', authData })
+    const userJWT: string = Signup.prototype.signToken(authData, userObjectId)
+    req.session = { jwt: userJWT }
+
+    res.status(HTTP_STATUS.CREATED)
+      .json({ message: 'Create user successful', user: authData, token: userJWT })
+  }
+
+  private signToken(data: IAuthDocument, userObjectId: ObjectId): string {
+    return JWT.sign(
+      {
+        userId: userObjectId,
+        uId: data.uId,
+        email: data.email,
+        username: data.username,
+        avatarColor: data.avatarColor
+      },
+      config.JWT_TOKEN!
+    )
   }
 
   private signupData(data: ISignUpData): IAuthDocument {

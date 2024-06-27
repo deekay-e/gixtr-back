@@ -18,8 +18,11 @@
   "license": "ISC",
   "description": "Unleash the power to build effective systems",
   "dependencies": {
+    "@bull-board/express": "^5.20.5",
     "@socket.io/redis-adapter": "^8.3.0",
     "bcryptjs": "^2.4.3",
+    "bull": "^4.14.0",
+    "bullmq": "^5.8.2",
     "bunyan": "^1.8.15",
     "cloudinary": "^2.2.0",
     "compression": "^1.7.4",
@@ -42,6 +45,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
+    "@types/bull": "^4.10.0",
     "@types/bunyan": "^1.8.11",
     "@types/compression": "^1.7.5",
     "@types/cookie-session": "^2.0.49",

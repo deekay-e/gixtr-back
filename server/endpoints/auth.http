@@ -8,10 +8,10 @@ Accept: application/json
 withCredentials: true
 
 {
-  "username": "a_star",
-  "email": "esther@kaycee.co",
-  "password": "kira22bo",
-  "avatarColor": "red",
+  "username": "praise",
+  "email": "chi.pra@kaycee.co",
+  "password": "kara18chi",
+  "avatarColor": "blue",
   "avatarImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA0gAAAMyAQMAAABtkHM/AAAABlBMVEUAAAD///+l2Z/dAAAAAXRSTlMAQObYZgAAAAFiS0dEAf8Cld4AAABrSURBVBgZ7cGBAAAAAMOg+1NP4AjVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjgBSwwABwrL8wAAAAABJRU5ErkJggg=="
 }
 
@@ -22,6 +22,6 @@ Accept: application/json
 withCredentials: true
 
 {
-  "username": "a_star",
+  "login": "a_star",
   "password": "kira22bo"
 }

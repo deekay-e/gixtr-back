@@ -13,10 +13,17 @@ class AuthService {
 
   public async getUser(username: string, email: string): Promise<IAuthDocument> {
     const query = {
-      $or: [{ username: Utils.capitalize(username), email: Utils.lowercase(email) }]
+      $or: [{ username: Utils.capitalize(username)}, { email: Utils.lowercase(email) }]
     }
     const user: IAuthDocument = (await AuthModel.findOne(query).exec()) as IAuthDocument
     return user
+  }
+
+  public isEmail(email: string): boolean {
+    const regexp = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/
+    if (email.match(regexp)) return true
+
+    return false
   }
 
   public getToken(data: IAuthDocument, userObjectId: ObjectId | string): string {

@@ -1,8 +1,6 @@
-import JWT from 'jsonwebtoken'
 import { Request, Response } from 'express'
 import HTTP_STATUS from 'http-status-codes'
 
-import { config } from '@/config'
 import { loginSchema } from '@auth/schemas/signin'
 import { authService } from '@service/db/auth.service'
 import { IAuthDocument } from '@auth/interfaces/auth.interface'
@@ -13,13 +11,14 @@ import { JoiValidator } from '@global/decorators/joi-validation'
 export class Signin {
   @JoiValidator(loginSchema)
   public async  read(req: Request, res: Response): Promise<void> {
-    let { username, email, password } = req.body
-    if (!username || username === undefined)
-      username = ''
-    if (!email || email === undefined)
-      email = ''
+    const { login, password } = req.body
+    let username: string = '', email: string = ''
+    if (authService.isEmail(login)) {
+      email = login
+    } else { username = login }
 
     const user: IAuthDocument = await authService.getUser(username, email)
+    console.log(user)
     if (!user) throw new BadRequestError('Invalid login credentials')
 
     const isPassword: boolean = await user.comparePassword(password)

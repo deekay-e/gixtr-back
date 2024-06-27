@@ -1,13 +1,13 @@
 import Joi, { ObjectSchema } from 'joi'
 
 const registerSchema: ObjectSchema = Joi.object().keys({
-  username: Joi.string().required().min(4).max(8).messages({
+  username: Joi.string().required().min(4).max(10).messages({
     'string.base': 'Username must be of type string',
     'string.min': 'Invalid username',
     'string.max': 'Invalid username',
     'string.empty': 'Username is a required field'
   }),
-  password: Joi.string().required().min(4).max(8).messages({
+  password: Joi.string().required().min(4).max(16).messages({
     'string.base': 'Password must be of type string',
     'string.min': 'Invalid password',
     'string.max': 'Invalid password',

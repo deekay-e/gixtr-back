@@ -22,12 +22,10 @@ export class Signin {
     if (!authUser) throw new BadRequestError('Invalid login credentials')
 
     const isPassword: boolean = await authUser.comparePassword(password)
-    if (!isPassword) throw new BadRequestError('Invalid login credentials')
+    if (!isPassword) throw new BadRequestError('Invalid login password')
 
-    const user: IUserDocument = await userService.getUserByAuthId(`${authUser._id}`)
-    console.log(`${authUser._id}`)
-    console.log(user)
-    /* const userJWT: string = authService.getToken(authUser, `${user._id}`)
+    let user: IUserDocument = await userService.getUserByAuthId(`${authUser._id}`)
+    const userJWT: string = authService.getToken(authUser, `${user._id}`)
     req.session = { jwt: userJWT }
 
     user = {
@@ -40,6 +38,6 @@ export class Signin {
       createdAt: authUser!.createdAt,
     } as IUserDocument
     res.status(HTTP_STATUS.OK)
-      .json({ message: 'Login user successful', user: user, token: userJWT }) */
+      .json({ message: 'Login user successful', user: user, token: userJWT })
   }
 }

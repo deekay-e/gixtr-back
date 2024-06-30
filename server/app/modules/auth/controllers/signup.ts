@@ -51,8 +51,8 @@ export class Signup {
     await userCache.addUserToCache(`${userObjectId}`, uId, userData)
 
     // Add data to monogdb
+    authQueue.addAuthUserJob('addToAuth', { value: authData })
     omit(userData, ['uId', 'username', 'email', 'avatarColor', 'password'])
-    authQueue.addAuthUserJob('addToAuth', { value: userData })
     userQueue.addUserJob('addToUser', { value: userData })
 
     const userJWT: string = authService.getToken(authData, `${userObjectId}`)

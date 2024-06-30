@@ -1,5 +1,4 @@
 import JWT from 'jsonwebtoken'
-import { ObjectId } from 'mongodb'
 import { Utils } from '@global/helpers/utils'
 import { AuthModel } from '@auth/models/auth.model'
 import { IAuthDocument } from '@auth/interfaces/auth.interface'
@@ -19,18 +18,11 @@ class AuthService {
     return user
   }
 
-  public isEmail(email: string): boolean {
-    const regexp = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/
-    if (email.match(regexp)) return true
-
-    return false
-  }
-
-  public getToken(data: IAuthDocument, userObjectId: ObjectId | string): string {
+  public getToken(data: IAuthDocument, userObjectId: string): string {
     return AuthService.prototype.signToken(data, userObjectId)
   }
 
-  private signToken(data: IAuthDocument, userObjectId: ObjectId | string): string {
+  private signToken(data: IAuthDocument, userObjectId: string): string {
     return JWT.sign(
       {
         userId: userObjectId,

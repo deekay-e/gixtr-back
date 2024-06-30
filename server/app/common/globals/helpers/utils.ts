@@ -19,4 +19,11 @@ export class Utils {
     for (let i = 0; i < intLen; i++) result += chars.charAt(Math.floor(Math.random() * charLen))
     return parseInt(result, 10)
   }
+
+  static isEmail(email: string): boolean {
+    const regexp = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/
+    if (email.match(regexp)) return true
+
+    return false
+  }
 }

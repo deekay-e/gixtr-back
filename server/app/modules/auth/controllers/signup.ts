@@ -55,7 +55,7 @@ export class Signup {
     authQueue.addAuthUserJob('addToAuth', { value: userData })
     userQueue.addUserJob('addToUser', { value: userData })
 
-    const userJWT: string = authService.getToken(authData, userObjectId)
+    const userJWT: string = authService.getToken(authData, `${userObjectId}`)
     req.session = { jwt: userJWT }
 
     res.status(HTTP_STATUS.CREATED)

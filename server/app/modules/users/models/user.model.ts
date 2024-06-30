@@ -32,5 +32,5 @@ const userSchema: Schema = new Schema({
   bgImageId: { type: String, default: '' }
 })
 
-const UserModel: Model<IUserDocument> = model<IUserDocument>('User', userSchema, 'User')
+const UserModel: Model<IUserDocument> = model<IUserDocument>('User', userSchema, 'users')
 export { UserModel }

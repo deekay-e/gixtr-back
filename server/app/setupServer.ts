@@ -16,7 +16,9 @@ import appRoutes from '@/routes'
 import { config } from '@/config'
 import { CustomError, IErrorResponse } from '@global/helpers/error-handler'
 
+const LIMIT = '50mb'
 const SERVER_PORT = 8008
+const SESSION_DURATION = 24 * 7 * 3600000
 const log: Logger = config.createLogger('server')
 
 export class GeneSysServer {
@@ -39,7 +41,7 @@ export class GeneSysServer {
       cookieSession({
         name: 'session',
         keys: [config.SECRET_KEY_ONE!, config.SECRET_KEY_TWO!],
-        maxAge: 24 * 7 * 3600000,
+        maxAge: SESSION_DURATION,
         secure: config.NODE_ENV !== 'development'
       })
     )
@@ -49,7 +51,7 @@ export class GeneSysServer {
       cors({
         origin: config.CLIENT_URL,
         credentials: true,
-        optionsSuccessStatus: 200,
+        optionsSuccessStatus: HTTP_STATUS.OK,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       })
     )
@@ -57,8 +59,8 @@ export class GeneSysServer {
 
   private standardMiddleware(app: Application): void {
     app.use(compression())
-    app.use(json({ limit: '50mb' }))
-    app.use(urlencoded({ extended: true, limit: '50mb' }))
+    app.use(json({ limit: LIMIT }))
+    app.use(urlencoded({ extended: true, limit: LIMIT }))
   }
 
   private routesMiddleware(app: Application): void {

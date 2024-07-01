@@ -26,4 +26,12 @@ export class Utils {
 
     return false
   }
+
+  static parseJson(prop: string): any {
+    try {
+      return JSON.parse(prop)
+    } catch (error) {
+      return prop
+    }
+  }
 }

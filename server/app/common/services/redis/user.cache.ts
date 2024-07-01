@@ -4,6 +4,7 @@ import { config } from '@/config'
 import { BaseCache } from '@service/redis/base.cache'
 import { ServerError } from '@global/helpers/error-handler'
 import { IUserDocument } from '@user/interfaces/user.interface'
+import { Utils } from '@global/helpers/utils'
 
 const log: Logger = config.createLogger('userCache')
 
@@ -70,6 +71,27 @@ export class UserCache extends BaseCache {
       await this.client.ZADD('user', { score: parseInt(userUId, 10), value: `${key}` })
       for (const [itemKey, itemValue] of Object.entries(dataToSave))
         await this.client.HSET(`users:${key}`, `${itemKey}`, `${itemValue}`)
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
+
+  public async getUserFromCache(key: string): Promise<IUserDocument | null> {
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+      const res: IUserDocument = await this.client
+        .HGETALL(`users:${key}`) as unknown as IUserDocument
+      res.createdAt = new Date(Utils.parseJson(`${res.createdAt}`))
+      res.postsCount = Utils.parseJson(`${res.postsCount}`)
+      res.blocked = Utils.parseJson(`${res.blocked}`)
+      res.blockedBy = Utils.parseJson(`${res.blockedBy}`)
+      res.notifications = Utils.parseJson(`${res.notifications}`)
+      res.social = Utils.parseJson(`${res.social}`)
+      res.followersCount = Utils.parseJson(`${res.followersCount}`)
+      res.followingCount = Utils.parseJson(`${res.followingCount}`)
+
+      return res
     } catch (error) {
       log.error(error)
       throw new ServerError('Server error. Try again.')

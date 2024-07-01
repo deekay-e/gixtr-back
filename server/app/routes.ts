@@ -2,6 +2,7 @@ import { Application } from 'express'
 
 import { authRoutes } from '@auth/routes/auth.route'
 import { serverAdapter } from '@service/queues/base.queue'
+import { currentUserRoutes } from '@auth/routes/current.route'
 
 const BASE_PATH = '/api/v1'
 
@@ -10,6 +11,8 @@ export default (app: Application) => {
     app.use('/queues', serverAdapter.getRouter())
     app.use(BASE_PATH, authRoutes.routes())
     app.use(BASE_PATH, authRoutes.signoutRoutes())
+
+    app.use(BASE_PATH, currentUserRoutes.routes())
   }
   routes()
 }

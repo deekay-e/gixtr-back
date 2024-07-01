@@ -30,12 +30,12 @@ export class Signin {
 
     user = {
       ...user,
-      authId: authUser!._id,
-      username: authUser!.username,
-      uId: authUser!.uId,
-      email: authUser!.email,
-      avatarColor: authUser!.avatarColor,
-      createdAt: authUser!.createdAt,
+      authId: authUser._id,
+      username: authUser.username,
+      uId: authUser.uId,
+      email: authUser.email,
+      avatarColor: authUser.avatarColor,
+      createdAt: authUser.createdAt,
     } as IUserDocument
     res.status(HTTP_STATUS.OK)
       .json({ message: 'Login user successful', user: user, token: userJWT })

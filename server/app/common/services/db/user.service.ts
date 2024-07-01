@@ -12,7 +12,7 @@ class UserService {
       { $match: { _id: new mongoose.Types.ObjectId(userId) } },
       { $lookup: { from: 'auth', localField: 'authId', foreignField: '_id', as: 'authId' } },
       { $unwind: '$authId' },
-      { $project: this.aggregateProject() }
+      { $project: this.projectAggregate() }
     ])
     return users[0]
   }
@@ -22,12 +22,12 @@ class UserService {
       { $match: { authId: new mongoose.Types.ObjectId(authId) } },
       { $lookup: { from: 'auth', localField: 'authId', foreignField: '_id', as: 'auth' } },
       { $unwind: '$auth' },
-      { $project: this.aggregateProject() }
+      { $project: this.projectAggregate() }
     ])
     return users[0]
   }
 
-  private aggregateProject() {
+  private projectAggregate() {
     return {
       _id: 1,
       uId: '$auth.uId',

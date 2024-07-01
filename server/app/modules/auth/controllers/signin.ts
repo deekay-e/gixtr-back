@@ -9,6 +9,7 @@ import { IAuthDocument } from '@auth/interfaces/auth.interface'
 import { IUserDocument } from '@user/interfaces/user.interface'
 import { BadRequestError } from '@global/helpers/error-handler'
 import { JoiValidator } from '@global/decorators/joi-validation'
+import { mailTransport } from '@service/email/mail.transport'
 
 
 export class Signin {
@@ -37,6 +38,12 @@ export class Signin {
       avatarColor: authUser.avatarColor,
       createdAt: authUser.createdAt,
     } as IUserDocument
+
+    await mailTransport.sendEmail(
+      'stefanie.adams@ethereal.mail',
+      'Test email for dev',
+      'Test email to show that the mail sending feature works as intended'
+    )
     res.status(HTTP_STATUS.OK)
       .json({ message: 'Login user successful', user: user, token: userJWT })
   }

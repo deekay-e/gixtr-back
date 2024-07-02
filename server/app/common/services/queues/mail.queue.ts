@@ -7,7 +7,8 @@ class MailQueue extends BaseQueue {
   constructor() {
     super('mail')
 
-    this.processJob('forgotPasswordMail', 5, mailWorker.deliverEmail)
+    this.processJob('forgotPassword', 5, mailWorker.deliverEmail)
+    this.processJob('resetPassword', 5, mailWorker.deliverEmail)
   }
 
   public addMailJob(name: string, data: IMailJob): void {

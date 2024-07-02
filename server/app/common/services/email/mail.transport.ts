@@ -4,6 +4,7 @@ import Mail from 'nodemailer/lib/mailer'
 import sendGridMail from '@sendgrid/mail'
 
 import { config } from '@/config'
+import { IMailJob } from '@user/interfaces/user.interface'
 import { BadRequestError } from '@global/helpers/error-handler'
 
 const log: Logger = config.createLogger('mail')
@@ -18,20 +19,20 @@ interface IMailOptions {
 }
 
 class MailTransport {
-  public async sendEmail(receiver: string, subject: string, body: string): Promise<void> {
+  public async sendEmail(data: IMailJob): Promise<void> {
     if (config.NODE_ENV === 'test' || config.NODE_ENV === 'development')
-      this.devEmailSender(receiver, subject, body)
-    else this.prodEmailSender(receiver, subject, body)
+      this.devEmailSender(data)
+    else this.prodEmailSender(data)
   }
 
-  private async devEmailSender(receiver: string, subject: string, body: string): Promise<void> {
-    const testAccount = await nodemailer.createTestAccount()
-    const user = config.SENDER_EMAIL || testAccount.user
-    const pass = config.SENDER_PASSWORD || testAccount.pass
+  private async devEmailSender(data: IMailJob): Promise<void> {
+    //const testAccount = await nodemailer.createTestAccount()
+    const user = config.SENDER_EMAIL// || testAccount.user
+    const pass = config.SENDER_PASSWORD// || testAccount.pass
 
     // create reusable transport object
     const transport: Mail = nodemailer.createTransport({
-      host: 'smtp.ethereal.mail',
+      host: 'smtp.ethereal.email',
       port: 587,
       secure: false,
       auth: {
@@ -42,9 +43,9 @@ class MailTransport {
 
     const options: IMailOptions = {
       from: `Gen.e-Sys <${user}>`,
-      to: receiver,
-      subject,
-      html: body
+      to: data.receiver,
+      subject: data.subject,
+      html: data.template
     } as IMailOptions
 
     // send email with defined transport object
@@ -57,12 +58,12 @@ class MailTransport {
     }
   }
 
-  private async prodEmailSender(receiver: string, subject: string, body: string): Promise<void> {
+  private async prodEmailSender(data: IMailJob): Promise<void> {
     const options: IMailOptions = {
       from: `Gen.e-Sys <${config.SENDER_EMAIL}>`,
-      to: receiver,
-      subject,
-      html: body
+      to: data.receiver,
+      subject: data.subject,
+      html: data.template
     } as IMailOptions
 
     // send email with defined transport object

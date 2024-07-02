@@ -83,8 +83,8 @@ export interface IUserJob {
   value?: string | INotificationSettings | IUserDocument
 }
 
-export interface IEmailJob {
-  receiverEmail: string
+export interface IMailJob {
+  receiver: string
   template: string
   subject: string
 }

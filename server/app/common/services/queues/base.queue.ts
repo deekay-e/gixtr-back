@@ -6,10 +6,10 @@ import { BullAdapter } from '@bull-board/api/bullAdapter'
 
 import { config } from '@/config'
 import { IAuthJob } from '@auth/interfaces/auth.interface'
-import { IUserJob } from '@user/interfaces/user.interface'
+import { IMailJob, IUserJob } from '@user/interfaces/user.interface'
 
 type IBaseJob =
-  | IAuthJob | IUserJob
+  | IAuthJob | IUserJob | IMailJob
 
 let bullAdapters: BullAdapter[] = []
 

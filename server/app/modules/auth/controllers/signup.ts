@@ -16,7 +16,6 @@ import { IUserDocument } from '@user/interfaces/user.interface'
 import { BadRequestError } from '@global/helpers/error-handler'
 import { JoiValidator } from '@global/decorators/joi-validation'
 import { IAuthDocument, ISignUpData } from '@auth/interfaces/auth.interface'
-import { mailTransport } from '@service/email/mail.transport'
 
 const userCache: UserCache = new UserCache()
 
@@ -58,12 +57,6 @@ export class Signup {
 
     const userJWT: string = authService.getToken(authData, `${userObjectId}`)
     req.session = { jwt: userJWT }
-
-    await mailTransport.sendEmail(
-      'stefanie.adams@ethereal.mail',
-      'Test email for dev',
-      'Test email to show that the mail sending feature works as intended. Test User created successfully as well.'
-    )
 
     res.status(HTTP_STATUS.CREATED)
       .json({ message: 'Create user successful', user: authData, token: userJWT })

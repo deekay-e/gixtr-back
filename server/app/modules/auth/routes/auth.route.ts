@@ -13,9 +13,10 @@ class AuthRoutes {
   }
 
   public routes(): Router {
-    this.router.post('/signup', Signup.prototype.create)
     this.router.post('/signin', Signin.prototype.read)
+    this.router.post('/signup', Signup.prototype.create)
     this.router.post('/forgot-password', Password.prototype.forgot)
+    this.router.post('/reset-password/:token', Password.prototype.reset)
 
     return this.router
   }

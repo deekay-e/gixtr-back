@@ -31,6 +31,15 @@ class AuthService {
     return user
   }
 
+  public async getAuthUserByToken(token: string): Promise<IAuthDocument> {
+    const user: IAuthDocument = (await AuthModel.findOne({
+      passwordResetToken: token,
+      passwordResetExpires: { $gt: Date.now() }
+    })
+      .exec()) as IAuthDocument
+    return user
+  }
+
   public getToken(data: IAuthDocument, userObjectId: string): string {
     return AuthService.prototype.signToken(data, userObjectId)
   }

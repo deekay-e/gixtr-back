@@ -10,8 +10,8 @@ const config: Config.InitialOptions = {
   transform: {
     '^.+\\.ts?$': 'ts-jest'
   },
-  testMatch: ['<rootDir>/app/$1*/test/$1.ts'],
-  collectCoverageFrom: ['<rootDir>/app/$1*/$1.ts', '!app/$1*/test/$1.ts?(x)', '!**/node_modules/$1*'],
+  testMatch: ['<rootDir>/app/**/test/*.ts'],
+  collectCoverageFrom: ['app/**/*.ts', '!app/**/test/*.ts?(x)', '!**/node_modules/**'],
   coverageThreshold: {
     global: {
       branches: 1,
@@ -28,6 +28,7 @@ const config: Config.InitialOptions = {
     '@service/(.*)': ['<rootDir>/app/common/services/$1'],
     '@socket/(.*)': ['<rootDir>/app/common/sockets/$1'],
     '@worker/(.*)': ['<rootDir>/app/common/workers/$1'],
+    '@mock/(.*)': ['<rootDir>/app/mocks/$1'],
     '@/(.*)': ['<rootDir>/app/$1']
   }
 }

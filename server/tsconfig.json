@@ -30,6 +30,7 @@
       "@service/*": ["app/common/services/*"],
       "@socket/*": ["app/common/sockets/*"],
       "@worker/*": ["app/common/workers/*"],
+      "@mock/*": ["app/mocks/*"],
       "@/*": ["app/*"]
     }
   }

@@ -4,8 +4,8 @@ import { CustomError } from '@global/helpers/error-handler'
 import { Signin } from '@auth/controllers/signin'
 import { Utils } from '@global/helpers/utils'
 import { authService } from '@service/db/auth.service'
-//import { userService } from '@service/db/user.service'
-//import { mergedAuthAndUserData } from '@mock/user.mock'
+import { userService } from '@service/db/user.service'
+import { mergedAuthAndUserData } from '@mock/user.mock'
 
 const USERNAME = 'Kaycee'
 const PASSWORD = 'Kara22Chi'
@@ -32,7 +32,7 @@ describe('SignIn', () => {
     const res: Response = authMockResponse()
     Signin.prototype.read(req, res).catch((error: CustomError) => {
       expect(error.statusCode).toEqual(400)
-      expect(error.serializeErrors().message).toEqual('Username is a required field')
+      expect(error.serializeErrors().message).toEqual('Invalid login credentials')
     })
   })
 
@@ -41,7 +41,7 @@ describe('SignIn', () => {
     const res: Response = authMockResponse()
     Signin.prototype.read(req, res).catch((error: CustomError) => {
       expect(error.statusCode).toEqual(400)
-      expect(error.serializeErrors().message).toEqual('Invalid username')
+      expect(error.serializeErrors().message).toEqual('Invalid email or userName')
     })
   })
 
@@ -50,7 +50,7 @@ describe('SignIn', () => {
     const res: Response = authMockResponse()
     Signin.prototype.read(req, res).catch((error: CustomError) => {
       expect(error.statusCode).toEqual(400)
-      expect(error.serializeErrors().message).toEqual('Invalid username')
+      expect(error.serializeErrors().message).toEqual('Invalid email or userName')
     })
   })
 
@@ -110,14 +110,14 @@ describe('SignIn', () => {
     const res: Response = authMockResponse()
     authMock.comparePassword = () => Promise.resolve(true)
     jest.spyOn(authService, 'getUser').mockResolvedValue(authMock)
-    //jest.spyOn(userService, 'getUserByAuthId').mockResolvedValue(mergedAuthAndUserData)
+    jest.spyOn(userService, 'getUserByAuthId').mockResolvedValue(mergedAuthAndUserData)
 
     await Signin.prototype.read(req, res)
     expect(req.session?.jwt).toBeDefined()
     expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith({
-      message: 'User login successfully',
-      user: authMock,
+      message: 'Login user successful',
+      user: mergedAuthAndUserData,
       token: req.session?.jwt
     })
   })

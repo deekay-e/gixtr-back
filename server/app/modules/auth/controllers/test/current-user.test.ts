@@ -3,7 +3,7 @@ import { UserCache } from '@service/redis/user.cache'
 import { CurrentUser } from '@auth/controllers/current-user'
 import { IUserDocument } from '@user/interfaces/user.interface'
 import { authMockRequest, authMockResponse, authUserPayload } from '@mock/auth.mock'
-//import { existingUser } from '@mock/user.mock'
+import { existingUser } from '@mock/user.mock'
 
 jest.mock('@service/queues/base.queue')
 jest.mock('@service/redis/user.cache')
@@ -41,14 +41,14 @@ describe('CurrentUser', () => {
       const req: Request = authMockRequest({ jwt: '12djdj34' },
         { username: USERNAME, password: PASSWORD }, authUserPayload) as Request
       const res: Response = authMockResponse()
-      //jest.spyOn(UserCache.prototype, 'getUserFromCache').mockResolvedValue(existingUser)
+      jest.spyOn(UserCache.prototype, 'getUserFromCache').mockResolvedValue(existingUser)
 
       await CurrentUser.prototype.read(req, res)
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
         token: req.session?.jwt,
         isUser: true,
-        user: null // existingUser
+        user: existingUser
       })
     })
   })

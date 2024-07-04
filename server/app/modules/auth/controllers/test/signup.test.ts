@@ -128,7 +128,7 @@ describe('Signup', () => {
     const req: Request = authMockRequest({}, {
       username: 'kaycee',
       email: 'kay@cee.me',
-      password: 'Kara18Chi4ever123qwerty',
+      password: 'Kara18Chi',
       avatarColor: 'purple',
       avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
     }) as Request
@@ -143,26 +143,23 @@ describe('Signup', () => {
   })
 
   it('should set session data with valid credentials and send correct json response',
-    async() => {
+    async () => {
     const req: Request = authMockRequest({}, {
       username: 'kaycee',
       email: 'kay@cee.me',
-      password: 'Kara18Chi4ever123qwerty',
+      password: 'Kara18Chi',
       avatarColor: 'purple',
       avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
     }) as Request
     const res: Response = authMockResponse()
 
-    jest.spyOn(authService, 'getUser').mockResolvedValue(authMock)
+    jest.spyOn(authService, 'getUser').mockResolvedValue(null as any)
     jest.spyOn(cloudinaryUploads, 'uploads').mockImplementation((): any => {
-      Promise.resolve({
-        version: '123345677590', public_id: '12343535erw'
-      })
+      Promise.resolve({ version: '123456789', public_id: '1234356' })
     })
     const spyUser = jest.spyOn(UserCache.prototype, 'addUserToCache')
 
     await Signup.prototype.create(req, res)
-    //console.log(spyUser.mock)
     expect(req.session?.jwt).toBeDefined()
     expect(res.json).toHaveBeenCalledWith({
       message: 'Create user successful',

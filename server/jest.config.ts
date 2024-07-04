@@ -23,6 +23,13 @@ const config: Config.InitialOptions = {
   coverageReporters: ['text-summary', 'lcov'],
   moduleNameMapper: {
     '@auth/(.*)': ['<rootDir>/app/modules/auth/$1'],
+    '@chat/(.*)': ['<rootDir>/app/modules/chats/$1'],
+    '@comment/(.*)': ['<rootDir>/app/modules/comments/$1'],
+    '@follower/(.*)': ['<rootDir>/app/modules/followers/$1'],
+    '@image/(.*)': ['<rootDir>/app/modules/images/$1'],
+    '@notification/(.*)': ['<rootDir>/app/modules/notifications/$1'],
+    '@post/(.*)': ['<rootDir>/app/modules/posts/$1'],
+    '@reaction/(.*)': ['<rootDir>/app/modules/reactions/$1'],
     '@user/(.*)': ['<rootDir>/app/modules/users/$1'],
     '@global/(.*)': ['<rootDir>/app/common/globals/$1'],
     '@service/(.*)': ['<rootDir>/app/common/services/$1'],

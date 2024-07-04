@@ -11,9 +11,9 @@ const INVALID_EMAIL = 'test'
 const CORRECT_PASSWORD = 'manny'
 
 jest.mock('@service/queues/base.queue')
-jest.mock('@service/queues/email.queue')
+jest.mock('@service/queues/mail.queue')
 jest.mock('@service/db/auth.service')
-jest.mock('@service/emails/mail.transport')
+jest.mock('@service/email/mail.transport')
 
 describe('Password', () => {
   beforeEach(() => {
@@ -24,7 +24,7 @@ describe('Password', () => {
     jest.clearAllMocks()
   })
 
-  describe('create', () => {
+  describe('forgot', () => {
     it('should throw an error if email is invalid', () => {
       const req: Request = authMockRequest({}, { email: INVALID_EMAIL }) as Request
       const res: Response = authMockResponse()
@@ -40,7 +40,7 @@ describe('Password', () => {
       jest.spyOn(authService, 'getAuthUserByEmail').mockResolvedValue(null as any)
       Password.prototype.forgot(req, res).catch((error: CustomError) => {
         expect(error.statusCode).toEqual(400)
-        expect(error.serializeErrors().message).toEqual('Invalid credentials')
+        expect(error.serializeErrors().message).toEqual('Invalid email credential.')
       })
     })
 
@@ -58,7 +58,7 @@ describe('Password', () => {
     })
   })
 
-  describe('update', () => {
+  describe('reset', () => {
     it('should throw an error if password is empty', () => {
       const req: Request = authMockRequest({}, { password: '' }) as Request
       const res: Response = authMockResponse()

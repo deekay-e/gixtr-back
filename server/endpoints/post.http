@@ -1,0 +1,17 @@
+@baseUrl = http://localhost:8008
+@urlPath = api/v1
+
+###
+POST {{baseUrl}}/{{urlPath}}/post
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "post": "This is my first sample post",
+  "bgColor": "#4aa1f3",
+  "scope": "Public",
+  "gifUrl": "",
+  "profilePicture": "",
+  "feelings": "happy"
+}

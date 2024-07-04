@@ -14,7 +14,7 @@ const postSchema: Schema = new Schema({
   imgId: { type: String, default: '' },
   feelings: { type: String, default: '' },
   gifUrl: { type: String, default: '' },
-  privacy: { type: String, default: '' },
+  scope: { type: String, default: '' },
   commentsCount: { type: Number, default: 0 },
   reactions: {
     like: { type: Number, default: 0 },

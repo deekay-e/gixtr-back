@@ -2,14 +2,17 @@ import { ObjectId } from 'mongodb'
 import { Request, Response } from 'express'
 import HTTP_STATUS from 'http-status-codes'
 
+import { PostCache } from '@service/redis/post.cache'
 import { postSchema } from '@post/schemas/post.schema'
-import { JoiValidator } from '@global/decorators/joi-validation'
 import { IPostDocument } from '@post/interfaces/post.interface'
+import { JoiValidator } from '@global/decorators/joi-validation'
 
-export class Create {
+const postCache: PostCache = new PostCache()
+
+export class Post {
   @JoiValidator(postSchema)
-  public async post(req: Request, res: Response): Promise<void> {
-    const { post, bgColor, privacy, gifUrl, profilePicture, feelings } = req.body
+  public async create(req: Request, res: Response): Promise<void> {
+    const { post, bgColor, scope, gifUrl, profilePicture, feelings } = req.body
 
     const postId: ObjectId = new ObjectId()
     const newPost: IPostDocument = {
@@ -22,7 +25,7 @@ export class Create {
       post,
       bgColor,
       feelings,
-      privacy,
+      scope,
       gifUrl,
       commentsCount: 0,
       imgVersion: '',
@@ -30,6 +33,13 @@ export class Create {
       createdAt: new Date(),
       reactions: { like: 0, love: 0, happy: 0, wow: 0, sad: 0, angry: 0 }
     } as IPostDocument
+
+    await postCache.addPostToCache({
+      key: postId,
+      currentUserId: req.currentUser!.userId,
+      uId: req.currentUser!.uId,
+      createdPost: newPost
+    })
 
     res.status(HTTP_STATUS.CREATED).json({ message: 'Create post successful' })
   }

@@ -26,7 +26,7 @@ export interface IPostDocument extends Document {
   imgId?: string
   feelings?: string
   gifUrl?: string
-  privacy?: string
+  scope?: string
   reactions?: IReactions
   createdAt?: Date
 }

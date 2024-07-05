@@ -12,6 +12,6 @@ withCredentials: true
   "bgColor": "#4aa1f3",
   "scope": "Public",
   "gifUrl": "",
-  "profilePicture": "",
+  "profilePicture": "https://res.cloudinary.com/dahrlgvpt/image/upload/v1719781047/6681c6a275b313a186073ee3",
   "feelings": "happy"
 }

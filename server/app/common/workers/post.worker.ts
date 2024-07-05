@@ -10,8 +10,8 @@ const log: Logger = config.createLogger('postWorker')
 class PostWorker {
   async addPostToDB(job: Job, done: DoneCallback): Promise<void> {
     try {
-      const { data } = job
-      await postService.createPost(data)
+      const { key, value } = job.data
+      await postService.createPost(key, value)
 
       job.progress(100)
       done(null, job.data)

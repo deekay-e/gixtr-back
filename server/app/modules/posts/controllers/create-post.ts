@@ -14,12 +14,13 @@ const postCache: PostCache = new PostCache()
 export class Post {
   @JoiValidator(postSchema)
   public async create(req: Request, res: Response): Promise<void> {
+    const userId: string = req.currentUser!.userId
     const { post, bgColor, scope, gifUrl, profilePicture, feelings } = req.body
 
     const postId: ObjectId = new ObjectId()
     const newPost: IPostDocument = {
       _id: postId,
-      userId: req.currentUser!.userId,
+      userId,
       username: req.currentUser!.username,
       email: req.currentUser!.email,
       avatarColor: req.currentUser!.avatarColor,
@@ -40,13 +41,13 @@ export class Post {
     socketIOPostObject.emit('addPost', newPost)
     await postCache.addPostToCache({
       key: postId,
-      currentUserId: req.currentUser!.userId,
+      currentUserId: userId,
       uId: req.currentUser!.uId,
       newPost
     })
 
     // add post data to databse
-    postQueue.addPostJob('addToPost', { value: newPost })
+    postQueue.addPostJob('addToPost', { key: userId, value: newPost })
 
     res.status(HTTP_STATUS.CREATED).json({ message: 'Create post successful' })
   }

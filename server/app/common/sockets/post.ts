@@ -3,8 +3,9 @@ import { Server, Socket } from 'socket.io'
 
 import { config } from '@/config'
 
-let socketIOPostObject: Server
 const log: Logger = config.createLogger('postSocketIO')
+
+export let socketIOPostObject: Server
 
 export class SocketIOPostHandler {
   private io: Server

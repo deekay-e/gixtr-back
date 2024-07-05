@@ -4,8 +4,10 @@ import HTTP_STATUS from 'http-status-codes'
 
 import { PostCache } from '@service/redis/post.cache'
 import { postSchema } from '@post/schemas/post.schema'
+import { postQueue } from '@service/queues/post.queue'
 import { IPostDocument } from '@post/interfaces/post.interface'
 import { JoiValidator } from '@global/decorators/joi-validation'
+import { socketIOPostObject } from '@socket/post'
 
 const postCache: PostCache = new PostCache()
 
@@ -34,12 +36,17 @@ export class Post {
       reactions: { like: 0, love: 0, happy: 0, wow: 0, sad: 0, angry: 0 }
     } as IPostDocument
 
+    // emit post event to user and add post data to redis
+    socketIOPostObject.emit('addPost', newPost)
     await postCache.addPostToCache({
       key: postId,
       currentUserId: req.currentUser!.userId,
       uId: req.currentUser!.uId,
-      createdPost: newPost
+      newPost
     })
+
+    // add post data to databse
+    postQueue.addPostJob('addToPost', { value: newPost })
 
     res.status(HTTP_STATUS.CREATED).json({ message: 'Create post successful' })
   }

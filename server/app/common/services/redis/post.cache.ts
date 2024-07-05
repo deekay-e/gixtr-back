@@ -1,10 +1,9 @@
 import Logger from 'bunyan'
 
 import { config } from '@/config'
-import { Utils } from '@global/helpers/utils'
 import { BaseCache } from '@service/redis/base.cache'
 import { ServerError } from '@global/helpers/error-handler'
-import { IPostDocument, ISavePostToCache } from '@post/interfaces/post.interface'
+import { ISavePostToCache } from '@post/interfaces/post.interface'
 
 const log: Logger = config.createLogger('postCache')
 
@@ -17,7 +16,7 @@ export class PostCache extends BaseCache {
    * addPostToCache
    */
   public async addPostToCache(data: ISavePostToCache ): Promise<void> {
-    const { key, currentUserId, uId, createdPost } = data
+    const { key, currentUserId, uId, newPost } = data
     const {
       _id,
       userId,
@@ -35,7 +34,7 @@ export class PostCache extends BaseCache {
       imgId,
       reactions,
       createdAt
-    } = createdPost
+    } = newPost
     const dataToSave = {
       _id: `${_id}`,
       userId: `${userId}`,

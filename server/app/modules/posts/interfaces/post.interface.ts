@@ -42,10 +42,10 @@ export interface ISavePostToCache {
   key: ObjectId | string
   currentUserId: string
   uId: string
-  createdPost: IPostDocument
+  newPost: IPostDocument
 }
 
-export interface IPostJobData {
+export interface IPostJob {
   key?: string
   value?: IPostDocument
   keyOne?: string

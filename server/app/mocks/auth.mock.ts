@@ -11,6 +11,15 @@ export const authMockRequest = (
   currentUser
 })
 
+export const loginMockRequest = (
+  sessionData: IJWT, body: ILoginMock, currentUser?: AuthPayload | null, params?: any
+) => ({
+  session: sessionData,
+  body,
+  params,
+  currentUser
+})
+
 export const authMockResponse = (): Response => {
   const res: Response = {} as Response
   res.status = jest.fn().mockReturnValue(res)
@@ -20,6 +29,11 @@ export const authMockResponse = (): Response => {
 
 export interface IJWT {
   jwt?: string
+}
+
+export interface ILoginMock {
+  login?: string,
+  password?: string
 }
 
 export interface IAuthMock {

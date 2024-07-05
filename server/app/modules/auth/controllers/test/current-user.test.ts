@@ -22,7 +22,7 @@ describe('CurrentUser', () => {
   })
 
   describe('token', () => {
-    it('should set session token to null and send correct json response', async () => {
+    it('should set session token to undefined and send correct json response', async () => {
       const req: Request = authMockRequest({},
         { username: USERNAME, password: PASSWORD }, authUserPayload) as Request
       const res: Response = authMockResponse()
@@ -31,9 +31,9 @@ describe('CurrentUser', () => {
       await CurrentUser.prototype.read(req, res)
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
-        token: null,
+        token: undefined,
         isUser: false,
-        user: null
+        user: {}
       })
     })
 

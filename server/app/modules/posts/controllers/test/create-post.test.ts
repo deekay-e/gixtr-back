@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Request, Response } from 'express'
 import { Server } from 'socket.io'
+import { Request, Response } from 'express'
 
-import { authUserPayload } from '@mock/auth.mock'
 import * as postServer from '@socket/post'
-import { post, postMockRequest, postMockResponse } from '@mock/post.mock'
-import { postQueue } from '@service/queues/post.queue'
+import { authUserPayload } from '@mock/auth.mock'
 import { Post } from '@post/controllers/create-post'
 import { PostCache } from '@service/redis/post.cache'
+import { postQueue } from '@service/queues/post.queue'
 import { CustomError } from '@global/helpers/error-handler'
 import * as cloudinaryUploads from '@global/helpers/cloudinary-upload'
+import { post, postMockRequest, postMockResponse } from '@mock/post.mock'
 
 jest.useFakeTimers()
 jest.mock('@service/queues/base.queue')

@@ -59,7 +59,7 @@ export class Signup {
     req.session = { jwt: userJWT }
 
     res.status(HTTP_STATUS.CREATED)
-      .json({ message: 'Create user successful', user: authData, token: userJWT })
+      .json({ message: 'Create user successful', user: userData, token: userJWT })
   }
 
   private signupData(data: ISignUpData): IAuthDocument {

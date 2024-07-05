@@ -42,14 +42,14 @@ describe('Create', () => {
 
       await Post.prototype.create(req, res)
       const newPost = spy.mock.calls[0][0].newPost
-      expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith('add post', newPost)
+      expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith('addPost', newPost)
       expect(PostCache.prototype.addPostToCache).toHaveBeenCalledWith({
         key: spy.mock.calls[0][0].key,
         currentUserId: `${req.currentUser?.userId}`,
         uId: `${req.currentUser?.uId}`,
         newPost
       })
-      expect(postQueue.addPostJob).toHaveBeenCalledWith('addPostToDB',
+      expect(postQueue.addPostJob).toHaveBeenCalledWith('addToPost',
         { key: req.currentUser?.userId, value: newPost }
       )
       expect(res.status).toHaveBeenCalledWith(201)
@@ -98,14 +98,14 @@ describe('Create', () => {
 
       await Post.prototype.createWithImage(req, res)
       const newPost = spy.mock.calls[0][0].newPost
-      expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith('add post', newPost)
+      expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith('addPost', newPost)
       expect(PostCache.prototype.addPostToCache).toHaveBeenCalledWith({
         key: spy.mock.calls[0][0].key,
         currentUserId: `${req.currentUser?.userId}`,
         uId: `${req.currentUser?.uId}`,
         newPost
       })
-      expect(postQueue.addPostJob).toHaveBeenCalledWith('addPostToDB',
+      expect(postQueue.addPostJob).toHaveBeenCalledWith('addToPost',
         { key: req.currentUser?.userId, value: newPost }
       )
       expect(res.status).toHaveBeenCalledWith(201)

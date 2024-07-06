@@ -2,6 +2,7 @@ import express, { Router } from 'express'
 
 import { PostGet } from '@post/controllers/post-get'
 import { PostCreate } from '@post/controllers/post-create'
+import { PostDelete } from '@post/controllers/post-delete'
 import { authMiddleware } from '@global/helpers/auth-middleware'
 
 class PostRoutes {
@@ -17,6 +18,8 @@ class PostRoutes {
 
     this.router.post('/post', authMiddleware.checkAuth, PostCreate.prototype.minusImage)
     this.router.post('/post-image', authMiddleware.checkAuth, PostCreate.prototype.plusImage)
+
+    this.router.delete('/post/:postId', authMiddleware.checkAuth, PostDelete.prototype.remove)
 
     return this.router
   }

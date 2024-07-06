@@ -1,7 +1,7 @@
 import express, { Router } from 'express'
 
-import { PostGet } from '@post/controllers/get-post'
-import { PostCreate } from '@post/controllers/create-post'
+import { PostGet } from '@post/controllers/post-get'
+import { PostCreate } from '@post/controllers/post-create'
 import { authMiddleware } from '@global/helpers/auth-middleware'
 
 class PostRoutes {

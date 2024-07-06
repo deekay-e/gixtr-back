@@ -14,9 +14,9 @@ import { UploadApiResponse } from 'cloudinary'
 
 const postCache: PostCache = new PostCache()
 
-export class Post {
+export class PostCreate {
   @JoiValidator(postSchema)
-  public async create(req: Request, res: Response): Promise<void> {
+  public async minusImage(req: Request, res: Response): Promise<void> {
     const userId: string = req.currentUser!.userId
     const { post, bgColor, scope, gifUrl, profilePicture, feelings } = req.body
 
@@ -42,7 +42,7 @@ export class Post {
 
     // emit post event to user and add post data to redis
     socketIOPostObject.emit('addPost', newPost)
-    await postCache.addPostToCache({
+    await postCache.addPost({
       key: postId,
       currentUserId: userId,
       uId: req.currentUser!.uId,
@@ -56,7 +56,7 @@ export class Post {
   }
 
   @JoiValidator(postWithImageSchema)
-  public async createWithImage(req: Request, res: Response): Promise<void> {
+  public async plusImage(req: Request, res: Response): Promise<void> {
     const userId: string = req.currentUser!.userId
     const { post, bgColor, scope, gifUrl, profilePicture, feelings, image } = req.body
 
@@ -87,7 +87,7 @@ export class Post {
 
     // emit post event to user and add post data to redis
     socketIOPostObject.emit('addPost', newPost)
-    await postCache.addPostToCache({
+    await postCache.addPost({
       key: postId,
       currentUserId: userId,
       uId: req.currentUser!.uId,

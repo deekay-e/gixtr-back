@@ -1,6 +1,6 @@
 import express, { Router } from 'express'
 
-import { Post } from '@post/controllers/create-post'
+import { PostCreate } from '@post/controllers/create-post'
 import { authMiddleware } from '@global/helpers/auth-middleware'
 
 class PostRoutes {
@@ -11,8 +11,8 @@ class PostRoutes {
   }
 
   public routes(): Router {
-    this.router.post('/post', authMiddleware.checkAuth, Post.prototype.create)
-    this.router.post('/post-image', authMiddleware.checkAuth, Post.prototype.createWithImage)
+    this.router.post('/post', authMiddleware.checkAuth, PostCreate.prototype.minusImage)
+    this.router.post('/post-image', authMiddleware.checkAuth, PostCreate.prototype.plusImage)
 
     return this.router
   }

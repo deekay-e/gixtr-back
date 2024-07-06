@@ -1,8 +1,9 @@
-import { PostModel } from '@post/models/post.model'
-import { IPostDocument } from '@post/interfaces/post.interface'
 import { UpdateQuery } from 'mongoose'
-import { IUserDocument } from '@user/interfaces/user.interface'
+
 import { UserModel } from '@user/models/user.model'
+import { PostModel } from '@post/models/post.model'
+import { IUserDocument } from '@user/interfaces/user.interface'
+import { IGetPostsQuery, IPostDocument } from '@post/interfaces/post.interface'
 
 
 class PostService {
@@ -13,6 +14,28 @@ class PostService {
       { $inc: { postsCount: 1 } }
     )
     await Promise.all([post, user])
+  }
+
+  public async getPosts(
+    query: IGetPostsQuery, skip = 0, limit = 0, sort: Record<string, 1 | -1>
+  ): Promise<IPostDocument[]> {
+    let postQuery = {}
+    if (query?.imgId && query?.gifUrl)
+      postQuery = { $or: [{ imgId: { $ne: '' }}, { gifUrl: { $ne: '' }}]}
+    else postQuery = query
+
+    const posts: IPostDocument[] = await PostModel.aggregate([
+      { $match: postQuery },
+      { $sort: sort },
+      { $skip: skip },
+      { $limit: limit }
+    ])
+    return posts
+  }
+
+  public async getPostsCount(): Promise<number> {
+    const count: number = await PostModel.find({}).countDocuments()
+    return count
   }
 }
 

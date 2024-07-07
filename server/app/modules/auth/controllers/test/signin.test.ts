@@ -9,12 +9,12 @@ import { CustomError } from '@global/helpers/error-handler'
 import { authMock, loginMockRequest, authMockResponse } from '@mock/auth.mock'
 
 const USERNAME = 'KayCee'
-const EMAIL = 'kay@cee.me'
 const PASSWORD = 'Kara22Chi'
 const WRONG_USERNAME = 'ka'
 const WRONG_PASSWORD = 'Ka'
-const LONG_PASSWORD = 'Kara22Chi'
-const LONG_USERNAME = 'mathematics'
+const LOGIN = 'KayCee' || 'kay@cee.me'
+const LONG_PASSWORD = 'Kara22Chi123qwerty'
+const LONG_USERNAME = 'mathematics123qwerty'
 
 jest.useFakeTimers()
 jest.mock('@service/queues/base.queue')
@@ -57,7 +57,7 @@ describe('Signin', () => {
   }) */
 
   it('should throw an error if password is not available', () => {
-    const req: Request = loginMockRequest({}, { login: USERNAME, password: '' }) as Request
+    const req: Request = loginMockRequest({}, { login: LOGIN, password: '' }) as Request
     const res: Response = authMockResponse()
     Signin.prototype.read(req, res).catch((error: CustomError) => {
       expect(error.statusCode).toEqual(400)
@@ -66,7 +66,7 @@ describe('Signin', () => {
   })
 
   it('should throw an error if password length is less than minimum length', () => {
-    const req: Request = loginMockRequest({}, { login: USERNAME, password: WRONG_PASSWORD }) as Request
+    const req: Request = loginMockRequest({}, { login: LOGIN, password: WRONG_PASSWORD }) as Request
     const res: Response = authMockResponse()
     Signin.prototype.read(req, res).catch((error: CustomError) => {
       expect(error.statusCode).toEqual(400)
@@ -75,7 +75,7 @@ describe('Signin', () => {
   })
 
   it('should throw an error if password length is greater than maximum length', () => {
-    const req: Request = loginMockRequest({}, { login: USERNAME, password: LONG_PASSWORD }) as Request
+    const req: Request = loginMockRequest({}, { login: LOGIN, password: LONG_PASSWORD }) as Request
     const res: Response = authMockResponse()
     Signin.prototype.read(req, res).catch((error: CustomError) => {
       expect(error.statusCode).toEqual(400)
@@ -84,7 +84,7 @@ describe('Signin', () => {
   })
 
   it('should throw "Invalid login credentials" if login does not exist', () => {
-    const req: Request = loginMockRequest({}, { login: USERNAME, password: PASSWORD }) as Request
+    const req: Request = loginMockRequest({}, { login: LOGIN, password: PASSWORD }) as Request
     const res: Response = authMockResponse()
     jest.spyOn(authService, 'getUser').mockResolvedValueOnce(null as any)
 
@@ -96,7 +96,7 @@ describe('Signin', () => {
   })
 
   it('should throw "Invalid login password" if password does not exist', () => {
-    const req: Request = loginMockRequest({}, { login: USERNAME, password: PASSWORD }) as Request
+    const req: Request = loginMockRequest({}, { login: LOGIN, password: PASSWORD }) as Request
     const res: Response = authMockResponse()
     jest.spyOn(authService, 'getUser').mockResolvedValueOnce(null as any)
 
@@ -108,7 +108,7 @@ describe('Signin', () => {
   })
 
   it('should set session data for valid credentials and send correct json response', async () => {
-    const req: Request = loginMockRequest({}, { login: USERNAME, password: PASSWORD }) as Request
+    const req: Request = loginMockRequest({}, { login: LOGIN, password: PASSWORD }) as Request
     const res: Response = authMockResponse()
     authMock.comparePassword = () => Promise.resolve(true)
     jest.spyOn(authService, 'getUser').mockResolvedValue(authMock)

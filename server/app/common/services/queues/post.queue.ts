@@ -8,6 +8,7 @@ class PostQueue extends BaseQueue {
     super('post')
 
     this.processJob('addToPost', 5, postWorker.addPostToDB)
+    this.processJob('updatePost', 5, postWorker.updatePost)
     this.processJob('deletePost', 5, postWorker.deletePost)
   }
 

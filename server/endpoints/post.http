@@ -1,5 +1,6 @@
 @baseUrl = http://localhost:8008
 @urlPath = api/v1
+@postId =
 
 ###
 POST {{baseUrl}}/{{urlPath}}/post
@@ -45,7 +46,24 @@ Accept: application/json
 withCredentials: true
 
 ###
-DELETE  {{baseUrl}}/{{urlPath}}/post/<postId>
+PUT {{baseUrl}}/{{urlPath}}/post/{{postId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "post": "This is my first updated post",
+  "bgColor": "#4aa1f3",
+  "scope": "Private",
+  "gifUrl": "",
+  "profilePicture": "https://res.cloudinary.com/dahrlgvpt/image/upload/v1719781047/6681c6a275b313a186073ee3",
+  "feelings": "happy",
+  "imgId": "",
+  "imgVersion": ""
+}
+
+###
+DELETE  {{baseUrl}}/{{urlPath}}/post/{{postId}}
 Content-Type: application/json
 Accept: application/json
 withCredentials: true

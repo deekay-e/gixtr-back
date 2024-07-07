@@ -9,9 +9,7 @@ const postCache: PostCache = new PostCache()
 const PAGE_SIZE = 10
 
 export class PostGet {
-  public async one(req: Request, res: Response): Promise<void> {}
-
-  public async many(req: Request, res: Response): Promise<void> {
+  public async minusImage(req: Request, res: Response): Promise<void> {
     const { page } = req.params
     const skip: number = (parseInt(page) - 1) * PAGE_SIZE
     const limit: number = PAGE_SIZE * parseInt(page)
@@ -30,7 +28,7 @@ export class PostGet {
     res.status(HTTP_STATUS.OK).json({ message: 'Get all posts', posts, postsCount })
   }
 
-  public async manywithImages(req: Request, res: Response): Promise<void> {
+  public async plusImage(req: Request, res: Response): Promise<void> {
     const { page } = req.params
     const skip: number = (parseInt(page) - 1) * PAGE_SIZE
     const limit: number = PAGE_SIZE * parseInt(page)

@@ -47,7 +47,7 @@ describe('PostDelete', () => {
     expect(postQueue.addPostJob).toHaveBeenCalledWith('deletePost', { keyOne: postId, keyTwo: userId })
     expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith({
-      message: 'Post delete successful'
+      message: 'Delete post successful'
     })
   })
 })

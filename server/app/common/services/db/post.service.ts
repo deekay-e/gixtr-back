@@ -40,6 +40,14 @@ class PostService {
     return count
   }
 
+  public async updatePost(userId: string, data: IPostDocument): Promise<void> {
+    const post: UpdateQuery<IPostDocument> = PostModel.updateOne(
+      { _id: userId },
+      { $set: data }
+    )
+    await Promise.all([post])
+  }
+
   public async deletePost(postId: string, userId: string): Promise<void> {
     const post: Query<IQueryComplete & IQueryDeleted, IPostDocument> =
       PostModel.deleteOne({ _id: postId })

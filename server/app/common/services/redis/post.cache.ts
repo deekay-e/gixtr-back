@@ -67,10 +67,11 @@ export class PostCache extends BaseCache {
       const postsCount: string[] = await this.client.HMGET(`users:${currentUserId}`, 'postsCount')
       const multi: ReturnType<typeof this.client.multi> = this.client.multi()
       multi.ZADD('post', { score: parseInt(`${uId}`, 10), value: `${key}` })
-      multi.HSET(`posts:${key}`, dataToSave)
+      for (const [itemKey, itemValue] of Object.entries(dataToSave))
+        await this.client.HSET(`posts:${key}`, itemKey, itemValue)
 
-      const newPostsCount: number = parseInt(postsCount[0], 10) + 1
-      multi.HSET(`users:${currentUserId}`, ['postsCount', `${newPostsCount}`])
+      const count: number = parseInt(postsCount[0], 10) + 1
+      multi.HSET(`users:${currentUserId}`, 'postsCount', count)
 
       multi.exec()
     } catch (error) {
@@ -86,14 +87,13 @@ export class PostCache extends BaseCache {
     try {
       if (!this.client.isOpen) await this.client.connect()
 
-      const post: IPostDocument = await this.client
-        .HGETALL(`posts:${key}`) as unknown as IPostDocument
+      const post: IPostDocument[] = await this.client
+        .HGETALL(`posts:${key}`) as unknown as IPostDocument[]
+      post[0].createdAt = new Date(Utils.parseJson(`${post[0].createdAt}`))
+      post[0].commentsCount = Utils.parseJson(`${post[0].commentsCount}`)
+      post[0].reactions = Utils.parseJson(`${post[0].reactions}`)
 
-        post.createdAt = new Date(Utils.parseJson(`${post.createdAt}`))
-        post.commentsCount = Utils.parseJson(`${post.commentsCount}`)
-        post.reactions = Utils.parseJson(`${post.reactions}`)
-
-      return post
+      return post[0]
     } catch (error) {
       log.error(error)
       throw new ServerError('Server error. Try again.')
@@ -213,6 +213,48 @@ export class PostCache extends BaseCache {
   }
 
   /**
+   * updatePost
+   *
+   * @key - the post _id
+   * @post - the updated post data
+   */
+  public async updatePost(key: string, updatedPost: IPostDocument): Promise<IPostDocument> {
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+
+
+      const {
+        post, bgColor, feelings, gifUrl, imgVersion, imgId, profilePicture, scope
+      } = updatedPost
+      const dataToSave = {
+        post: `${post}`,
+        bgColor: `${bgColor}`,
+        feelings: `${feelings}`,
+        gifUrl: `${gifUrl}`,
+        imgVersion: `${imgVersion}`,
+        imgId: `${imgId}`,
+        profilePicture: `${profilePicture}`,
+        scope: `${scope}`
+      }
+
+      for (const [itemKey, itemValue] of Object.entries(dataToSave))
+        await this.client.HSET(`posts:${key}`, itemKey, itemValue)
+      const multi: ReturnType<typeof this.client.multi> = this.client.multi()
+      multi.HGETALL(`posts:${key}`)
+      const reply: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType
+      const posts = reply as IPostDocument[]
+      posts[0].createdAt = new Date(Utils.parseJson(`${posts[0].createdAt}`))
+      posts[0].commentsCount = Utils.parseJson(`${posts[0].commentsCount}`)
+      posts[0].reactions = Utils.parseJson(`${posts[0].reactions}`)
+
+      return posts[0]
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
+
+  /**
    * deletePost
    */
   public async deletePost(key: string, userId: string): Promise<void> {
@@ -226,7 +268,7 @@ export class PostCache extends BaseCache {
       multi.DEL(`posts:${key}`)
       multi.DEL(`comments:${key}`)
       multi.DEL(`reactions:${key}`)
-      multi.HSET(`users:${userId}`, ['postsCount', `${count}`])
+      multi.HSET(`users:${userId}`, 'postsCount', count)
 
       await multi.exec()
     } catch (error) {

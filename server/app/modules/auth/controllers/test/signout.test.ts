@@ -5,7 +5,7 @@ import { Signout } from '@auth/controllers/signout'
 const USERNAME = 'A-star'
 const PASSWORD = 'Kira22bo'
 
-describe('SignOut', () => {
+describe('Signout', () => {
   it('should set session to null', async () => {
     const req: Request = authMockRequest({}, { username: USERNAME, password: PASSWORD }) as Request
     const res: Response = authMockResponse()
@@ -19,7 +19,7 @@ describe('SignOut', () => {
     await Signout.prototype.init(req, res)
     expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith({
-      message: 'Logout successful',
+      message: 'Logout Successful.',
       user: {},
       token: ''
     })

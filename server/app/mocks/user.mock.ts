@@ -52,8 +52,8 @@ export const existingUser = {
   profilePicture: 'http://place-hold.it/500x500',
   _id: '60263f14648fed5246e322d9',
   uId: '1621613119252066',
-  username: 'Manny',
-  email: 'manny@me.com',
+  username: 'KayCee',
+  email: 'kay@cee.me',
   avatarColor: 'red',
   work: 'KickChat Inc.',
   school: 'University of Nigeria',
@@ -85,8 +85,8 @@ export const existingUserTwo = {
   profilePicture: 'http://place-hold.it/500x500',
   _id: '60263f14648fed5246e322d8',
   uId: '1621613119252065',
-  username: 'Danny',
-  email: 'danny@me.com',
+  username: 'KayCee',
+  email: 'kay@cee.me',
   avatarColor: '#9c27b1',
   work: 'KickChat Inc.',
   school: 'University of Nigeria',
@@ -119,22 +119,22 @@ export const mergedAuthAndUserData = {
   _id: '60263f14648fed5246e322d8',
   authId: '60263f14648fed5246e322d3',
   uId: '1621613119252066',
-  username: 'Manny',
-  email: 'manny@me.com',
+  username: 'KayCee',
+  email: 'kay@cee.me',
   avatarColor: '#9c27b0',
   work: 'KickChat Inc.',
   school: 'University of Nigeria',
   location: 'Dusseldorf, Germany',
   quote: 'Sky is my limit',
-  createdAt: '2022-08-31T07:42:24.451Z'
+  createdAt: '2024-05-30T07:42:24.451Z'
 } as unknown as IUserDocument
 
 export const searchedUserMock = {
   profilePicture: 'http://place-hold.it/500x500',
   _id: '60263f14648fed5246e322d5',
   uId: '1621613119252062',
-  username: 'Kenny',
-  email: 'ken@me.com',
+  username: 'KayCee',
+  email: 'kay@cee.mee',
   avatarColor: '#9c27b1'
 }
 

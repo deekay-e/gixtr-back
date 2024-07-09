@@ -25,13 +25,16 @@ describe('Signup', () => {
   })
 
   it('should throw an error if username is not available', () => {
-    const req: Request = authMockRequest({}, {
-      username: '',
-      email: 'kay@cee.me',
-      password: 'Kara18Chi',
-      avatarColor: 'purple',
-      avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
-    }) as Request
+    const req: Request = authMockRequest(
+      {},
+      {
+        username: '',
+        email: 'kay@cee.me',
+        password: 'Kara18Chi',
+        avatarColor: 'purple',
+        avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
+      }
+    ) as Request
     const res: Response = authMockResponse()
 
     Signup.prototype.create(req, res).catch((error: CustomError) => {
@@ -41,47 +44,58 @@ describe('Signup', () => {
   })
 
   it('should throw an error if username length is less than minimum', () => {
-    const req: Request = authMockRequest({}, {
-      username: 'ka',
-      email: 'kay@cee.me',
-      password: 'Kara18Chi',
-      avatarColor: 'purple',
-      avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
-    }) as Request
+    const req: Request = authMockRequest(
+      {},
+      {
+        username: 'ka',
+        email: 'kay@cee.me',
+        password: 'Kara18Chi',
+        avatarColor: 'purple',
+        avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
+      }
+    ) as Request
     const res: Response = authMockResponse()
 
     Signup.prototype.create(req, res).catch((error: CustomError) => {
       expect(error.statusCode).toEqual(400)
-      expect(error.serializeErrors().message)
-        .toEqual('Username must contain at least three characters')
+      expect(error.serializeErrors().message).toEqual(
+        'Username must contain at least three characters'
+      )
     })
   })
 
   it('should throw an error if username length is more than maximum', () => {
-    const req: Request = authMockRequest({}, {
-      username: 'kaycee123qwerty',
-      email: 'kay@cee.me',
-      password: 'Kara18Chi',
-      avatarColor: 'purple',
-      avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
-    }) as Request
+    const req: Request = authMockRequest(
+      {},
+      {
+        username: 'kaycee123qwerty',
+        email: 'kay@cee.me',
+        password: 'Kara18Chi',
+        avatarColor: 'purple',
+        avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
+      }
+    ) as Request
     const res: Response = authMockResponse()
 
     Signup.prototype.create(req, res).catch((error: CustomError) => {
       expect(error.statusCode).toEqual(400)
-      expect(error.serializeErrors().message)
-        .toEqual('Username must contain no more than ten characters')
+      expect(error.serializeErrors().message).toEqual(
+        'Username must contain no more than ten characters'
+      )
     })
   })
 
   it('should throw an error if password is not available', () => {
-    const req: Request = authMockRequest({}, {
-      username: 'kaycee',
-      email: 'kay@cee.me',
-      password: '',
-      avatarColor: 'purple',
-      avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
-    }) as Request
+    const req: Request = authMockRequest(
+      {},
+      {
+        username: 'kaycee',
+        email: 'kay@cee.me',
+        password: '',
+        avatarColor: 'purple',
+        avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
+      }
+    ) as Request
     const res: Response = authMockResponse()
 
     Signup.prototype.create(req, res).catch((error: CustomError) => {
@@ -91,47 +105,58 @@ describe('Signup', () => {
   })
 
   it('should throw an error if password length is less than minimum', () => {
-    const req: Request = authMockRequest({}, {
-      username: 'kaycee',
-      email: 'kay@cee.me',
-      password: 'Kar',
-      avatarColor: 'purple',
-      avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
-    }) as Request
+    const req: Request = authMockRequest(
+      {},
+      {
+        username: 'kaycee',
+        email: 'kay@cee.me',
+        password: 'Kar',
+        avatarColor: 'purple',
+        avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
+      }
+    ) as Request
     const res: Response = authMockResponse()
 
     Signup.prototype.create(req, res).catch((error: CustomError) => {
       expect(error.statusCode).toEqual(400)
-      expect(error.serializeErrors().message)
-        .toEqual('Password must contain at least four characters')
+      expect(error.serializeErrors().message).toEqual(
+        'Password must contain at least four characters'
+      )
     })
   })
 
   it('should throw an error if password length is more than maximum', () => {
-    const req: Request = authMockRequest({}, {
-      username: 'kaycee',
-      email: 'kay@cee.me',
-      password: 'Kara18Chi4ever123qwerty',
-      avatarColor: 'purple',
-      avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
-    }) as Request
+    const req: Request = authMockRequest(
+      {},
+      {
+        username: 'kaycee',
+        email: 'kay@cee.me',
+        password: 'Kara18Chi4ever123qwerty',
+        avatarColor: 'purple',
+        avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
+      }
+    ) as Request
     const res: Response = authMockResponse()
 
     Signup.prototype.create(req, res).catch((error: CustomError) => {
       expect(error.statusCode).toEqual(400)
-      expect(error.serializeErrors().message)
-        .toEqual('Password must contain no more than 16 characters')
+      expect(error.serializeErrors().message).toEqual(
+        'Password must contain no more than 16 characters'
+      )
     })
   })
 
   it('should throw unathourized error if user already exists', () => {
-    const req: Request = authMockRequest({}, {
-      username: 'kaycee',
-      email: 'kay@cee.me',
-      password: 'Kara18Chi',
-      avatarColor: 'purple',
-      avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
-    }) as Request
+    const req: Request = authMockRequest(
+      {},
+      {
+        username: 'kaycee',
+        email: 'kay@cee.me',
+        password: 'Kara18Chi',
+        avatarColor: 'purple',
+        avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
+      }
+    ) as Request
     const res: Response = authMockResponse()
 
     jest.spyOn(authService, 'getUser').mockResolvedValue(authMock)
@@ -142,21 +167,25 @@ describe('Signup', () => {
     })
   })
 
-  it('should set session data with valid credentials and send correct json response',
-    async () => {
-    const req: Request = authMockRequest({}, {
-      username: 'kaycee',
-      email: 'kay@cee.me',
-      password: 'Kara18Chi',
-      avatarColor: 'purple',
-      avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
-    }) as Request
+  it('should set session data with valid credentials and send correct json response', async () => {
+    const req: Request = authMockRequest(
+      {},
+      {
+        username: 'kaycee',
+        email: 'kay@cee.me',
+        password: 'Kara18Chi',
+        avatarColor: 'purple',
+        avatarImage: 'data: text/plain;base64,SGVsbG8sIFdvcmxkIQ=='
+      }
+    ) as Request
     const res: Response = authMockResponse()
 
     jest.spyOn(authService, 'getUser').mockResolvedValue(null as any)
-    jest.spyOn(cloudinaryUploads, 'uploads').mockImplementation((): any =>
-      Promise.resolve({ version: '123456789', public_id: '1234356' })
-    )
+    jest
+      .spyOn(cloudinaryUploads, 'uploads')
+      .mockImplementation((): any =>
+        Promise.resolve({ version: '123456789', public_id: '1234356' })
+      )
     const spyUser = jest.spyOn(UserCache.prototype, 'addUserToCache')
 
     await Signup.prototype.create(req, res)

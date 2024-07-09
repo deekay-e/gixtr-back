@@ -47,7 +47,7 @@ export class Signup {
 
     // Add user data to redis
     const userData: IUserDocument = Signup.prototype.userData(authData, userObjectId)
-    userData.profilePicture =`https://res.cloudinary.com/${config.CLOUD_NAME}/image/upload/v${result.version}/${userObjectId}`
+    userData.profilePicture = `https://res.cloudinary.com/${config.CLOUD_NAME}/image/upload/v${result.version}/${userObjectId}`
     await userCache.addUserToCache(`${userObjectId}`, uId, userData)
 
     // Add data to monogdb
@@ -58,7 +58,8 @@ export class Signup {
     const userJWT: string = authService.getToken(authData, `${userObjectId}`)
     req.session = { jwt: userJWT }
 
-    res.status(HTTP_STATUS.CREATED)
+    res
+      .status(HTTP_STATUS.CREATED)
       .json({ message: 'Create user successful', user: userData, token: userJWT })
   }
 

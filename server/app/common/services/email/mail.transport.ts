@@ -20,15 +20,14 @@ interface IMailOptions {
 
 class MailTransport {
   public async sendEmail(data: IMailJob): Promise<void> {
-    if (config.NODE_ENV === 'test' || config.NODE_ENV === 'development')
-      this.devEmailSender(data)
+    if (config.NODE_ENV === 'test' || config.NODE_ENV === 'development') this.devEmailSender(data)
     else this.prodEmailSender(data)
   }
 
   private async devEmailSender(data: IMailJob): Promise<void> {
     //const testAccount = await nodemailer.createTestAccount()
-    const user = config.SENDER_EMAIL// || testAccount.user
-    const pass = config.SENDER_PASSWORD// || testAccount.pass
+    const user = config.SENDER_EMAIL // || testAccount.user
+    const pass = config.SENDER_PASSWORD // || testAccount.pass
 
     // create reusable transport object
     const transport: Mail = nodemailer.createTransport({

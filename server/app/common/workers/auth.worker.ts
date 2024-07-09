@@ -1,7 +1,6 @@
 import Logger from 'bunyan'
 import { DoneCallback, Job } from 'bull'
 
-
 import { config } from '@/config'
 import { authService } from '@service/db/auth.service'
 

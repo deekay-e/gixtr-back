@@ -3,7 +3,10 @@ import { Response } from 'express'
 import { AuthPayload, IAuthDocument } from '@auth/interfaces/auth.interface'
 
 export const authMockRequest = (
-  sessionData: IJWT, body: IAuthMock, currentUser?: AuthPayload | null, params?: any
+  sessionData: IJWT,
+  body: IAuthMock,
+  currentUser?: AuthPayload | null,
+  params?: any
 ) => ({
   session: sessionData,
   body,
@@ -12,7 +15,10 @@ export const authMockRequest = (
 })
 
 export const loginMockRequest = (
-  sessionData: IJWT, body: ILoginMock, currentUser?: AuthPayload | null, params?: any
+  sessionData: IJWT,
+  body: ILoginMock,
+  currentUser?: AuthPayload | null,
+  params?: any
 ) => ({
   session: sessionData,
   body,
@@ -32,7 +38,7 @@ export interface IJWT {
 }
 
 export interface ILoginMock {
-  login?: string,
+  login?: string
   password?: string
 }
 

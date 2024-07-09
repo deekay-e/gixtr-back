@@ -6,7 +6,9 @@ import { AuthPayload } from '@auth/interfaces/auth.interface'
 import { IPostDocument } from '@post/interfaces/post.interface'
 
 export const postMockRequest = (
-  body: IBody, currentUser?: AuthPayload | null, params?: IParams
+  body: IBody,
+  currentUser?: AuthPayload | null,
+  params?: IParams
 ) => ({
   body,
   params,

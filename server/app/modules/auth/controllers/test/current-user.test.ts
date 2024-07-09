@@ -23,8 +23,11 @@ describe('CurrentUser', () => {
 
   describe('token', () => {
     it('should set session token to undefined and send correct json response', async () => {
-      const req: Request = authMockRequest({},
-        { username: USERNAME, password: PASSWORD }, authUserPayload) as Request
+      const req: Request = authMockRequest(
+        {},
+        { username: USERNAME, password: PASSWORD },
+        authUserPayload
+      ) as Request
       const res: Response = authMockResponse()
       jest.spyOn(UserCache.prototype, 'getUserFromCache').mockResolvedValue({} as IUserDocument)
 
@@ -38,8 +41,11 @@ describe('CurrentUser', () => {
     })
 
     it('should set session token and send correct json response', async () => {
-      const req: Request = authMockRequest({ jwt: '12djdj34' },
-        { username: USERNAME, password: PASSWORD }, authUserPayload) as Request
+      const req: Request = authMockRequest(
+        { jwt: '12djdj34' },
+        { username: USERNAME, password: PASSWORD },
+        authUserPayload
+      ) as Request
       const res: Response = authMockResponse()
       jest.spyOn(UserCache.prototype, 'getUserFromCache').mockResolvedValue(existingUser)
 

@@ -9,8 +9,7 @@ import { IAuthJob } from '@auth/interfaces/auth.interface'
 import { IPostJob } from '@post/interfaces/post.interface'
 import { IMailJob, IUserJob } from '@user/interfaces/user.interface'
 
-type IBaseJob =
-  | IAuthJob | IUserJob | IMailJob | IPostJob
+type IBaseJob = IAuthJob | IUserJob | IMailJob | IPostJob
 
 let bullAdapters: BullAdapter[] = []
 

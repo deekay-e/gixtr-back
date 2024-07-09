@@ -10,24 +10,32 @@ class AuthService {
     await AuthModel.create(data)
   }
 
-  public async updatePasswordToken(authId: string, token: string, expiration: number): Promise<void> {
-    await AuthModel.updateOne({ _id: authId }, {
-      passwordResetToken: token,
-      passwordResetExpires: expiration
-    })
+  public async updatePasswordToken(
+    authId: string,
+    token: string,
+    expiration: number
+  ): Promise<void> {
+    await AuthModel.updateOne(
+      { _id: authId },
+      {
+        passwordResetToken: token,
+        passwordResetExpires: expiration
+      }
+    )
   }
 
   public async getUser(username: string, email: string): Promise<IAuthDocument> {
     const query = {
-      $or: [{ username: Utils.capitalize(username)}, { email: Utils.lowercase(email) }]
+      $or: [{ username: Utils.capitalize(username) }, { email: Utils.lowercase(email) }]
     }
     const user: IAuthDocument = (await AuthModel.findOne(query).exec()) as IAuthDocument
     return user
   }
 
   public async getAuthUserByEmail(email: string): Promise<IAuthDocument> {
-    const user: IAuthDocument = (await AuthModel.findOne({ email: Utils.lowercase(email) })
-      .exec()) as IAuthDocument
+    const user: IAuthDocument = (await AuthModel.findOne({
+      email: Utils.lowercase(email)
+    }).exec()) as IAuthDocument
     return user
   }
 
@@ -35,8 +43,7 @@ class AuthService {
     const user: IAuthDocument = (await AuthModel.findOne({
       passwordResetToken: token,
       passwordResetExpires: { $gt: Date.now() }
-    })
-      .exec()) as IAuthDocument
+    }).exec()) as IAuthDocument
     return user
   }
 

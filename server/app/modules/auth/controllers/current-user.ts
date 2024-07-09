@@ -10,10 +10,12 @@ const userCache: UserCache = new UserCache()
 export class CurrentUser {
   public async read(req: Request, res: Response): Promise<void> {
     let isUser = false
-    let token, user = null
+    let token,
+      user = null
 
-    const cachedUser: IUserDocument = await userCache
-      .getUserFromCache(`${req.currentUser?.userId}`) as IUserDocument
+    const cachedUser: IUserDocument = (await userCache.getUserFromCache(
+      `${req.currentUser?.userId}`
+    )) as IUserDocument
     user = cachedUser ? cachedUser : await userService.getUserById(`${req.currentUser?.userId}`)
     if (Object.keys(user).length) {
       isUser = true

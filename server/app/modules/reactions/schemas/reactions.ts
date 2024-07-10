@@ -11,7 +11,7 @@ const addReactionSchema: ObjectSchema = Joi.object().keys({
     'any.required': 'Reaction type is a required property'
   }),
   profilePicture: Joi.string().optional().allow(null, ''),
-  previousReaction: Joi.string().optional().allow(null, ''),
+  prevReaction: Joi.string().optional().allow(null, ''),
   postReactions: Joi.object().optional().allow(null, '')
 })
 

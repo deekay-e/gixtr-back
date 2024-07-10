@@ -4,7 +4,7 @@ import { Document } from 'mongoose'
 export interface IReactionDocument extends Document {
   _id?: string | ObjectId
   username: string
-  avataColor: string
+  avatarColor: string
   type: string
   postId: string
   profilePicture: string
@@ -25,7 +25,7 @@ export interface IReactions {
 export interface IReactionJob {
   postId: string
   username: string
-  previousReaction: string
+  prevReaction: string
   userTo?: string
   userFrom?: string
   type?: string

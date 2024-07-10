@@ -1,0 +1,17 @@
+@baseUrl = http://localhost:8008
+@urlPath = api/v1
+
+###
+POST {{baseUrl}}/{{urlPath}}/reaction
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userTo": "",
+  "postId": "",
+  "type": "love",
+  "prevReaction": "",
+  "postReactions": {"like":0,"love":1,"happy":0,"sad":0,"wow":0,"angry":0},
+  "profilePicture": "https://res.cloudinary.com/dahrlgvpt/image/upload/v1719781047/6681c6a275b313a186073ee3"
+}

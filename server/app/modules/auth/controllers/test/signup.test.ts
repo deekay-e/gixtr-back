@@ -186,7 +186,7 @@ describe('Signup', () => {
       .mockImplementation((): any =>
         Promise.resolve({ version: '123456789', public_id: '1234356' })
       )
-    const spyUser = jest.spyOn(UserCache.prototype, 'addUserToCache')
+    const spyUser = jest.spyOn(UserCache.prototype, 'addUser')
 
     await Signup.prototype.create(req, res)
     expect(req.session?.jwt).toBeDefined()

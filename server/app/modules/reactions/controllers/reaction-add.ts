@@ -4,10 +4,10 @@ import HTTP_STATUS from 'http-status-codes'
 
 //import { socketIOReactionObject } from '@socket/reaction'
 import { ReactionCache } from '@service/redis/reaction.cache'
-//import { reactionQueue } from '@service/queues/reaction.queue'
+import { reactionQueue } from '@service/queues/reaction.queue'
 import { addReactionSchema } from '@reaction/schemas/reactions'
 import { JoiValidator } from '@global/decorators/joi-validation'
-import { IReactionDocument } from '@reaction/interfaces/reaction.interface'
+import { IReactionDocument, IReactionJob } from '@reaction/interfaces/reaction.interface'
 
 const reactionCache: ReactionCache = new ReactionCache()
 
@@ -30,7 +30,16 @@ export class ReactionAdd {
     await reactionCache.addReaction(postId, newReaction, postReactions, type, prevReaction)
 
     // add reaction data to databse
-    //reactionQueue.addReactionJob('addToReaction', { key: postId, value: newReaction })
+    const reactionData: IReactionJob = {
+      postId,
+      type,
+      userTo,
+      prevReaction,
+      userFrom: req.currentUser!.userId,
+      username: req.currentUser!.username,
+      reactionObject: newReaction
+    }
+    reactionQueue.addReactionJob('addReaction', reactionData)
 
     res.status(HTTP_STATUS.OK).json({ message: 'Add reaction successful' })
   }

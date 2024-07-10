@@ -13,7 +13,7 @@ export class CurrentUser {
     let token,
       user = null
 
-    const cachedUser: IUserDocument = (await userCache.getUserFromCache(
+    const cachedUser: IUserDocument = (await userCache.getUser(
       `${req.currentUser?.userId}`
     )) as IUserDocument
     user = cachedUser ? cachedUser : await userService.getUserById(`${req.currentUser?.userId}`)

@@ -1,10 +1,10 @@
 import Logger from 'bunyan'
 
 import { config } from '@/config'
+import { Utils } from '@global/helpers/utils'
 import { BaseCache } from '@service/redis/base.cache'
 import { ServerError } from '@global/helpers/error-handler'
 import { IUserDocument } from '@user/interfaces/user.interface'
-import { Utils } from '@global/helpers/utils'
 
 const log: Logger = config.createLogger('userCache')
 
@@ -14,13 +14,9 @@ export class UserCache extends BaseCache {
   }
 
   /**
-   * addUserToCache
+   * addUser
    */
-  public async addUserToCache(
-    key: string,
-    userUId: string,
-    createdUser: IUserDocument
-  ): Promise<void> {
+  public async addUser(key: string, userUId: string, createdUser: IUserDocument): Promise<void> {
     const createdAt = new Date()
     const {
       _id,
@@ -77,7 +73,10 @@ export class UserCache extends BaseCache {
     }
   }
 
-  public async getUserFromCache(key: string): Promise<IUserDocument | null> {
+  /**
+   * getUser
+   */
+  public async getUser(key: string): Promise<IUserDocument | null> {
     try {
       if (!this.client.isOpen) await this.client.connect()
       const res: IUserDocument = (await this.client.HGETALL(

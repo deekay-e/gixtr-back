@@ -29,7 +29,7 @@ describe('CurrentUser', () => {
         authUserPayload
       ) as Request
       const res: Response = authMockResponse()
-      jest.spyOn(UserCache.prototype, 'getUserFromCache').mockResolvedValue({} as IUserDocument)
+      jest.spyOn(UserCache.prototype, 'getUser').mockResolvedValue({} as IUserDocument)
 
       await CurrentUser.prototype.read(req, res)
       expect(res.status).toHaveBeenCalledWith(200)
@@ -47,7 +47,7 @@ describe('CurrentUser', () => {
         authUserPayload
       ) as Request
       const res: Response = authMockResponse()
-      jest.spyOn(UserCache.prototype, 'getUserFromCache').mockResolvedValue(existingUser)
+      jest.spyOn(UserCache.prototype, 'getUser').mockResolvedValue(existingUser)
 
       await CurrentUser.prototype.read(req, res)
       expect(res.status).toHaveBeenCalledWith(200)

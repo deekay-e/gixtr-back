@@ -16,8 +16,8 @@ import {
 } from '@mock/post.mock'
 
 jest.useFakeTimers()
-jest.mock('@service/queues/base.queue')
 jest.mock('@service/redis/post.cache')
+jest.mock('@service/queues/base.queue')
 jest.mock('@global/helpers/cloudinary-upload')
 
 Object.defineProperties(postServer, {

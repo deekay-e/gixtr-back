@@ -1,10 +1,17 @@
-import { IPostDocument } from '@post/interfaces/post.interface'
-import { PostModel } from '@post/models/post.model'
-import { IReactionDocument, IReactionJob } from '@reaction/interfaces/reaction.interface'
-import { ReactionModel } from '@reaction/models/reaction.model'
-import { UserCache } from '@service/redis/user.cache'
-import { IUserDocument } from '@user/interfaces/user.interface'
 import { omit } from 'lodash'
+import mongoose from 'mongoose'
+
+import { Utils } from '@global/helpers/utils'
+import { PostModel } from '@post/models/post.model'
+import { UserCache } from '@service/redis/user.cache'
+import { ReactionModel } from '@reaction/models/reaction.model'
+import { IPostDocument } from '@post/interfaces/post.interface'
+import { IUserDocument } from '@user/interfaces/user.interface'
+import {
+  IQueryReaction,
+  IReactionDocument,
+  IReactionJob
+} from '@reaction/interfaces/reaction.interface'
 
 const userCache: UserCache = new UserCache()
 
@@ -33,7 +40,39 @@ export class ReactionService {
     // send notifications here
   }
 
-  public async removeReaction(reaction: IReactionJob) {
+  public async getReactions(
+    query: IQueryReaction,
+    sort: Record<string, 1 | -1>
+  ): Promise<[IReactionDocument[], number]> {
+    const reactions: IReactionDocument[] = await ReactionModel.aggregate([
+      { $match: query },
+      { $sort: sort }
+    ])
+    return [reactions, reactions.length]
+  }
+
+  public async getReactionsByUsername(username: string): Promise<IReactionDocument[]> {
+    const reactions: IReactionDocument[] = (await ReactionModel.aggregate([
+      { $match: { username: Utils.capitalize(username) } }
+    ])) as IReactionDocument[]
+    return reactions
+  }
+
+  public async getReaction(
+    key: string,
+    username: string
+  ): Promise<[IReactionDocument, number] | []> {
+    const reactions: IReactionDocument[] = (await ReactionModel.aggregate([
+      /* { $match: { $or: [
+        { postId: new mongoose.Types.ObjectId(key) },
+        { commentId: new mongoose.Types.ObjectId(key) }
+      ], username: Utils.capitalize(username) } } */
+      { $match: { postId: new mongoose.Types.ObjectId(key), username: Utils.capitalize(username) } }
+    ])) as IReactionDocument[]
+    return reactions.length ? [reactions[0], 1] : []
+  }
+
+  public async removeReaction(reaction: IReactionJob): Promise<void> {
     const { postId, prevReaction, username } = reaction
     await Promise.all([
       ReactionModel.deleteOne({ postId, type: prevReaction, username }),

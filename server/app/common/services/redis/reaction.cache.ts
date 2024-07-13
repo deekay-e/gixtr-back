@@ -40,6 +40,47 @@ export class ReactionCache extends BaseCache {
   }
 
   /**
+   * getReactions
+   */
+  public async getReactions(key: string): Promise<[IReactionDocument[], number]> {
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+
+      let reactions: IReactionDocument[] = []
+      const count: number = await this.client.LLEN(`reactions:${key}`)
+      const cacheReactions: string[] = await this.client.LRANGE(`reactions:${key}`, 0, -1)
+      for (const item of cacheReactions) reactions.push(Utils.parseJson(item))
+      return reactions.length ? [reactions, count] : [[], 0]
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
+
+  /**
+   * getReaction
+   */
+  public async getReaction(
+    key: string,
+    username: string
+  ): Promise<[IReactionDocument, number] | []> {
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+
+      let reactions: IReactionDocument[] = []
+      const cacheReactions: string[] = await this.client.LRANGE(`reactions:${key}`, 0, -1)
+      for (const item of cacheReactions) reactions.push(Utils.parseJson(item))
+      const reaction: IReactionDocument = find(reactions, (item: IReactionDocument) => {
+        return item?.postId === key && item?.username === username
+      }) as IReactionDocument
+      return reaction ? [reaction, 1] : []
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
+
+  /**
    * removeReaction
    */
   public async removeReaction(

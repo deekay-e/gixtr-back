@@ -18,7 +18,7 @@ export class PostUpdate {
   public async minusImage(req: Request, res: Response): Promise<void> {
     PostUpdate.prototype.updatePost(req)
 
-    res.status(HTTP_STATUS.OK).json({ message: 'Update post successful' })
+    res.status(HTTP_STATUS.OK).json({ message: 'Post update successful' })
   }
 
   @JoiValidator(postWithImageSchema)
@@ -30,12 +30,11 @@ export class PostUpdate {
       if (!img.public_id) throw new BadRequestError(img.message)
     }
 
-    res.status(HTTP_STATUS.OK).json({ message: 'Update post with image successful' })
+    res.status(HTTP_STATUS.OK).json({ message: 'Post update with image successful' })
   }
 
   private async updatePost(req: Request): Promise<void> {
     const { postId } = req.params
-    const userId: string = req.currentUser!.userId
     const { post, bgColor, feelings, gifUrl, imgVersion, imgId, profilePicture, scope } = req.body
     let updatedPost: IPostDocument = {
       profilePicture,
@@ -48,22 +47,21 @@ export class PostUpdate {
       imgId
     } as IPostDocument
 
-    // emit post event to user and update post data in redis
-    socketIOPostObject.emit('updatePost', updatedPost, 'posts')
-    updatedPost = await postCache.updatePost(`${postId}`, updatedPost)
+    // update post data in redis and emit post event to user
+    const postUpdated = await postCache.updatePost(`${postId}`, updatedPost)
+    socketIOPostObject.emit('updatePost', postUpdated, 'posts')
 
     // update post data in databse
-    postQueue.addPostJob('updatePost', { key: userId, value: updatedPost })
+    postQueue.addPostJob('updatePost', { key: postId, value: postUpdated })
   }
 
   private async updatePostWithImage(req: Request): Promise<UploadApiResponse> {
     const { postId } = req.params
-    const userId: string = req.currentUser!.userId
     const { post, bgColor, feelings, gifUrl, image, profilePicture, scope } = req.body
 
     // upload post image to cloudinary
-    const img: UploadApiResponse = (await uploads(image)) as UploadApiResponse
-    if (!img?.public_id) return img
+    const res: UploadApiResponse = (await uploads(image)) as UploadApiResponse
+    if (!res?.public_id) return res
 
     let updatedPost: IPostDocument = {
       profilePicture,
@@ -72,18 +70,18 @@ export class PostUpdate {
       feelings,
       scope,
       gifUrl,
-      imgVersion: `${img.version}`,
-      imgId: img.public_id
+      imgVersion: `${res.version}`,
+      imgId: res.public_id
     } as IPostDocument
 
-    // emit post event to user and update post data in redis
-    socketIOPostObject.emit('updatePost', updatedPost, 'posts')
-    updatedPost = await postCache.updatePost(`${postId}`, updatedPost)
+    // update post data in redis and emit post event to user
+    const postUpdated = await postCache.updatePost(`${postId}`, updatedPost)
+    socketIOPostObject.emit('updatePost', postUpdated, 'posts')
 
     // update post data in databse
-    postQueue.addPostJob('updatePost', { key: userId, value: updatedPost })
+    postQueue.addPostJob('updatePost', { key: postId, value: postUpdated })
     // call image queue to add image to database
 
-    return img
+    return res
   }
 }

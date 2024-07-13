@@ -77,7 +77,7 @@ export const postMockData: IPostDocument = {
   }
 } as unknown as IPostDocument
 
-export const updatedPost = {
+export const updatedPost: IBody = {
   profilePicture: postMockData.profilePicture,
   post: postMockData.post,
   bgColor: postMockData.bgColor,
@@ -88,7 +88,7 @@ export const updatedPost = {
   imgVersion: ''
 }
 
-export const updatedPostWithImage = {
+export const updatedPostWithImage: IBody = {
   profilePicture: postMockData.profilePicture,
   post: 'Wonderful',
   bgColor: postMockData.bgColor,

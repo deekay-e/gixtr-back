@@ -52,8 +52,8 @@ export const existingUser = {
   profilePicture: 'http://place-hold.it/500x500',
   _id: '60263f14648fed5246e322d9',
   uId: '1621613119252066',
-  username: 'KayCee',
-  email: 'kay@cee.me',
+  username: 'Esther',
+  email: 'a.star@kaycee.me',
   avatarColor: 'red',
   work: 'KickChat Inc.',
   school: 'University of Nigeria',
@@ -119,8 +119,8 @@ export const mergedAuthAndUserData = {
   _id: '60263f14648fed5246e322d8',
   authId: '60263f14648fed5246e322d3',
   uId: '1621613119252066',
-  username: 'KayCee',
-  email: 'kay@cee.me',
+  username: 'Esther',
+  email: 'a.star@kaycee.me',
   avatarColor: '#9c27b0',
   work: 'KickChat Inc.',
   school: 'University of Nigeria',
@@ -133,8 +133,8 @@ export const searchedUserMock = {
   profilePicture: 'http://place-hold.it/500x500',
   _id: '60263f14648fed5246e322d5',
   uId: '1621613119252062',
-  username: 'KayCee',
-  email: 'kay@cee.mee',
+  username: 'Praise',
+  email: 'chi.pra@kaycee.me',
   avatarColor: '#9c27b1'
 }
 

@@ -15,7 +15,14 @@ export class ReactionRemove {
   public async init(req: Request, res: Response): Promise<void> {
     const username = req.currentUser!.username
     const { postId, prevReaction } = req.params
-    const postReactions: IReactions = {"like":0,"love":0,"happy":0,"sad":0,"wow":0,"angry":0} as IReactions
+    const postReactions: IReactions = {
+      like: 0,
+      love: 0,
+      happy: 0,
+      sad: 0,
+      wow: 0,
+      angry: 0
+    } as IReactions
 
     // emit reaction event to user and remove reaction data from redis
     //socketIONotificationObject.emit('addNotification', newReaction)

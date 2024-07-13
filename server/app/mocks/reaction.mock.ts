@@ -6,7 +6,10 @@ import { IReactionDocument, IReactions } from '@reaction/interfaces/reaction.int
 // import { ICommentDocument, ICommentNameList } from '@comment/interfaces/comment.interface'
 
 export const reactionMockRequest = (
-  sessionData: IJWT, body: IBody, currentUser?: AuthPayload | null, params?: IParams
+  sessionData: IJWT,
+  body: IBody,
+  currentUser?: AuthPayload | null,
+  params?: IParams
 ) => ({
   body,
   params,

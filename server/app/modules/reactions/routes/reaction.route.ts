@@ -15,7 +15,8 @@ class ReactionRoutes {
     this.router.post('/reaction', authMiddleware.checkAuth, ReactionAdd.prototype.init)
     this.router.delete(
       '/reaction/:postId/:prevReaction',
-      authMiddleware.checkAuth, ReactionRemove.prototype.init
+      authMiddleware.checkAuth,
+      ReactionRemove.prototype.init
     )
 
     return this.router

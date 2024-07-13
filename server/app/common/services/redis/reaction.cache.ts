@@ -15,7 +15,7 @@ export class ReactionCache extends BaseCache {
   }
 
   /**
-   * addReactionToCache
+   * addReaction
    */
   public async addReaction(
     key: string,
@@ -29,7 +29,7 @@ export class ReactionCache extends BaseCache {
 
       if (prevReaction) this.removeReaction(key, reaction.username, postReactions)
 
-      if (type) {
+      if (type && type !== prevReaction) {
         await this.client.LPUSH(`reactions:${key}`, JSON.stringify(reaction))
         await this.client.HSET(`posts:${key}`, 'reactions', JSON.stringify(postReactions))
       }
@@ -40,7 +40,7 @@ export class ReactionCache extends BaseCache {
   }
 
   /**
-   * removeReactionFromCache
+   * removeReaction
    */
   public async removeReaction(
     key: string,

@@ -9,7 +9,7 @@ const log: Logger = config.createLogger('reactionWorker')
 class ReactionWorker {
   async addReaction(job: Job, done: DoneCallback): Promise<void> {
     try {
-      const { data } = job.data
+      const { data } = job
       await reactionService.addReaction(data)
 
       job.progress(100)

@@ -14,7 +14,7 @@ const reactionSchema: Schema = new Schema({
 const ReactionModel: Model<IReactionDocument> = model<IReactionDocument>(
   'Reaction',
   reactionSchema,
-  'Reaction'
+  'reactions'
 )
 
 export { ReactionModel }

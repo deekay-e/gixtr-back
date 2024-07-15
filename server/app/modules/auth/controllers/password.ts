@@ -22,8 +22,7 @@ export class Password {
   public async forgot(req: Request, res: Response): Promise<void> {
     const { email } = req.body
     const authUser: IAuthDocument = await authService.getAuthUserByEmail(email)
-    if (!authUser)
-      throw new BadRequestError('Invalid email credential.')
+    if (!authUser) throw new BadRequestError('Invalid email credential.')
 
     const randomBytes: Buffer = await Promise.resolve(crypto.randomBytes(20))
     const randomChars: string = randomBytes.toString('hex')
@@ -32,7 +31,9 @@ export class Password {
     const resetLink = `${config.CLIENT_URL}/reset-password?token=${randomChars}`
     const template: string = forgotPassword.render(`${authUser.username}`, resetLink)
     mailQueue.addMailJob('forgotPassword', {
-      template, receiver: email, subject: 'Reset your password'
+      template,
+      receiver: email,
+      subject: 'Reset your password'
     })
     res.status(HTTP_STATUS.OK).json({ message: 'Password reset email sent.' })
   }
@@ -42,10 +43,8 @@ export class Password {
     const { password, confirmPassword } = req.body
     const { token } = req.params
     const authUser: IAuthDocument = await authService.getAuthUserByToken(token)
-    if (!authUser)
-      throw new BadRequestError('Reset token has expired.')
-    if (password !== confirmPassword)
-      throw new BadRequestError('Passwords do not match.')
+    if (!authUser) throw new BadRequestError('Reset token has expired.')
+    if (password !== confirmPassword) throw new BadRequestError('Passwords do not match.')
 
     authUser.password = password
     authUser.passwordResetToken = undefined
@@ -61,7 +60,9 @@ export class Password {
 
     const template: string = resetPassword.render(templateParams)
     mailQueue.addMailJob('resetPasswordMail', {
-      template, receiver: authUser.email!, subject: 'Password reset confirmation'
+      template,
+      receiver: authUser.email!,
+      subject: 'Password reset confirmation'
     })
     res.status(HTTP_STATUS.OK).json({ message: 'Password successfully updated.' })
   }

@@ -44,7 +44,10 @@ describe('PostDelete', () => {
     // test expectations
     expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith('deletePost', postId)
     expect(PostCache.prototype.deletePost).toHaveBeenCalledWith(postId, userId)
-    expect(postQueue.addPostJob).toHaveBeenCalledWith('deletePost', { keyOne: postId, keyTwo: userId })
+    expect(postQueue.addPostJob).toHaveBeenCalledWith('deletePost', {
+      keyOne: postId,
+      keyTwo: userId
+    })
     expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith({
       message: 'Delete post successful'

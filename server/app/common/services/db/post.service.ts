@@ -4,9 +4,11 @@ import { UserModel } from '@user/models/user.model'
 import { PostModel } from '@post/models/post.model'
 import { IUserDocument } from '@user/interfaces/user.interface'
 import {
-  IGetPostsQuery, IPostDocument, IQueryComplete, IQueryDeleted
+  IGetPostsQuery,
+  IPostDocument,
+  IQueryComplete,
+  IQueryDeleted
 } from '@post/interfaces/post.interface'
-
 
 class PostService {
   public async createPost(userId: string, data: IPostDocument): Promise<void> {
@@ -19,11 +21,14 @@ class PostService {
   }
 
   public async getPosts(
-    query: IGetPostsQuery, skip = 0, limit = 0, sort: Record<string, 1 | -1>
+    query: IGetPostsQuery,
+    skip = 0,
+    limit = 0,
+    sort: Record<string, 1 | -1>
   ): Promise<IPostDocument[]> {
     let postQuery = {}
     if (query?.imgId && query?.gifUrl)
-      postQuery = { $or: [{ imgId: { $ne: '' }}, { gifUrl: { $ne: '' }}]}
+      postQuery = { $or: [{ imgId: { $ne: '' } }, { gifUrl: { $ne: '' } }] }
     else postQuery = query
 
     const posts: IPostDocument[] = await PostModel.aggregate([
@@ -41,16 +46,14 @@ class PostService {
   }
 
   public async updatePost(userId: string, data: IPostDocument): Promise<void> {
-    const post: UpdateQuery<IPostDocument> = PostModel.updateOne(
-      { _id: userId },
-      { $set: data }
-    )
+    const post: UpdateQuery<IPostDocument> = PostModel.updateOne({ _id: userId }, { $set: data })
     await Promise.all([post])
   }
 
   public async deletePost(postId: string, userId: string): Promise<void> {
-    const post: Query<IQueryComplete & IQueryDeleted, IPostDocument> =
-      PostModel.deleteOne({ _id: postId })
+    const post: Query<IQueryComplete & IQueryDeleted, IPostDocument> = PostModel.deleteOne({
+      _id: postId
+    })
     // delete post comments and reaction here
     //   once the modules are implemented
     const user: UpdateQuery<IUserDocument> = UserModel.updateOne(

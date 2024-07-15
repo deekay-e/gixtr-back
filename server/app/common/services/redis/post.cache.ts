@@ -3,16 +3,19 @@ import Logger from 'bunyan'
 import { config } from '@/config'
 import { BaseCache } from '@service/redis/base.cache'
 import { ServerError } from '@global/helpers/error-handler'
-import {
-  IGetPostsQuery, IPostDocument, ISavePostToCache
-} from '@post/interfaces/post.interface'
+import { IGetPostsQuery, IPostDocument, ISavePostToCache } from '@post/interfaces/post.interface'
 import { Utils } from '@global/helpers/utils'
 import { RedisCommandRawReply } from '@redis/client/dist/lib/commands'
 
 const log: Logger = config.createLogger('postCache')
 
 export type PostCacheMultiType =
-  string | number | Buffer | RedisCommandRawReply | IPostDocument | IPostDocument[]
+  | string
+  | number
+  | Buffer
+  | RedisCommandRawReply
+  | IPostDocument
+  | IPostDocument[]
 
 export class PostCache extends BaseCache {
   constructor() {
@@ -22,7 +25,7 @@ export class PostCache extends BaseCache {
   /**
    * addPost
    */
-  public async addPost(data: ISavePostToCache ): Promise<void> {
+  public async addPost(data: ISavePostToCache): Promise<void> {
     const { key, currentUserId, uId, newPost } = data
     const {
       _id,
@@ -87,8 +90,9 @@ export class PostCache extends BaseCache {
     try {
       if (!this.client.isOpen) await this.client.connect()
 
-      const post: IPostDocument[] = await this.client
-        .HGETALL(`posts:${key}`) as unknown as IPostDocument[]
+      const post: IPostDocument[] = (await this.client.HGETALL(
+        `posts:${key}`
+      )) as unknown as IPostDocument[]
       post[0].createdAt = new Date(Utils.parseJson(`${post[0].createdAt}`))
       post[0].commentsCount = Utils.parseJson(`${post[0].commentsCount}`)
       post[0].reactions = Utils.parseJson(`${post[0].reactions}`)
@@ -112,7 +116,7 @@ export class PostCache extends BaseCache {
       for (const score of reply) multi.HGETALL(`posts:${score}`)
 
       const posts: IPostDocument[] = []
-      const replies: PostCacheMultiType = await multi.exec() as PostCacheMultiType
+      const replies: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType
       for (const post of replies as IPostDocument[]) {
         post.createdAt = new Date(Utils.parseJson(`${post.createdAt}`))
         post.commentsCount = Utils.parseJson(`${post.commentsCount}`)
@@ -145,7 +149,11 @@ export class PostCache extends BaseCache {
   /**
    * getPostsWithImages
    */
-  public async getPostsWithImages(key: string, start: number, end: number): Promise<IPostDocument[]> {
+  public async getPostsWithImages(
+    key: string,
+    start: number,
+    end: number
+  ): Promise<IPostDocument[]> {
     try {
       if (!this.client.isOpen) await this.client.connect()
 
@@ -154,7 +162,7 @@ export class PostCache extends BaseCache {
       for (const score of reply) multi.HGETALL(`posts:${score}`)
 
       const posts: IPostDocument[] = []
-      const replies: PostCacheMultiType = await multi.exec() as PostCacheMultiType
+      const replies: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType
       for (const post of replies as IPostDocument[]) {
         if (!(post.imgId && post.imgVersion) && !post.gifUrl) continue
         post.createdAt = new Date(Utils.parseJson(`${post.createdAt}`))
@@ -182,7 +190,7 @@ export class PostCache extends BaseCache {
       for (const score of reply) multi.HGETALL(`posts:${score}`)
 
       const posts: IPostDocument[] = []
-      const replies: PostCacheMultiType = await multi.exec() as PostCacheMultiType
+      const replies: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType
       for (const post of replies as IPostDocument[]) {
         post.createdAt = new Date(Utils.parseJson(`${post.createdAt}`))
         post.commentsCount = Utils.parseJson(`${post.commentsCount}`)
@@ -222,10 +230,8 @@ export class PostCache extends BaseCache {
     try {
       if (!this.client.isOpen) await this.client.connect()
 
-
-      const {
-        post, bgColor, feelings, gifUrl, imgVersion, imgId, profilePicture, scope
-      } = updatedPost
+      const { post, bgColor, feelings, gifUrl, imgVersion, imgId, profilePicture, scope } =
+        updatedPost
       const dataToSave = {
         post: `${post}`,
         bgColor: `${bgColor}`,

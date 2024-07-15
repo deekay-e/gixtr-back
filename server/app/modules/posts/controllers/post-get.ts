@@ -35,8 +35,9 @@ export class PostGet {
     const start: number = skip === 0 ? skip : skip + 1
     let posts: IPostDocument[] = []
     const cachedPosts: IPostDocument[] = await postCache.getPostsWithImages('post', start, limit)
-    posts = cachedPosts.length ? cachedPosts :
-      await postService.getPosts({ imgId: '$ne', gifUrl: '$ne' }, skip, limit, { createdAt: -1 })
+    posts = cachedPosts.length
+      ? cachedPosts
+      : await postService.getPosts({ imgId: '$ne', gifUrl: '$ne' }, skip, limit, { createdAt: -1 })
 
     res.status(HTTP_STATUS.OK).json({ message: 'Get all posts with images', posts })
   }

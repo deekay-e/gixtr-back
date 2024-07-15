@@ -49,9 +49,10 @@ describe('PostCreate', () => {
         uId: `${req.currentUser?.uId}`,
         newPost
       })
-      expect(postQueue.addPostJob).toHaveBeenCalledWith('addToPost',
-        { key: req.currentUser?.userId, value: newPost }
-      )
+      expect(postQueue.addPostJob).toHaveBeenCalledWith('addToPost', {
+        key: req.currentUser?.userId,
+        value: newPost
+      })
       expect(res.status).toHaveBeenCalledWith(201)
       expect(res.json).toHaveBeenCalledWith({
         message: 'Create post successful'
@@ -77,7 +78,9 @@ describe('PostCreate', () => {
       const res: Response = postMockResponse()
       jest
         .spyOn(cloudinaryUploads, 'uploads')
-        .mockImplementation((): any => Promise.resolve({ version: '', public_id: '', message: 'Upload error' }))
+        .mockImplementation((): any =>
+          Promise.resolve({ version: '', public_id: '', message: 'Upload error' })
+        )
 
       PostCreate.prototype.plusImage(req, res).catch((error: CustomError) => {
         expect(error.statusCode).toEqual(400)
@@ -92,9 +95,9 @@ describe('PostCreate', () => {
       jest.spyOn(postServer.socketIOPostObject, 'emit')
       const spy = jest.spyOn(PostCache.prototype, 'addPost')
       jest.spyOn(postQueue, 'addPostJob')
-      jest.spyOn(cloudinaryUploads, 'uploads').mockImplementation((): any => Promise.resolve(
-        { version: '1234', public_id: '123456' }
-      ))
+      jest
+        .spyOn(cloudinaryUploads, 'uploads')
+        .mockImplementation((): any => Promise.resolve({ version: '1234', public_id: '123456' }))
 
       await PostCreate.prototype.plusImage(req, res)
       const newPost = spy.mock.calls[0][0].newPost
@@ -105,9 +108,10 @@ describe('PostCreate', () => {
         uId: `${req.currentUser?.uId}`,
         newPost
       })
-      expect(postQueue.addPostJob).toHaveBeenCalledWith('addToPost',
-        { key: req.currentUser?.userId, value: newPost }
-      )
+      expect(postQueue.addPostJob).toHaveBeenCalledWith('addToPost', {
+        key: req.currentUser?.userId,
+        value: newPost
+      })
       expect(res.status).toHaveBeenCalledWith(201)
       expect(res.json).toHaveBeenCalledWith({
         message: 'Create post with image successful'

@@ -12,10 +12,10 @@ import { JoiValidator } from '@global/decorators/joi-validation'
 
 export class Signin {
   @JoiValidator(loginSchema)
-  public async  read(req: Request, res: Response): Promise<void> {
+  public async read(req: Request, res: Response): Promise<void> {
     const { login, password } = req.body
-    const email = (Utils.isEmail(login)) ? login : ''
-    const username = (!Utils.isEmail(login)) ? login : ''
+    const email = Utils.isEmail(login) ? login : ''
+    const username = !Utils.isEmail(login) ? login : ''
 
     const authUser: IAuthDocument = await authService.getUser(username, email)
     if (!authUser) throw new BadRequestError('Invalid login credentials')
@@ -34,10 +34,11 @@ export class Signin {
       uId: authUser.uId,
       email: authUser.email,
       avatarColor: authUser.avatarColor,
-      createdAt: authUser.createdAt,
+      createdAt: authUser.createdAt
     } as IUserDocument
 
-    res.status(HTTP_STATUS.OK)
+    res
+      .status(HTTP_STATUS.OK)
       .json({ message: 'Login user successful', user: user, token: userJWT })
   }
 }

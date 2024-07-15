@@ -94,9 +94,9 @@ describe('PostGet', () => {
       jest.spyOn(postService, 'getPosts').mockResolvedValue([postMockData])
 
       await PostGet.prototype.plusImage(req, res)
-      expect(postService.getPosts).toHaveBeenCalledWith(
-        { imgId: '$ne', gifUrl: '$ne' }, 0, 10, { createdAt: -1 }
-      )
+      expect(postService.getPosts).toHaveBeenCalledWith({ imgId: '$ne', gifUrl: '$ne' }, 0, 10, {
+        createdAt: -1
+      })
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
         message: 'Get all posts with images',

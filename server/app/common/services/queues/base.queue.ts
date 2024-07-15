@@ -8,17 +8,17 @@ import { config } from '@/config'
 import { IAuthJob } from '@auth/interfaces/auth.interface'
 import { IPostJob } from '@post/interfaces/post.interface'
 import { IMailJob, IUserJob } from '@user/interfaces/user.interface'
+import { IReactionJob } from '@reaction/interfaces/reaction.interface'
 
-type IBaseJob =
-  | IAuthJob | IUserJob | IMailJob | IPostJob
+type IBaseJob = IAuthJob | IUserJob | IMailJob | IPostJob | IReactionJob
 
 let bullAdapters: BullAdapter[] = []
 
 export let serverAdapter: ExpressAdapter
 
 export abstract class BaseQueue {
-  queue: Queue.Queue
   log: Logger
+  queue: Queue.Queue
 
   constructor(queueName: string) {
     this.queue = new Queue(queueName, `${config.REDIS_HOST}`)
@@ -29,8 +29,8 @@ export abstract class BaseQueue {
     serverAdapter.setBasePath('/queues')
 
     createBullBoard({
-      queues: bullAdapters,
-      serverAdapter
+      serverAdapter,
+      queues: bullAdapters
     })
 
     this.log = config.createLogger(`${queueName}Queue`)

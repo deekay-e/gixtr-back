@@ -67,7 +67,7 @@ export class ReactionCache extends BaseCache {
     try {
       if (!this.client.isOpen) await this.client.connect()
 
-      let reactions: IReactionDocument[] = []
+      const reactions: IReactionDocument[] = []
       const cacheReactions: string[] = await this.client.LRANGE(`reactions:${key}`, 0, -1)
       for (const item of cacheReactions) reactions.push(Utils.parseJson(item))
       const reaction: IReactionDocument = find(reactions, (item: IReactionDocument) => {

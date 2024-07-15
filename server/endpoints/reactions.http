@@ -17,6 +17,30 @@ withCredentials: true
 }
 
 ###
+GET  {{baseUrl}}/{{urlPath}}/reaction/66914d77b5b353753553305b/a-star
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{ }
+
+###
+GET  {{baseUrl}}/{{urlPath}}/reactions/a-star
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{ }
+
+###
+GET  {{baseUrl}}/{{urlPath}}/reactions/post/66914d77b5b353753553305b
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{ }
+
+###
 DELETE  {{baseUrl}}/{{urlPath}}/reaction/66914d77b5b353753553305b/love
 Content-Type: application/json
 Accept: application/json

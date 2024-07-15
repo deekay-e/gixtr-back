@@ -20,7 +20,7 @@ class ReactionRoutes {
       authMiddleware.checkAuth,
       ReactionGet.prototype.one
     )
-    this.router.get('/reactions/:postId', authMiddleware.checkAuth, ReactionGet.prototype.many)
+    this.router.get('/reactions/post/:postId', authMiddleware.checkAuth, ReactionGet.prototype.many)
     this.router.get(
       '/reactions/:username',
       authMiddleware.checkAuth,

@@ -23,13 +23,13 @@ export class ReactionGet {
       postId,
       username
     )
-    const reaction: [IReactionDocument, number] | [] = cachedReaction
+    const reaction: [IReactionDocument, number] | [] = cachedReaction.length
       ? cachedReaction
       : await reactionService.getReaction(postId, username)
 
     res
       .status(HTTP_STATUS.OK)
-      .json({ message: 'Get reaction successful', reaction: reaction[0], count: reaction[1] })
+      .json({ message: 'Get reaction successful', reaction: reaction.length ? reaction[0] : {}, count: reaction.length ? reaction[1]: 0 })
   }
 
   public async many(req: Request, res: Response): Promise<void> {

@@ -77,9 +77,31 @@ export class CommentCache extends BaseCache {
   }
 
   /**
-   * removeComment
+   * updateComment
    */
-  public async removeComment(
+  public async updateComment(
+    key: string,
+    username: string,
+    comment: string
+  ): Promise<void> {
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+
+        const comments: string[] = await this.client.LRANGE(`comments:${key}`, 0, -1)
+        const comment: ICommentDocument = this.getCommentPriv(
+          comments,
+          username
+        ) as ICommentDocument
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
+
+  /**
+   * deleteComment
+   */
+  public async deleteComment(
     key: string,
     username: string
   ): Promise<void> {

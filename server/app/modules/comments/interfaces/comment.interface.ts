@@ -21,6 +21,8 @@ export interface ICommentJob {
   userFrom: string
   username: string
   comment: ICommentDocument
+  query?: IQueryComment
+  sort?: IQuerySort
 }
 
 export interface ICommentNameList {

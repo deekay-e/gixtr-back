@@ -3,7 +3,7 @@ import express, { Router } from 'express'
 import { CommentAdd } from '@comment/controllers/comment-add'
 import { CommentGet } from '@comment/controllers/comment-get'
 import { authMiddleware } from '@global/helpers/auth-middleware'
-import { CommentRemove } from '@comment/controllers/comment-remove'
+import { CommentDelete } from '@comment/controllers/comment-delete'
 
 class CommentRoutes {
   private router: Router
@@ -28,9 +28,9 @@ class CommentRoutes {
     )
 
     this.router.delete(
-      '/comment/:postId/:prevComment',
+      '/comment/:postId',
       authMiddleware.checkAuth,
-      CommentRemove.prototype.init
+      CommentDelete.prototype.init
     )
 
     return this.router

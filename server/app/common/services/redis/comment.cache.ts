@@ -94,10 +94,10 @@ export class CommentCache extends BaseCache {
     try {
       if (!this.client.isOpen) await this.client.connect()
 
-        const oldComment: ICommentDocument[] = await this.getComment(postId, commentId)
-        oldComment[0].comment = comment
-        await this.deleteComment(postId, commentId)
-        await this.addComment(postId, oldComment[0])
+      const oldComment: ICommentDocument[] = await this.getComment(postId, commentId)
+      oldComment[0].comment = comment
+      await this.deleteComment(postId, commentId)
+      await this.addComment(postId, oldComment[0])
     } catch (error) {
       log.error(error)
       throw new ServerError('Server error. Try again.')

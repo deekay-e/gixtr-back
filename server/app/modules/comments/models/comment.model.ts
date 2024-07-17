@@ -19,5 +19,9 @@ const commentSchema: Schema = new Schema({
   createdAt: { type: Date, default: Date.now() }
 })
 
-const CommentModel: Model<ICommentDocument> = model<ICommentDocument>('Comment', commentSchema, 'comments')
+const CommentModel: Model<ICommentDocument> = model<ICommentDocument>(
+  'Comment',
+  commentSchema,
+  'comments'
+)
 export { CommentModel }

@@ -19,11 +19,7 @@ export class CommentService {
     const updatedComment: [IUserDocument, ICommentDocument, IPostDocument] = (await Promise.all([
       userCache.getUser(`${userTo}`),
       CommentModel.create(comment),
-      PostModel.findOneAndUpdate(
-        { _id: postId },
-        { $inc: { commentsCount: 1 } },
-        { new: true }
-      )
+      PostModel.findOneAndUpdate({ _id: postId }, { $inc: { commentsCount: 1 } }, { new: true })
     ])) as unknown as [IUserDocument, ICommentDocument, IPostDocument]
 
     // send notifications here
@@ -31,21 +27,21 @@ export class CommentService {
 
   public async getComments(comment: ICommentJob): Promise<ICommentDocument[]> {
     const { query, sort } = comment
-    const comments: ICommentDocument[] = await CommentModel.aggregate([
+    const comments: ICommentDocument[] = (await CommentModel.aggregate([
       { $match: query! },
       { $sort: sort! }
-    ]) as ICommentDocument[]
+    ])) as ICommentDocument[]
     return comments
   }
 
   public async getCommentsNames(comment: ICommentJob): Promise<ICommentNameList[]> {
     const { query, sort } = comment
-    const comments: ICommentNameList[] = await CommentModel.aggregate([
+    const comments: ICommentNameList[] = (await CommentModel.aggregate([
       { $match: query! },
       { $sort: sort! },
       { $group: { _id: null, names: { $addToSet: '$username' }, count: { $sum: 1 } } },
       { $project: { _id: 0 } }
-    ]) as ICommentNameList[]
+    ])) as ICommentNameList[]
     return comments
   }
 
@@ -61,11 +57,7 @@ export class CommentService {
     const { query } = comment
     await Promise.all([
       CommentModel.deleteOne(query),
-      PostModel.updateOne(
-        { _id: query?.postId },
-        { $inc: { commentsCount: -1 } },
-        { new: true }
-      )
+      PostModel.updateOne({ _id: query?.postId }, { $inc: { commentsCount: -1 } }, { new: true })
     ])
   }
 }

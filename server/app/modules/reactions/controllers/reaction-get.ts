@@ -24,7 +24,11 @@ export class ReactionGet {
 
     res
       .status(HTTP_STATUS.OK)
-      .json({ message: 'Get reaction successful', reaction: reaction.length ? reaction[0] : {}, count: reaction.length ? reaction[1]: 0 })
+      .json({
+        message: 'Get reaction successful',
+        reaction: reaction.length ? reaction[0] : {},
+        count: reaction.length ? reaction[1] : 0
+      })
   }
 
   public async many(req: Request, res: Response): Promise<void> {

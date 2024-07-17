@@ -111,7 +111,10 @@ describe('ReactionGet', () => {
       jest.spyOn(reactionService, 'getReaction').mockResolvedValue([reactionData, 1])
 
       await ReactionGet.prototype.one(req, res)
-      expect(reactionService.getReaction).toHaveBeenCalledWith(`${postMockData._id}`, postMockData.username)
+      expect(reactionService.getReaction).toHaveBeenCalledWith(
+        `${postMockData._id}`,
+        postMockData.username
+      )
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
         message: 'Get reaction successful',

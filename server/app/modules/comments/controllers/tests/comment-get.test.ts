@@ -5,7 +5,12 @@ import { authUserPayload } from '@mock/auth.mock'
 import { CommentCache } from '@service/redis/comment.cache'
 import { commentService } from '@service/db/comment.service'
 import { CommentGet } from '@comment/controllers/comment-get'
-import { commentNames, commentsData, reactionMockRequest, reactionMockResponse } from '@mock/reaction.mock'
+import {
+  commentNames,
+  commentsData,
+  reactionMockRequest,
+  reactionMockResponse
+} from '@mock/reaction.mock'
 
 jest.useFakeTimers()
 jest.mock('@service/queues/base.queue')
@@ -68,7 +73,9 @@ describe('CommentGet', () => {
       jest.spyOn(CommentCache.prototype, 'getCommentsNames').mockResolvedValue([commentNames])
 
       await CommentGet.prototype.manyNames(req, res)
-      expect(CommentCache.prototype.getCommentsNames).toHaveBeenCalledWith('6027f77087c9d9ccb1555268')
+      expect(CommentCache.prototype.getCommentsNames).toHaveBeenCalledWith(
+        '6027f77087c9d9ccb1555268'
+      )
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
         message: 'Get comments names successful',
@@ -123,7 +130,10 @@ describe('CommentGet', () => {
       jest.spyOn(CommentCache.prototype, 'getComment').mockResolvedValue([commentsData])
 
       await CommentGet.prototype.one(req, res)
-      expect(CommentCache.prototype.getComment).toHaveBeenCalledWith('6027f77087c9d9ccb1555268', '6064861bc25eaa5a5d2f9bf4')
+      expect(CommentCache.prototype.getComment).toHaveBeenCalledWith(
+        '6027f77087c9d9ccb1555268',
+        '6064861bc25eaa5a5d2f9bf4'
+      )
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
         message: 'Get comment successful',

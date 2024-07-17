@@ -16,11 +16,11 @@ export interface ICommentDocument extends Document {
 }
 
 export interface ICommentJob {
-  postId: string
-  userTo: string
-  userFrom: string
-  username: string
-  comment: ICommentDocument
+  postId?: string
+  userTo?: string
+  userFrom?: string
+  username?: string
+  comment?: ICommentDocument
   query?: IQueryComment
   sort?: Record<string, 1 | -1>
 }

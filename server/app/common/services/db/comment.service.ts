@@ -1,13 +1,11 @@
 import mongoose from 'mongoose'
 
-import { Utils } from '@global/helpers/utils'
 import { PostModel } from '@post/models/post.model'
 import { UserCache } from '@service/redis/user.cache'
 import { CommentModel } from '@comment/models/comment.model'
 import { IPostDocument } from '@post/interfaces/post.interface'
 import { IUserDocument } from '@user/interfaces/user.interface'
 import {
-  IQueryComment,
   ICommentDocument,
   ICommentJob,
   ICommentNameList
@@ -31,13 +29,11 @@ export class CommentService {
     // send notifications here
   }
 
-  public async getComments(
-    query: IQueryComment,
-    sort: Record<string, 1 | -1>
-  ): Promise<ICommentDocument[]> {
+  public async getComments(comment: ICommentJob): Promise<ICommentDocument[]> {
+    const { query, sort } = comment
     const comments: ICommentDocument[] = await CommentModel.aggregate([
-      { $match: query },
-      { $sort: sort }
+      { $match: query! },
+      { $sort: sort! }
     ]) as ICommentDocument[]
     return comments
   }
@@ -53,27 +49,21 @@ export class CommentService {
     return comments
   }
 
-  public async getComment(
-    key: string,
-    username: string
-  ): Promise<[ICommentDocument]> {
+  public async getComment(comment: ICommentJob): Promise<ICommentDocument[]> {
+    const { query } = comment
     const comments: ICommentDocument[] = (await CommentModel.aggregate([
-      { $match: { postId: new mongoose.Types.ObjectId(key), username: Utils.capitalize(username) } }
+      { $match: { _id: new mongoose.Types.ObjectId(query?._id) } }
     ])) as ICommentDocument[]
-    return [comments[0]]
+    return comments
   }
 
   public async deleteComment(comment: ICommentJob): Promise<void> {
-    const { postId, username } = comment
+    const { query } = comment
     await Promise.all([
-      CommentModel.deleteOne({ postId, username }),
+      CommentModel.deleteOne(query),
       PostModel.updateOne(
-        { _id: postId },
-        {
-          $inc: {
-            ['commentsCount']: -1
-          }
-        },
+        { _id: query?.postId },
+        { $inc: { commentsCount: -1 } },
         { new: true }
       )
     ])

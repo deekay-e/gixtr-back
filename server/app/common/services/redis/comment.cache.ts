@@ -17,18 +17,15 @@ export class CommentCache extends BaseCache {
   /**
    * addComment
    */
-  public async addComment(
-    key: string,
-    comment: ICommentDocument
-  ): Promise<void> {
+  public async addComment(postId: string, comment: ICommentDocument): Promise<void> {
     try {
       if (!this.client.isOpen) await this.client.connect()
 
-      const commentsCount: string[] = await this.client.HMGET(`posts:${key}`, 'commentsCount')
+      const commentsCount: string[] = await this.client.HMGET(`posts:${postId}`, 'commentsCount')
       const count: number = parseInt(commentsCount[0], 10) + 1
 
-      await this.client.LPUSH(`comments:${key}`, JSON.stringify(comment))
-      await this.client.HSET(`posts:${key}`, 'commentsCount', count)
+      await this.client.LPUSH(`comments:${postId}`, JSON.stringify(comment))
+      await this.client.HSET(`posts:${postId}`, 'commentsCount', count)
     } catch (error) {
       log.error(error)
       throw new ServerError('Server error. Try again.')
@@ -38,20 +35,15 @@ export class CommentCache extends BaseCache {
   /**
    * getComment
    */
-  public async getComment(
-    key: string,
-    username: string
-  ): Promise<[ICommentDocument] | []> {
+  public async getComment(postId: string, commentId: string): Promise<ICommentDocument[]> {
     try {
       if (!this.client.isOpen) await this.client.connect()
 
-      const comments: ICommentDocument[] = []
-      const cacheComments: string[] = await this.client.LRANGE(`comments:${key}`, 0, -1)
-      for (const item of cacheComments) comments.push(Utils.parseJson(item))
+      const comments: ICommentDocument[] = await this.getComments(postId)
       const comment: ICommentDocument = find(comments, (item: ICommentDocument) => {
-        return item?.postId === key && item?.username === username
+        return item?._id === commentId
       }) as ICommentDocument
-      return comment ? [comment] : []
+      return [comment]
     } catch (error) {
       log.error(error)
       throw new ServerError('Server error. Try again.')
@@ -61,12 +53,12 @@ export class CommentCache extends BaseCache {
   /**
    * getComments
    */
-  public async getComments(key: string): Promise<ICommentDocument[]> {
+  public async getComments(postId: string): Promise<ICommentDocument[]> {
     try {
       if (!this.client.isOpen) await this.client.connect()
 
       let comments: ICommentDocument[] = []
-      const cacheComments: string[] = await this.client.LRANGE(`comments:${key}`, 0, -1)
+      const cacheComments: string[] = await this.client.LRANGE(`comments:${postId}`, 0, -1)
       for (const item of cacheComments) comments.push(Utils.parseJson(item))
       return comments
     } catch (error) {
@@ -78,13 +70,13 @@ export class CommentCache extends BaseCache {
   /**
    * getCommentsNames
    */
-  public async getCommentsNames(key: string): Promise<ICommentNameList[]> {
+  public async getCommentsNames(postId: string): Promise<ICommentNameList[]> {
     try {
       if (!this.client.isOpen) await this.client.connect()
 
       const names: string[] = []
-      const count: number = await this.client.LLEN(`comments:${key}`)
-      const comments: string[] = await this.client.LRANGE(`comments:${key}`, 0, -1)
+      const count: number = await this.client.LLEN(`comments:${postId}`)
+      const comments: string[] = await this.client.LRANGE(`comments:${postId}`, 0, -1)
       for (const item of comments) names.push(Utils.parseJson(item).username)
 
       const nameList: ICommentNameList = { count, names }
@@ -98,19 +90,14 @@ export class CommentCache extends BaseCache {
   /**
    * updateComment
    */
-  public async updateComment(
-    key: string,
-    username: string,
-    comment: string
-  ): Promise<void> {
+  public async updateComment(postId: string, commentId: string, comment: string): Promise<void> {
     try {
       if (!this.client.isOpen) await this.client.connect()
 
-        const comments: string[] = await this.client.LRANGE(`comments:${key}`, 0, -1)
-        const comment: ICommentDocument = this.getCommentPriv(
-          comments,
-          username
-        ) as ICommentDocument
+        const oldComment: ICommentDocument[] = await this.getComment(postId, commentId)
+        oldComment[0].comment = comment
+        await this.deleteComment(postId, commentId)
+        await this.addComment(postId, oldComment[0])
     } catch (error) {
       log.error(error)
       throw new ServerError('Server error. Try again.')
@@ -120,30 +107,15 @@ export class CommentCache extends BaseCache {
   /**
    * deleteComment
    */
-  public async deleteComment(
-    key: string,
-    username: string
-  ): Promise<void> {
+  public async deleteComment(postId: string, commentId: string): Promise<void> {
     try {
       if (!this.client.isOpen) await this.client.connect()
 
-      const comments: string[] = await this.client.LRANGE(`comments:${key}`, 0, -1)
-      const comment: ICommentDocument = this.getCommentPriv(
-        comments,
-        username
-      ) as ICommentDocument
-
-      this.client.LREM(`comments:${key}`, 1, JSON.stringify(comment))
+      const comment: ICommentDocument[] = await this.getComment(postId, commentId)
+      this.client.LREM(`comments:${postId}`, 1, JSON.stringify(comment[0]))
     } catch (error) {
       log.error(error)
       throw new ServerError('Server error. Try again.')
     }
-  }
-
-  private getCommentPriv(comments: string[], username: string): ICommentDocument | undefined {
-    const commentList: ICommentDocument[] = []
-    for (const item of comments) commentList.push(Utils.parseJson(item) as ICommentDocument)
-
-    return find(commentList, (item: ICommentDocument) => item.username === username)
   }
 }

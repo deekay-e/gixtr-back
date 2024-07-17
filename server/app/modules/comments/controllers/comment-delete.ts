@@ -10,19 +10,15 @@ const commentCache: CommentCache = new CommentCache()
 
 export class CommentDelete {
   public async init(req: Request, res: Response): Promise<void> {
-    const { postId } = req.params
-    const username = req.currentUser!.username
+    const { postId, commentId } = req.params
 
     // emit comment event to user and delete comment data from redis
     //socketIONotificationObject.emit('addNotification', newComment)
-    await commentCache.deleteComment(postId, username)
+    await commentCache.deleteComment(postId, commentId)
 
     // delete comment data from databse
-    const commentData: ICommentJob = {
-      postId,
-      username,
-    } as ICommentJob
-    commentQueue.addCommentJob('deleteComment', commentData)
+    const query: ICommentJob = { query: { _id: commentId, postId }, } as ICommentJob
+    commentQueue.addCommentJob('deleteComment', query)
 
     res.status(HTTP_STATUS.OK).json({ message: 'Delete comment successful' })
   }

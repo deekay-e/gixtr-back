@@ -22,9 +22,9 @@ class CommentRoutes {
     )
     this.router.get('/comments/post/:postId', authMiddleware.checkAuth, CommentGet.prototype.many)
     this.router.get(
-      '/comments/:username',
+      '/comments/names/:postId',
       authMiddleware.checkAuth,
-      CommentGet.prototype.manyByUsername
+      CommentGet.prototype.manyNames
     )
 
     this.router.delete('/comment/:postId', authMiddleware.checkAuth, CommentDelete.prototype.init)

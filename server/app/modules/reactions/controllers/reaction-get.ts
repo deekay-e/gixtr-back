@@ -22,13 +22,11 @@ export class ReactionGet {
       ? cachedReaction
       : await reactionService.getReaction(postId, username)
 
-    res
-      .status(HTTP_STATUS.OK)
-      .json({
-        message: 'Get reaction successful',
-        reaction: reaction.length ? reaction[0] : {},
-        count: reaction.length ? reaction[1] : 0
-      })
+    res.status(HTTP_STATUS.OK).json({
+      message: 'Get reaction successful',
+      reaction: reaction.length ? reaction[0] : {},
+      count: reaction.length ? reaction[1] : 0
+    })
   }
 
   public async many(req: Request, res: Response): Promise<void> {

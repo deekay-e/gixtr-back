@@ -88,9 +88,9 @@ export class CommentCache extends BaseCache {
   }
 
   /**
-   * updateComment
+   * editComment
    */
-  public async updateComment(postId: string, commentId: string, comment: string): Promise<void> {
+  public async editComment(postId: string, commentId: string, comment: string): Promise<void> {
     try {
       if (!this.client.isOpen) await this.client.connect()
 

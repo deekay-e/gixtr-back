@@ -14,4 +14,10 @@ const addCommentSchema: ObjectSchema = Joi.object().keys({
   commentsCount: Joi.number().optional().allow(null, '')
 })
 
-export { addCommentSchema }
+const editCommentSchema: ObjectSchema = Joi.object().keys({
+  comment: Joi.string().required().messages({
+    'any.required': 'comment is a required property'
+  })
+})
+
+export { addCommentSchema, editCommentSchema }

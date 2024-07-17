@@ -16,7 +16,11 @@ const commentCache: CommentCache = new CommentCache()
 export class CommentGet {
   public async one(req: Request, res: Response): Promise<void> {
     const { postId, commentId } = req.params
-    const commentJob: ICommentJob = { query: { _id: commentId, postId } } as ICommentJob
+    const commentJob: ICommentJob = {
+      query: {
+        _id: new mongoose.Types.ObjectId(commentId)
+      }
+    } as ICommentJob
 
     // get comment data from redis or database if redis data doesn't exist
     const cachedComment: ICommentDocument[] = await commentCache.getComment(postId, commentId)
@@ -30,7 +34,7 @@ export class CommentGet {
   public async many(req: Request, res: Response): Promise<void> {
     const { postId } = req.params
     const commentJob: ICommentJob = {
-      query: { postId },
+      query: { postId: new mongoose.Types.ObjectId(postId) },
       sort: { createdAt: -1 }
     } as unknown as ICommentJob
 
@@ -49,10 +53,13 @@ export class CommentGet {
   public async manyNames(req: Request, res: Response): Promise<void> {
     const { postId } = req.params
     const commentJob: ICommentJob = {
-      query: { postId },
+      query: { postId: new mongoose.Types.ObjectId(postId) },
       sort: { createdAt: -1 }
     } as unknown as ICommentJob
-    const names: ICommentNameList[] = await commentService.getCommentsNames(commentJob)
+    const cachedNames: ICommentNameList[] = await commentCache.getCommentsNames(postId)
+    const names: ICommentNameList[] = cachedNames.length
+      ? cachedNames
+      : await commentService.getCommentsNames(commentJob)
 
     res.status(HTTP_STATUS.OK).json({ message: 'Get comments names successful', names })
   }

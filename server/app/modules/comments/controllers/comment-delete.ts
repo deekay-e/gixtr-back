@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import { Request, Response } from 'express'
 import HTTP_STATUS from 'http-status-codes'
 
@@ -17,7 +18,12 @@ export class CommentDelete {
     await commentCache.deleteComment(postId, commentId)
 
     // delete comment data from databse
-    const query: ICommentJob = { query: { _id: commentId, postId } } as ICommentJob
+    const query: ICommentJob = {
+      query: {
+        _id: new mongoose.Types.ObjectId(commentId),
+        postId: new mongoose.Types.ObjectId(postId)
+      }
+    } as ICommentJob
     commentQueue.addCommentJob('deleteComment', query)
 
     res.status(HTTP_STATUS.OK).json({ message: 'Delete comment successful' })

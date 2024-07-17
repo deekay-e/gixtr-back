@@ -20,6 +20,19 @@ class CommentWorker {
     }
   }
 
+  async editComment(job: Job, done: DoneCallback): Promise<void> {
+    try {
+      const { data } = job
+      await commentService.editComment(data)
+
+      job.progress(100)
+      done(null, data)
+    } catch (error) {
+      log.error(error)
+      done(error as Error)
+    }
+  }
+
   async deleteComment(job: Job, done: DoneCallback): Promise<void> {
     try {
       const { data } = job

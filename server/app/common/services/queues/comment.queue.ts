@@ -7,6 +7,7 @@ class CommentQueue extends BaseQueue {
     super('comment')
 
     this.processJob('addComment', 5, commentWorker.addComment)
+    this.processJob('editComment', 5, commentWorker.editComment)
     this.processJob('deleteComment', 5, commentWorker.deleteComment)
   }
 

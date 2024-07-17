@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import { UpdateQuery } from 'mongoose'
 
 import { PostModel } from '@post/models/post.model'
 import { UserCache } from '@service/redis/user.cache'
@@ -25,6 +25,14 @@ export class CommentService {
     // send notifications here
   }
 
+  public async getComment(comment: ICommentJob): Promise<ICommentDocument[]> {
+    const { query } = comment
+    const comments: ICommentDocument[] = (await CommentModel.aggregate([
+      { $match: { _id: query?._id } }
+    ])) as ICommentDocument[]
+    return comments
+  }
+
   public async getComments(comment: ICommentJob): Promise<ICommentDocument[]> {
     const { query, sort } = comment
     const comments: ICommentDocument[] = (await CommentModel.aggregate([
@@ -45,12 +53,13 @@ export class CommentService {
     return comments
   }
 
-  public async getComment(comment: ICommentJob): Promise<ICommentDocument[]> {
-    const { query } = comment
-    const comments: ICommentDocument[] = (await CommentModel.aggregate([
-      { $match: { _id: new mongoose.Types.ObjectId(query?._id) } }
-    ])) as ICommentDocument[]
-    return comments
+  public async editComment(commentJob: ICommentJob): Promise<void> {
+    const { comment } = commentJob
+    const post: UpdateQuery<ICommentDocument> = CommentModel.updateOne(
+      { _id: comment?._id },
+      { $set: comment }
+    )
+    await Promise.all([post])
   }
 
   public async deleteComment(comment: ICommentJob): Promise<void> {

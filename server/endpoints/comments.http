@@ -1,0 +1,51 @@
+@baseUrl = http://localhost:8008
+@urlPath = api/v1
+@postId = 66914d77b5b353753553305b
+@commentId = 6697ae3837e13e36b630a7ba
+
+###
+POST {{baseUrl}}/{{urlPath}}/comment
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "comment": "This is my first sample comment",
+  "postId": "66914d77b5b353753553305b",
+  "userTo": "669149f6b5b353753553304d",
+  "profilePicture": "https://res.cloudinary.com/dahrlgvpt/image/upload/v1719781047/6681c6a275b313a186073ee3"
+}
+
+###
+GET {{baseUrl}}/{{urlPath}}/comment/{{commentId}}/{{postId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/comments/post/{{postId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/comments/names/{{postId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+PUT {{baseUrl}}/{{urlPath}}/comment/{{commentId}}/{{postId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "comment": "This is my first updated comment"
+}
+
+###
+DELETE  {{baseUrl}}/{{urlPath}}/comment/{{commentId}}/{{postId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true

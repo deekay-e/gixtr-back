@@ -2,6 +2,7 @@ import express, { Router } from 'express'
 
 import { CommentAdd } from '@comment/controllers/comment-add'
 import { CommentGet } from '@comment/controllers/comment-get'
+import { CommentEdit } from '@comment/controllers/comment-edit'
 import { authMiddleware } from '@global/helpers/auth-middleware'
 import { CommentDelete } from '@comment/controllers/comment-delete'
 
@@ -16,7 +17,7 @@ class CommentRoutes {
     this.router.post('/comment', authMiddleware.checkAuth, CommentAdd.prototype.init)
 
     this.router.get(
-      '/comment/:postId/:username',
+      '/comment/:commentId/:postId',
       authMiddleware.checkAuth,
       CommentGet.prototype.one
     )
@@ -27,7 +28,17 @@ class CommentRoutes {
       CommentGet.prototype.manyNames
     )
 
-    this.router.delete('/comment/:postId', authMiddleware.checkAuth, CommentDelete.prototype.init)
+    this.router.put(
+      '/comment/:commentId/:postId',
+      authMiddleware.checkAuth,
+      CommentEdit.prototype.init
+    )
+
+    this.router.delete(
+      '/comment/:commentId/:postId',
+      authMiddleware.checkAuth,
+      CommentDelete.prototype.init
+    )
 
     return this.router
   }

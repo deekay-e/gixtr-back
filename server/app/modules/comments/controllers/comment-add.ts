@@ -7,6 +7,7 @@ import { commentQueue } from '@service/queues/comment.queue'
 import { JoiValidator } from '@global/decorators/joi-validation'
 import { addCommentSchema } from '@comment/schemas/comment.schema'
 import { ICommentDocument, ICommentJob } from '@comment/interfaces/comment.interface'
+import { ObjectId } from 'mongodb'
 
 const commentCache: CommentCache = new CommentCache()
 
@@ -18,6 +19,7 @@ export class CommentAdd {
     const { userTo, postId, comment, profilePicture } = req.body
 
     const newComment: ICommentDocument = {
+      _id: new ObjectId(),
       postId,
       comment,
       username,

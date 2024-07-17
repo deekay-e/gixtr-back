@@ -2,6 +2,8 @@ import Logger from 'bunyan'
 import { Server, Socket } from 'socket.io'
 
 import { config } from '@/config'
+import { IReactionDocument } from '@reaction/interfaces/reaction.interface'
+import { ICommentDocument } from '@comment/interfaces/comment.interface'
 
 const log: Logger = config.createLogger('postSocketIO')
 
@@ -17,7 +19,13 @@ export class SocketIOPostHandler {
 
   public listen(): void {
     this.io.on('connection', (socket: Socket) => {
-      log.info('Post socketIO handler')
+      socket.on('reaction', (reaction: IReactionDocument) => {
+        this.io.emit('checkReaction', reaction)
+      })
+
+      socket.on('comment', (comment: ICommentDocument) => {
+        this.io.emit('checkComment', comment)
+      })
     })
   }
 }

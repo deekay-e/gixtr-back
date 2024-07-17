@@ -3,7 +3,7 @@ import { Response } from 'express'
 import { IJWT } from '@mock/auth.mock'
 import { AuthPayload } from '@auth/interfaces/auth.interface'
 import { IReactionDocument, IReactions } from '@reaction/interfaces/reaction.interface'
-// import { ICommentDocument, ICommentNameList } from '@comment/interfaces/comment.interface'
+import { ICommentDocument, ICommentNameList } from '@comment/interfaces/comment.interface'
 
 export const reactionMockRequest = (
   sessionData: IJWT,
@@ -55,7 +55,7 @@ export const reactionData: IReactionDocument = {
   profilePicture: 'https://res.cloudinary.com/ratingapp/image/upload/6064793b091bf02b6a71067a'
 } as IReactionDocument
 
-/* export const commentsData: ICommentDocument = {
+export const commentsData: ICommentDocument = {
   _id: '6064861bc25eaa5a5d2f9bf4',
   username: 'KayCee',
   avatarColor: '#9c27b0',
@@ -69,4 +69,4 @@ export const reactionData: IReactionDocument = {
 export const commentNames: ICommentNameList = {
   count: 1,
   names: ['Kaycee']
-} */
+}

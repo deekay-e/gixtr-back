@@ -22,7 +22,7 @@ export interface ICommentJob {
   username: string
   comment: ICommentDocument
   query?: IQueryComment
-  sort?: IQuerySort
+  sort?: Record<string, 1 | -1>
 }
 
 export interface ICommentNameList {

@@ -9,7 +9,8 @@ import { IUserDocument } from '@user/interfaces/user.interface'
 import {
   IQueryComment,
   ICommentDocument,
-  ICommentJob
+  ICommentJob,
+  ICommentNameList
 } from '@comment/interfaces/comment.interface'
 
 const userCache: UserCache = new UserCache()
@@ -17,19 +18,12 @@ const userCache: UserCache = new UserCache()
 export class CommentService {
   public async addComment(commentObj: ICommentJob): Promise<void> {
     const { postId, userTo, username, comment } = commentObj
-    let metaCommentObj: ICommentDocument = comment as ICommentDocument
     const updatedComment: [IUserDocument, ICommentDocument, IPostDocument] = (await Promise.all([
       userCache.getUser(`${userTo}`),
-      CommentModel.replaceOne({ postId, username, comment }, metaCommentObj, {
-        upsert: true
-      }),
+      CommentModel.create(comment),
       PostModel.findOneAndUpdate(
         { _id: postId },
-        {
-          $inc: {
-            ['commentsCount']: 1
-          }
-        },
+        { $inc: { commentsCount: 1 } },
         { new: true }
       )
     ])) as unknown as [IUserDocument, ICommentDocument, IPostDocument]
@@ -40,29 +34,33 @@ export class CommentService {
   public async getComments(
     query: IQueryComment,
     sort: Record<string, 1 | -1>
-  ): Promise<[ICommentDocument[], number]> {
+  ): Promise<ICommentDocument[]> {
     const comments: ICommentDocument[] = await CommentModel.aggregate([
       { $match: query },
       { $sort: sort }
-    ])
-    return [comments, comments.length]
+    ]) as ICommentDocument[]
+    return comments
   }
 
-  public async getCommentsByUsername(username: string): Promise<ICommentDocument[]> {
-    const comments: ICommentDocument[] = (await CommentModel.aggregate([
-      { $match: { username: Utils.capitalize(username) } }
-    ])) as ICommentDocument[]
+  public async getCommentsNames(comment: ICommentJob): Promise<ICommentNameList[]> {
+    const { query, sort } = comment
+    const comments: ICommentNameList[] = await CommentModel.aggregate([
+      { $match: query! },
+      { $sort: sort! },
+      { $group: { _id: null, names: { $addToSet: '$username' }, count: { $sum: 1 } } },
+      { $project: { _id: 0 } }
+    ]) as ICommentNameList[]
     return comments
   }
 
   public async getComment(
     key: string,
     username: string
-  ): Promise<[ICommentDocument, number] | []> {
+  ): Promise<[ICommentDocument]> {
     const comments: ICommentDocument[] = (await CommentModel.aggregate([
       { $match: { postId: new mongoose.Types.ObjectId(key), username: Utils.capitalize(username) } }
     ])) as ICommentDocument[]
-    return comments.length ? [comments[0], 1] : []
+    return [comments[0]]
   }
 
   public async deleteComment(comment: ICommentJob): Promise<void> {

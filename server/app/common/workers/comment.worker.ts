@@ -3,7 +3,7 @@ import { DoneCallback, Job } from 'bull'
 
 import { config } from '@/config'
 import { commentService } from '@service/db/comment.service'
-import { ICommentDocument } from '@comment/interfaces/comment.interface'
+import { ICommentDocument, ICommentNameList } from '@comment/interfaces/comment.interface'
 
 const log: Logger = config.createLogger('commentWorker')
 
@@ -47,13 +47,14 @@ class CommentWorker {
     }
   }
 
-  async getCommentsByUsername(job: Job, done: DoneCallback): Promise<void> {
+  async getCommentsNames(job: Job, done: DoneCallback): Promise<ICommentNameList[] | undefined> {
     try {
-      const { username } = job.data
-      const comments: ICommentDocument[] = await commentService.getCommentsByUsername(username)
+      const { data } = job
+      const comments: ICommentNameList[] = await commentService.getCommentsNames(data)
 
       job.progress(100)
-      done(null, [comments, comments.length])
+      done(null, comments)
+      return comments
     } catch (error) {
       log.error(error)
       done(error as Error)

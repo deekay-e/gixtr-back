@@ -10,7 +10,7 @@ class CommentQueue extends BaseQueue {
     this.processJob('getComment', 5, commentWorker.getComment)
     this.processJob('getComments', 5, commentWorker.getComments)
     this.processJob('deleteComment', 5, commentWorker.deleteComment)
-    this.processJob('getCommentsByUsername', 5, commentWorker.getCommentsByUsername)
+    this.processJob('getCommentsNames', 5, commentWorker.getCommentsNames)
   }
 
   public addCommentJob(name: string, data: ICommentJob): void {

@@ -15,6 +15,7 @@ import 'express-async-errors'
 import appRoutes from '@/routes'
 import { config } from '@/config'
 import { SocketIOPostHandler } from '@socket/post'
+import { SocketIOFollowHandler } from '@socket/follow'
 import { CustomError, IErrorResponse } from '@global/helpers/error-handler'
 
 const LIMIT = '50mb'
@@ -115,7 +116,9 @@ export class GeneSysServer {
 
   private socketIOConnections(io: Server): void {
     const postSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io)
+    const followSocketHandler: SocketIOFollowHandler = new SocketIOFollowHandler(io)
 
     postSocketHandler.listen()
+    followSocketHandler.listen()
   }
 }

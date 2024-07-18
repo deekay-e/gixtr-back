@@ -1,11 +1,7 @@
-import Logger from 'bunyan'
 import { Server, Socket } from 'socket.io'
 
-import { config } from '@/config'
 import { IReactionDocument } from '@reaction/interfaces/reaction.interface'
 import { ICommentDocument } from '@comment/interfaces/comment.interface'
-
-const log: Logger = config.createLogger('postSocketIO')
 
 export let socketIOPostObject: Server
 

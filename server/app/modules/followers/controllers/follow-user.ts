@@ -7,6 +7,7 @@ import { UserCache } from '@service/redis/user.cache'
 import { FollowCache } from '@service/redis/follow.cache'
 import { IUserDocument } from '@user/interfaces/user.interface'
 import { IFollowerData } from '@follower/interfaces/follower.interface'
+import { socketIOFollowObject } from '@socket/follow'
 
 const userCache: UserCache = new UserCache()
 const followCache: FollowCache = new FollowCache()
@@ -29,7 +30,7 @@ export class FollowUser {
 
     const newFollowerId: ObjectId = new ObjectId()
     const followeeData: IFollowerData = FollowUser.prototype.getFollowerData(users[0])
-    // send data to client with SocketIO
+    socketIOFollowObject.emit('add follower', followeeData)
 
     await Promise.all([
       followCache.addFollower(`followers:${followeeId}`, followerId),

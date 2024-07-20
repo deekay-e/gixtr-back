@@ -8,5 +8,9 @@ const followerSchema: Schema = new Schema({
   createdAt: { type: Date, default: Date.now() }
 })
 
-const FollowerModel: Model<IFollowerDocument> = model<IFollowerDocument>('Follower', followerSchema, 'followers')
+const FollowerModel: Model<IFollowerDocument> = model<IFollowerDocument>(
+  'Follower',
+  followerSchema,
+  'followers'
+)
 export { FollowerModel }

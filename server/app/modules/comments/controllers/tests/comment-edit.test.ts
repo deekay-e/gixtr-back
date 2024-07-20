@@ -31,10 +31,15 @@ describe('CommentEdit', () => {
 
   describe('init', () => {
     it('should send correct json response', async () => {
-      const req: Request = reactionMockRequest({}, { comment: 'This the updated comment' }, authUserPayload, {
-        postId: '',
-        commentId: ''
-      }) as Request
+      const req: Request = reactionMockRequest(
+        {},
+        { comment: 'This the updated comment' },
+        authUserPayload,
+        {
+          postId: '',
+          commentId: ''
+        }
+      ) as Request
       const res: Response = reactionMockResponse()
       const postSpy = jest.spyOn(CommentCache.prototype, 'editComment').mockResolvedValue()
       jest.spyOn(postServer.socketIOPostObject, 'emit')
@@ -44,7 +49,7 @@ describe('CommentEdit', () => {
       expect(postSpy).toHaveBeenCalledWith('', {})
       expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith(
         'editComment',
-        {commentsData},
+        { commentsData },
         'comments'
       )
       expect(commentQueue.addCommentJob).toHaveBeenCalledWith('editComment', {

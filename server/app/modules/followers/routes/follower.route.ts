@@ -11,7 +11,7 @@ class FollowerRoutes {
   }
 
   public routes(): Router {
-    this.router.put('/follow/:followerId', authMiddleware.checkAuth, FollowUser.prototype.add)
+    this.router.put('/follow/:followeeId', authMiddleware.checkAuth, FollowUser.prototype.add)
 
     return this.router
   }

@@ -33,15 +33,15 @@ export interface IFollowerData {
   userProfile?: IUserDocument
 }
 
-export interface IFollowerJobData {
-  keyOne?: string
-  keyTwo?: string
+export interface IFollowerJob {
+  userId?: string
+  followeeId?: string
   username?: string
   followerDocumentId?: ObjectId
 }
 
 export interface IBlockedUserJobData {
-  keyOne?: string
-  keyTwo?: string
+  userId?: string
+  followeeId?: string
   type?: string
 }

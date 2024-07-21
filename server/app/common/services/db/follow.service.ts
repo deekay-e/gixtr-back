@@ -12,7 +12,7 @@ class FollowService {
     const userObjectId: ObjectId = new ObjectId(userId)
     const followeeObjectId: ObjectId = new ObjectId(followeeId)
 
-    const following = await FollowerModel.create({
+    await FollowerModel.create({
       _id: followerDocumentId,
       followerId: userObjectId,
       followeeId: followeeObjectId

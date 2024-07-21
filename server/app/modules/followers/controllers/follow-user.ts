@@ -6,9 +6,9 @@ import HTTP_STATUS from 'http-status-codes'
 import { socketIOFollowObject } from '@socket/follow'
 import { UserCache } from '@service/redis/user.cache'
 import { FollowCache } from '@service/redis/follow.cache'
+import { followQueue } from '@service/queues/follow.queue'
 import { IUserDocument } from '@user/interfaces/user.interface'
 import { IFollowerData, IFollowerJob } from '@follower/interfaces/follower.interface'
-import { followQueue } from '@service/queues/follow.queue'
 
 const userCache: UserCache = new UserCache()
 const followCache: FollowCache = new FollowCache()
@@ -18,7 +18,7 @@ export class FollowUser {
     const { followeeId } = req.params
     const followerId: string = req.currentUser!.userId
 
-    // update the followee and follower counts for given followee
+    // update the followee and follower counts for given users
     await Promise.all([
       followCache.updateFollowerCount(followeeId, 'followersCount', 1),
       followCache.updateFollowerCount(followerId, 'followingCount', 1)
@@ -47,7 +47,7 @@ export class FollowUser {
       followerDocumentId: newFollowerId,
       username: req.currentUser!.username
     } as IFollowerJob
-    followQueue.addFollowerJob('addFollower', follow)
+    followQueue.addFollowerJob('addFollow', follow)
 
     res.status(HTTP_STATUS.CREATED).json({ message: `Follow user ${users[0].username} successful` })
   }

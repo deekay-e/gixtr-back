@@ -1,5 +1,6 @@
 import express, { Router } from 'express'
 
+import { FollowGet } from '@follower/controllers/follow-get'
 import { FollowUser } from '@follower/controllers/follow-user'
 import { authMiddleware } from '@global/helpers/auth-middleware'
 import { UnfollowUser } from '@follower/controllers/unfollow-user'
@@ -18,6 +19,11 @@ class FollowerRoutes {
       authMiddleware.checkAuth,
       UnfollowUser.prototype.remove
     )
+
+    this.router.get('/followers', authMiddleware.checkAuth, FollowGet.prototype.followers)
+    this.router.get('/following', authMiddleware.checkAuth, FollowGet.prototype.followees)
+    this.router.get('/followers/:userId', authMiddleware.checkAuth, FollowGet.prototype.followers)
+    this.router.get('/following/:userId', authMiddleware.checkAuth, FollowGet.prototype.followees)
 
     return this.router
   }

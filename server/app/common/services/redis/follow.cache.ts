@@ -3,7 +3,6 @@ import { ObjectId } from 'mongodb'
 
 import { config } from '@/config'
 import { UserCache } from './user.cache'
-import { Utils } from '@global/helpers/utils'
 import { BaseCache } from '@service/redis/base.cache'
 import { ServerError } from '@global/helpers/error-handler'
 import { IUserDocument } from '@user/interfaces/user.interface'

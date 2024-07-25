@@ -1,6 +1,6 @@
 import { followWorker } from '@worker/follow.worker'
 import { BaseQueue } from '@service/queues/base.queue'
-import { IFollowerJob } from '@follower/interfaces/follower.interface'
+import { IBlockedUserJob, IFollowerJob } from '@follower/interfaces/follower.interface'
 
 class FollowQueue extends BaseQueue {
   constructor() {

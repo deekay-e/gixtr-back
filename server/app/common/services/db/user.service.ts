@@ -1,4 +1,5 @@
-import mongoose from 'mongoose'
+import { ObjectId } from 'mongodb'
+
 import { UserModel } from '@user/models/user.model'
 import { IUserDocument } from '@user/interfaces/user.interface'
 
@@ -9,7 +10,7 @@ class UserService {
 
   public async getUserById(userId: string): Promise<IUserDocument> {
     const users: IUserDocument[] = await UserModel.aggregate([
-      { $match: { _id: new mongoose.Types.ObjectId(userId) } },
+      { $match: { _id: new ObjectId(userId) } },
       { $lookup: { from: 'auth', localField: 'authId', foreignField: '_id', as: 'authId' } },
       { $unwind: '$authId' },
       { $project: this.projectAggregate() }
@@ -19,7 +20,7 @@ class UserService {
 
   public async getUserByAuthId(authId: string): Promise<IUserDocument> {
     const users: IUserDocument[] = await UserModel.aggregate([
-      { $match: { authId: new mongoose.Types.ObjectId(authId) } },
+      { $match: { authId: new ObjectId(authId) } },
       { $lookup: { from: 'auth', localField: 'authId', foreignField: '_id', as: 'auth' } },
       { $unwind: '$auth' },
       { $project: this.projectAggregate() }

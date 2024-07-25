@@ -1,9 +1,9 @@
 import JWT from 'jsonwebtoken'
+
+import { config } from '@/config'
 import { Utils } from '@global/helpers/utils'
 import { AuthModel } from '@auth/models/auth.model'
 import { IAuthDocument } from '@auth/interfaces/auth.interface'
-
-import { config } from '@/config'
 
 class AuthService {
   public async createAuthUser(data: IAuthDocument): Promise<void> {

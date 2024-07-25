@@ -1,5 +1,5 @@
 import { omit } from 'lodash'
-import mongoose from 'mongoose'
+import { ObjectId } from 'mongodb'
 
 import { Utils } from '@global/helpers/utils'
 import { PostModel } from '@post/models/post.model'
@@ -64,10 +64,10 @@ export class ReactionService {
   ): Promise<[IReactionDocument, number] | []> {
     const reactions: IReactionDocument[] = (await ReactionModel.aggregate([
       /* { $match: { $or: [
-        { postId: new mongoose.Types.ObjectId(key) },
-        { commentId: new mongoose.Types.ObjectId(key) }
+        { postId: new ObjectId(key) },
+        { commentId: new ObjectId(key) }
       ], username: Utils.capitalize(username) } } */
-      { $match: { postId: new mongoose.Types.ObjectId(key), username: Utils.capitalize(username) } }
+      { $match: { postId: new ObjectId(key), username: Utils.capitalize(username) } }
     ])) as IReactionDocument[]
     return reactions.length ? [reactions[0], 1] : []
   }

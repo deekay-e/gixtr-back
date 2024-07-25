@@ -1,4 +1,3 @@
-import mongoose from 'mongoose'
 import { ObjectId } from 'mongodb'
 import { Request, Response } from 'express'
 import HTTP_STATUS from 'http-status-codes'
@@ -54,7 +53,7 @@ export class FollowUser {
 
   private getFollowerData(user: IUserDocument): IFollowerData {
     return {
-      _id: new mongoose.Types.ObjectId(user._id),
+      _id: new ObjectId(user._id),
       username: user.username!,
       avatarColor: user.avatarColor!,
       postCount: user.postsCount,

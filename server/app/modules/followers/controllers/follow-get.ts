@@ -32,9 +32,7 @@ export class FollowGet {
     const users: IFollowerData[] = await followCache.getFollows(`followers:${user}`)
 
     // get follower from the database if it doesn't exist in redis
-    const followers: IFollowerData[] = users.length
-      ? users
-      : await followService.getFollowers(user)
+    const followers: IFollowerData[] = users.length ? users : await followService.getFollowers(user)
 
     res.status(HTTP_STATUS.OK).json({ message: `Get user followers successful`, followers })
   }
@@ -47,9 +45,7 @@ export class FollowGet {
     const users: IFollowerData[] = await followCache.getFollows(`following:${user}`)
 
     // get followee from the database if it doesn't exist in redis
-    const followees: IFollowerData[] = users.length
-      ? users
-      : await followService.getFollowees(user)
+    const followees: IFollowerData[] = users.length ? users : await followService.getFollowees(user)
 
     res.status(HTTP_STATUS.OK).json({ message: `Get user following successful`, followees })
   }

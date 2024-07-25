@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import { ObjectId } from 'mongodb'
 import { Response } from 'express'
 
 import { existingUser } from '@mock/user.mock'
@@ -52,7 +52,7 @@ export const post: IBody = {
 }
 
 export const postMockData: IPostDocument = {
-  _id: new mongoose.Types.ObjectId('6027f77087c9d9ccb1555268'),
+  _id: new ObjectId('6027f77087c9d9ccb1555268'),
   userId: existingUser._id,
   username: existingUser.username,
   email: existingUser.email,

@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb'
-import mongoose, { Document } from 'mongoose'
+import { Document } from 'mongoose'
 
 import { IUserDocument } from '@user/interfaces/user.interface'
 
@@ -8,14 +8,14 @@ export interface IFollowers {
 }
 
 export interface IFollowerDocument extends Document {
-  _id: mongoose.Types.ObjectId | string
-  followerId: mongoose.Types.ObjectId
-  followeeId: mongoose.Types.ObjectId
+  _id: ObjectId | string
+  followerId: ObjectId
+  followeeId: ObjectId
   createdAt?: Date
 }
 
 export interface IFollower {
-  _id: mongoose.Types.ObjectId | string
+  _id: ObjectId | string
   followeeId?: IFollowerData
   followerId?: IFollowerData
   createdAt?: Date
@@ -29,7 +29,7 @@ export interface IFollowerData {
   postCount: number
   username: string
   uId: string
-  _id?: mongoose.Types.ObjectId
+  _id?: ObjectId
   userProfile?: IUserDocument
 }
 
@@ -40,7 +40,7 @@ export interface IFollowerJob {
   followerDocumentId?: ObjectId
 }
 
-export interface IBlockedUserJobData {
+export interface IBlockedUserJob {
   userId?: string
   followeeId?: string
   type?: string

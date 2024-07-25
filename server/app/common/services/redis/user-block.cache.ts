@@ -24,8 +24,9 @@ export class UserBlockCache extends BaseCache {
 
       const props: string = (await this.client.HGET(`users:${userId}`, prop)) as string
       let blocked: string[] = Utils.parseJson(props) as string[]
-      if (type === 'block') blocked.push(followeeId!)
-      else blocked = [...remove(blocked, (id: string) => id === followeeId)]
+      if (type === 'block' && !blocked.includes(followeeId!)) blocked.push(followeeId!)
+      if (type === 'unblock' && blocked.includes(followeeId!))
+        remove(blocked, (id: string) => id === followeeId)
 
       await this.client.HSET(`users:${userId}`, prop, JSON.stringify(blocked))
     } catch (error) {

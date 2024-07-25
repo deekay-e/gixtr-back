@@ -1,0 +1,19 @@
+@baseUrl = http://localhost:8008
+@urlPath = api/v1
+@followeeId = 66914a50b5b3537535533054
+
+###
+PUT {{baseUrl}}/{{urlPath}}/user/block/{{followeeId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{ }
+
+###
+PUT {{baseUrl}}/{{urlPath}}/user/unblock/{{followeeId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{ }

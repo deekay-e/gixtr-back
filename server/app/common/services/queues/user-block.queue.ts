@@ -10,7 +10,7 @@ class UserBlockQueue extends BaseQueue {
     this.processJob('unblockUser', 5, userBlockWorker.unblock)
   }
 
-  public addUserBlockjJob(name: string, data: IBlockedUserJob): void {
+  public addUserBlockJob(name: string, data: IBlockedUserJob): void {
     this.addJob(name, data)
   }
 }

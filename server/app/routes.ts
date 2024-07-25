@@ -2,6 +2,7 @@ import { Application } from 'express'
 
 import { authRoutes } from '@auth/routes/auth.route'
 import { postRoutes } from '@post/routes/post.route'
+import { userRoutes } from '@user/routes/user.route'
 import { serverAdapter } from '@service/queues/base.queue'
 import { commentRoutes } from '@comment/routes/comment.route'
 import { currentUserRoutes } from '@auth/routes/current.route'
@@ -22,6 +23,7 @@ export default (app: Application) => {
     app.use(BASE_PATH, authMiddleware.verifyUser, reactionRoutes.routes())
     app.use(BASE_PATH, authMiddleware.verifyUser, commentRoutes.routes())
     app.use(BASE_PATH, authMiddleware.verifyUser, postRoutes.routes())
+    app.use(BASE_PATH, authMiddleware.verifyUser, userRoutes.routes())
   }
   routes()
 }

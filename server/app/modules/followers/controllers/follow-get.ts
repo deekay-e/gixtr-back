@@ -34,7 +34,7 @@ export class FollowGet {
     // get follower from the database if it doesn't exist in redis
     const followers: IFollowerData[] = users.length ? users : await followService.getFollowers(user)
 
-    res.status(HTTP_STATUS.OK).json({ message: `Get user followers successful`, followers })
+    res.status(HTTP_STATUS.OK).json({ message: 'Get user followers successful', followers })
   }
 
   public async followees(req: Request, res: Response): Promise<void> {
@@ -47,6 +47,6 @@ export class FollowGet {
     // get followee from the database if it doesn't exist in redis
     const followees: IFollowerData[] = users.length ? users : await followService.getFollowees(user)
 
-    res.status(HTTP_STATUS.OK).json({ message: `Get user following successful`, followees })
+    res.status(HTTP_STATUS.OK).json({ message: 'Get user following successful', followees })
   }
 }

@@ -1,10 +1,11 @@
-import mongoose, { model, Model, Schema } from 'mongoose'
+import { ObjectId } from 'mongodb'
+import { model, Model, Schema } from 'mongoose'
 
 import { IFollowerDocument } from '@follower/interfaces/follower.interface'
 
 const followerSchema: Schema = new Schema({
-  followerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
-  followeeId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+  followerId: { type: ObjectId, ref: 'User', index: true },
+  followeeId: { type: ObjectId, ref: 'User', index: true },
   createdAt: { type: Date, default: Date.now() }
 })
 

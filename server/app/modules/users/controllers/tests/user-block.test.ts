@@ -22,7 +22,9 @@ describe('UserBlock', () => {
 
   describe('block', () => {
     it('should send correct json response', async () => {
-      const req: Request = followersMockRequest({}, authUserPayload, { followerId: '6064861bc25eaa5a5d2f9bf4' }) as Request
+      const req: Request = followersMockRequest({}, authUserPayload, {
+        followerId: '6064861bc25eaa5a5d2f9bf4'
+      }) as Request
       const res: Response = followersMockResponse()
       jest.spyOn(UserBlockCache.prototype, 'update')
       jest.spyOn(userBlockQueue, 'addUserBlockJob')
@@ -54,7 +56,9 @@ describe('UserBlock', () => {
 
   describe('unblock', () => {
     it('should send correct json response', async () => {
-      const req: Request = followersMockRequest({}, authUserPayload, { followerId: '6064861bc25eaa5a5d2f9bf4' }) as Request
+      const req: Request = followersMockRequest({}, authUserPayload, {
+        followerId: '6064861bc25eaa5a5d2f9bf4'
+      }) as Request
       const res: Response = followersMockResponse()
       jest.spyOn(UserBlockCache.prototype, 'update')
       jest.spyOn(userBlockQueue, 'addUserBlockJob')

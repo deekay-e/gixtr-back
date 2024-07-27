@@ -1,9 +1,10 @@
-import mongoose, { model, Model, Schema } from 'mongoose'
+import { ObjectId } from 'mongodb'
+import { model, Model, Schema } from 'mongoose'
 
 import { IReactionDocument } from '@reaction/interfaces/reaction.interface'
 
 const reactionSchema: Schema = new Schema({
-  postId: { type: mongoose.Schema.Types.ObjectId, ref: 'Post', index: true },
+  postId: { ObjectId, ref: 'Post', index: true },
   type: { type: String, default: '' },
   username: { type: String, default: '' },
   avataColor: { type: String, default: '' },

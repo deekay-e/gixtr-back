@@ -10,12 +10,16 @@ import {
   ICommentJob,
   ICommentNameList
 } from '@comment/interfaces/comment.interface'
+import { INotificationDocument } from '@notification/interfaces/notification.interface'
+import { NotificationModel } from '@notification/models/notification.model'
+import { ObjectId } from 'mongodb'
+import { socketIONotificationObject } from '@socket/notification'
 
 const userCache: UserCache = new UserCache()
 
 export class CommentService {
   public async addComment(commentObj: ICommentJob): Promise<void> {
-    const { postId, userTo, username, comment } = commentObj
+    const { postId, userTo, userFrom, username, comment } = commentObj
     const updatedComment: [IUserDocument, ICommentDocument, IPostDocument] = (await Promise.all([
       userCache.getUser(`${userTo}`),
       CommentModel.create(comment),
@@ -23,6 +27,29 @@ export class CommentService {
     ])) as unknown as [IUserDocument, ICommentDocument, IPostDocument]
 
     // send notifications here
+    if (updatedComment[0].notifications.comments && userTo !== userFrom) {
+      const notificationModel: INotificationDocument = new NotificationModel()
+      const notifications = await notificationModel.insertNotification({
+        userFrom: userFrom!,
+        userTo: userTo!,
+        message: `${username} commented on your post`,
+        type: 'comment',
+        entityId: new ObjectId(postId),
+        createdItemId: new ObjectId(updatedComment[0]._id),
+        createdAt: new Date(),
+        comment: comment!.comment,
+        post: updatedComment[2].post,
+        imgId: updatedComment[2].imgId!,
+        imgVersion: updatedComment[2].imgVersion!,
+        gifUrl: updatedComment[2].gifUrl!,
+        reaction: ''
+      })
+
+      // send to client via socketIO
+      socketIONotificationObject.emit('new notification', notifications, { userTo })
+
+      // send to email queue
+    }
   }
 
   public async getComment(comment: ICommentJob): Promise<ICommentDocument[]> {

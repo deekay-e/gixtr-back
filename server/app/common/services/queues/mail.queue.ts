@@ -8,6 +8,7 @@ class MailQueue extends BaseQueue {
 
     this.processJob('forgotPassword', 5, mailWorker.deliverEmail)
     this.processJob('resetPassword', 5, mailWorker.deliverEmail)
+    this.processJob('commentNotification', 5, mailWorker.deliverEmail)
   }
 
   public addMailJob(name: string, data: IMailJob): void {

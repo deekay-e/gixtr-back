@@ -1,20 +1,22 @@
-import { Application, json, urlencoded, Response, Request, NextFunction } from 'express'
-import cors from 'cors'
-import helmet from 'helmet'
 import hpp from 'hpp'
 import http from 'http'
+import cors from 'cors'
+import helmet from 'helmet'
+import Logger from 'bunyan'
+import 'express-async-errors'
+import { Server } from 'socket.io'
+import { createClient } from 'redis'
 import compression from 'compression'
 import cookieSession from 'cookie-session'
 import HTTP_STATUS from 'http-status-codes'
-import { Server } from 'socket.io'
-import { createClient } from 'redis'
 import { createAdapter } from '@socket.io/redis-adapter'
-import Logger from 'bunyan'
-import 'express-async-errors'
+import { Application, json, urlencoded, Response, Request, NextFunction } from 'express'
 
 import appRoutes from '@/routes'
 import { config } from '@/config'
 import { SocketIOPostHandler } from '@socket/post'
+import { SocketIOUserHandler } from '@socket/user'
+import { SocketIOFollowHandler } from '@socket/follow'
 import { CustomError, IErrorResponse } from '@global/helpers/error-handler'
 
 const LIMIT = '50mb'
@@ -115,7 +117,11 @@ export class GeneSysServer {
 
   private socketIOConnections(io: Server): void {
     const postSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io)
+    const userSocketHandler: SocketIOUserHandler = new SocketIOUserHandler(io)
+    const followSocketHandler: SocketIOFollowHandler = new SocketIOFollowHandler(io)
 
     postSocketHandler.listen()
+    userSocketHandler.listen()
+    followSocketHandler.listen()
   }
 }

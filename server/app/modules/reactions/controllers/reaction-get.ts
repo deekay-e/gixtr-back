@@ -1,16 +1,11 @@
+import mongoose from 'mongoose'
 import { Request, Response } from 'express'
 import HTTP_STATUS from 'http-status-codes'
 
 //import { socketIONotificationObject } from '@socket/reaction'
 import { ReactionCache } from '@service/redis/reaction.cache'
-import { reactionQueue } from '@service/queues/reaction.queue'
-import {
-  IQueryReaction,
-  IReactionDocument,
-  IReactionJob
-} from '@reaction/interfaces/reaction.interface'
 import { reactionService } from '@service/db/reaction.service'
-import mongoose from 'mongoose'
+import { IReactionDocument } from '@reaction/interfaces/reaction.interface'
 
 const reactionCache: ReactionCache = new ReactionCache()
 
@@ -27,9 +22,11 @@ export class ReactionGet {
       ? cachedReaction
       : await reactionService.getReaction(postId, username)
 
-    res
-      .status(HTTP_STATUS.OK)
-      .json({ message: 'Get reaction successful', reaction: reaction.length ? reaction[0] : {}, count: reaction.length ? reaction[1]: 0 })
+    res.status(HTTP_STATUS.OK).json({
+      message: 'Get reaction successful',
+      reaction: reaction.length ? reaction[0] : {},
+      count: reaction.length ? reaction[1] : 0
+    })
   }
 
   public async many(req: Request, res: Response): Promise<void> {

@@ -17,6 +17,7 @@ import { BadRequestError } from '@global/helpers/error-handler'
 import { JoiValidator } from '@global/decorators/joi-validation'
 import { IAuthDocument, ISignUpData } from '@auth/interfaces/auth.interface'
 
+const CN: string = config.CLOUD_NAME!
 const userCache: UserCache = new UserCache()
 
 export class Signup {
@@ -26,36 +27,36 @@ export class Signup {
     const dupUser: IAuthDocument = await authService.getUser(username, email)
     if (dupUser) throw new BadRequestError('User already exists')
 
-    const authObjectId: ObjectId = new ObjectId()
-    const userObjectId: ObjectId = new ObjectId()
     const uId = `${Utils.genRandomInt(16)}`
-    const authData: IAuthDocument = Signup.prototype.signupData({
-      _id: authObjectId,
+    const authOId: ObjectId = new ObjectId()
+    const userOId: ObjectId = new ObjectId()
+    const authData: IAuthDocument = Signup.prototype.getSignupData({
+      _id: authOId,
       uId,
       username,
       email,
       password,
       avatarColor
     })
-    const result: UploadApiResponse = (await uploads(
+    const img: UploadApiResponse = (await uploads(
       avatarImage,
-      `${userObjectId}`,
+      `${userOId}`,
       true,
       true
     )) as UploadApiResponse
-    if (!result?.public_id) throw new BadRequestError('Error occurred during upload. Try again')
+    if (!img?.public_id) throw new BadRequestError('Error occurred during upload. Try again')
 
     // Add user data to redis
-    const userData: IUserDocument = Signup.prototype.userData(authData, userObjectId)
-    userData.profilePicture = `https://res.cloudinary.com/${config.CLOUD_NAME}/image/upload/v${result.version}/${userObjectId}`
-    await userCache.addUser(`${userObjectId}`, uId, userData)
+    const userData: IUserDocument = Signup.prototype.getUserData(authData, userOId)
+    userData.profilePicture = `https://res.cloudinary.com/${CN}/image/upload/v${img.version}/${userOId}`
+    await userCache.addUser(`${userOId}`, uId, userData)
 
     // Add data to monogdb
+    const newUserData = omit(userData, ['uId', 'username', 'email', 'avatarColor', 'password'])
     authQueue.addAuthUserJob('addToAuth', { value: authData })
-    omit(userData, ['uId', 'username', 'email', 'avatarColor', 'password'])
-    userQueue.addUserJob('addToUser', { value: userData })
+    userQueue.addUserJob('addToUser', { value: newUserData })
 
-    const userJWT: string = authService.getToken(authData, `${userObjectId}`)
+    const userJWT: string = authService.getToken(authData, `${userOId}`)
     req.session = { jwt: userJWT }
 
     res
@@ -63,7 +64,7 @@ export class Signup {
       .json({ message: 'Create user successful', user: userData, token: userJWT })
   }
 
-  private signupData(data: ISignUpData): IAuthDocument {
+  private getSignupData(data: ISignUpData): IAuthDocument {
     const { _id, uId, username, email, password, avatarColor } = data
     return {
       _id,
@@ -76,10 +77,10 @@ export class Signup {
     } as IAuthDocument
   }
 
-  private userData(data: IAuthDocument, userObjectId: ObjectId): IUserDocument {
+  private getUserData(data: IAuthDocument, userOId: ObjectId): IUserDocument {
     const { _id, username, email, uId, password, avatarColor } = data
     return {
-      _id: userObjectId,
+      _id: userOId,
       authId: _id,
       uId,
       username: Utils.capitalize(username),

@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb'
-import mongoose, { Document } from 'mongoose'
+import { Document } from 'mongoose'
 
 export interface IUserDocument extends Document {
   _id: string | ObjectId
@@ -14,8 +14,8 @@ export interface IUserDocument extends Document {
   school: string
   quote: string
   location: string
-  blocked: mongoose.Types.ObjectId[]
-  blockedBy: mongoose.Types.ObjectId[]
+  blocked: ObjectId[]
+  blockedBy: ObjectId[]
   followersCount: number
   followingCount: number
   notifications: INotificationSettings

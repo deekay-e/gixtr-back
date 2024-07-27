@@ -9,8 +9,18 @@ import { IAuthJob } from '@auth/interfaces/auth.interface'
 import { IPostJob } from '@post/interfaces/post.interface'
 import { IMailJob, IUserJob } from '@user/interfaces/user.interface'
 import { IReactionJob } from '@reaction/interfaces/reaction.interface'
+import { ICommentJob } from '@comment/interfaces/comment.interface'
+import { IBlockedUserJob, IFollowerJob } from '@follower/interfaces/follower.interface'
 
-type IBaseJob = IAuthJob | IUserJob | IMailJob | IPostJob | IReactionJob
+type IBaseJob =
+  | IAuthJob
+  | IUserJob
+  | IMailJob
+  | IPostJob
+  | IReactionJob
+  | ICommentJob
+  | IFollowerJob
+  | IBlockedUserJob
 
 let bullAdapters: BullAdapter[] = []
 

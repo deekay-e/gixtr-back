@@ -1,10 +1,10 @@
 import { ObjectId } from 'mongodb'
-import mongoose, { Document } from 'mongoose'
+import { Document } from 'mongoose'
 
 import { IReactions } from '@reaction/interfaces/reaction.interface'
 
 export interface IPostDocument extends Document {
-  _id?: string | mongoose.Types.ObjectId
+  _id?: string | ObjectId
   userId: string
   username: string
   email: string

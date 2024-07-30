@@ -1,9 +1,7 @@
 import { Request, Response } from 'express'
 import HTTP_STATUS from 'http-status-codes'
 
-import {
-  INotificationDocument
-} from '@notification/interfaces/notification.interface'
+import { INotificationDocument } from '@notification/interfaces/notification.interface'
 import { notification } from '@service/db/notification.service'
 
 export class NotificationGet {

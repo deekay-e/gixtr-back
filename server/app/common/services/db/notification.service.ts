@@ -1,6 +1,9 @@
 import { ObjectId } from 'mongodb'
 
-import { INotificationDocument, INotificationJob } from '@notification/interfaces/notification.interface'
+import {
+  INotificationDocument,
+  INotificationJob
+} from '@notification/interfaces/notification.interface'
 import { NotificationModel } from '@notification/models/notification.model'
 
 class NotificationService {

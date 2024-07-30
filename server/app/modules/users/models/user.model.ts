@@ -1,15 +1,16 @@
-import mongoose, { model, Model, Schema } from 'mongoose'
+import { ObjectId } from 'mongodb'
+import { model, Model, Schema } from 'mongoose'
 
 import { IUserDocument } from '@user/interfaces/user.interface'
 
 const userSchema: Schema = new Schema({
-  authId: { type: mongoose.Schema.Types.ObjectId, ref: 'Auth', index: true },
+  authId: { type: ObjectId, ref: 'Auth', index: true },
   profilePicture: { type: String, default: '' },
   postsCount: { type: Number, default: 0 },
   followersCount: { type: Number, default: 0 },
   followingCount: { type: Number, default: 0 },
-  blocked: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  blockedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  blocked: [{ type: ObjectId, ref: 'User' }],
+  blockedBy: [{ type: ObjectId, ref: 'User' }],
   notifications: {
     messages: { type: Boolean, default: true },
     reactions: { type: Boolean, default: true },

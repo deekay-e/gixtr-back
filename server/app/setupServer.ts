@@ -18,6 +18,7 @@ import { SocketIOPostHandler } from '@socket/post'
 import { SocketIOUserHandler } from '@socket/user'
 import { SocketIOFollowHandler } from '@socket/follow'
 import { CustomError, IErrorResponse } from '@global/helpers/error-handler'
+import { SocketIONotificationHandler } from '@socket/notification'
 
 const LIMIT = '50mb'
 const SERVER_PORT = 8008
@@ -119,9 +120,11 @@ export class GeneSysServer {
     const postSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io)
     const userSocketHandler: SocketIOUserHandler = new SocketIOUserHandler(io)
     const followSocketHandler: SocketIOFollowHandler = new SocketIOFollowHandler(io)
+    const notificationSocket: SocketIONotificationHandler = new SocketIONotificationHandler()
 
     postSocketHandler.listen()
     userSocketHandler.listen()
     followSocketHandler.listen()
+    notificationSocket.listen(io)
   }
 }

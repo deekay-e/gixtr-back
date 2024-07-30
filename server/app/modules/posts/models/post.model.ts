@@ -1,9 +1,10 @@
-import mongoose, { model, Model, Schema } from 'mongoose'
+import { ObjectId } from 'mongodb'
+import { model, Model, Schema } from 'mongoose'
 
 import { IPostDocument } from '@post/interfaces/post.interface'
 
 const postSchema: Schema = new Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+  userId: { type: ObjectId, ref: 'User', index: true },
   username: { type: String },
   email: { type: String },
   avatarColor: { type: String },

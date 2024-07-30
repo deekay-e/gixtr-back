@@ -28,7 +28,9 @@ describe('FollowGet', () => {
       jest.spyOn(FollowCache.prototype, 'getFollows').mockResolvedValue([mockFollowerData])
 
       await FollowGet.prototype.followees(req, res)
-      expect(FollowCache.prototype.getFollows).toBeCalledWith(`following:${req.currentUser?.userId}`)
+      expect(FollowCache.prototype.getFollows).toBeCalledWith(
+        `following:${req.currentUser?.userId}`
+      )
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
         message: 'Get user following successful',
@@ -68,7 +70,9 @@ describe('FollowGet', () => {
 
   describe('followers', () => {
     it('should send correct json response if user follower exist in cache', async () => {
-      const req: Request = followersMockRequest({}, authUserPayload, { userId: `${existingUserTwo._id}` }) as Request
+      const req: Request = followersMockRequest({}, authUserPayload, {
+        userId: `${existingUserTwo._id}`
+      }) as Request
       const res: Response = followersMockResponse()
       jest.spyOn(FollowCache.prototype, 'getFollows').mockResolvedValue([mockFollowerData])
 
@@ -82,7 +86,9 @@ describe('FollowGet', () => {
     })
 
     it('should send correct json response if user following exist in database', async () => {
-      const req: Request = followersMockRequest({}, authUserPayload, { userId: `${existingUserTwo._id}` }) as Request
+      const req: Request = followersMockRequest({}, authUserPayload, {
+        userId: `${existingUserTwo._id}`
+      }) as Request
       const res: Response = followersMockResponse()
       jest.spyOn(FollowCache.prototype, 'getFollows').mockResolvedValue([])
       jest.spyOn(followService, 'getFollowers').mockResolvedValue([mockFollowerData])
@@ -97,7 +103,9 @@ describe('FollowGet', () => {
     })
 
     it('should return empty following if user following does not exist', async () => {
-      const req: Request = followersMockRequest({}, authUserPayload, { userId: `${existingUserTwo._id}` }) as Request
+      const req: Request = followersMockRequest({}, authUserPayload, {
+        userId: `${existingUserTwo._id}`
+      }) as Request
       const res: Response = followersMockResponse()
       jest.spyOn(FollowCache.prototype, 'getFollows').mockResolvedValue([])
       jest.spyOn(followService, 'getFollowers').mockResolvedValue([])

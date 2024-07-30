@@ -1,4 +1,3 @@
-
 import { Server, Socket } from 'socket.io'
 
 import { ISocketData } from '@user/interfaces/user.interface'

@@ -1,14 +1,23 @@
 import { ObjectId } from 'mongodb'
 import { mongo, Query } from 'mongoose'
 
-import { UserModel } from '@user/models/user.model'
-import { FollowerModel } from '@follower/models/follower.model'
-import { IQueryComplete, IQueryDeleted } from '@post/interfaces/post.interface'
 import {
   IFollowerData,
   IFollowerDocument,
   IFollowerJob
 } from '@follower/interfaces/follower.interface'
+import { UserModel } from '@user/models/user.model'
+import { mailQueue } from '@service/queues/mail.queue'
+import { FollowerModel } from '@follower/models/follower.model'
+import { IUserDocument } from '@user/interfaces/user.interface'
+import { socketIONotificationObject } from '@socket/notification'
+import { NotificationModel } from '@notification/models/notification.model'
+import { notification } from '@service/email/templates/notification/template'
+import { IQueryComplete, IQueryDeleted } from '@post/interfaces/post.interface'
+import {
+  INotificationDocument,
+  INotificationTemplate
+} from '@notification/interfaces/notification.interface'
 
 class FollowService {
   public async addFollower(follow: IFollowerJob): Promise<void> {
@@ -16,7 +25,7 @@ class FollowService {
     const userObjectId: ObjectId = new ObjectId(userId)
     const followeeObjectId: ObjectId = new ObjectId(followeeId)
 
-    await FollowerModel.create({
+    const following = await FollowerModel.create({
       _id: followerDocumentId,
       followerId: userObjectId,
       followeeId: followeeObjectId
@@ -37,7 +46,46 @@ class FollowService {
       }
     ])
 
-    await Promise.all([users, UserModel.findOne({ _id: followeeId })])
+    const res: [mongo.BulkWriteResult, IUserDocument | null] = await Promise.all([
+      users,
+      UserModel.findOne({ _id: followeeId })
+    ])
+
+    // send notifications here
+    if (res[1]?.notifications.follows && userId !== followeeId) {
+      const notificationModel: INotificationDocument = new NotificationModel()
+      const notifications = await notificationModel.insertNotification({
+        userFrom: userId!,
+        userTo: followeeId!,
+        message: `${username} followed you`,
+        type: 'follow',
+        entityId: new ObjectId(userId),
+        createdItemId: new ObjectId(following._id),
+        createdAt: new Date(),
+        comment: '',
+        post: '',
+        imgId: '',
+        imgVersion: '',
+        gifUrl: '',
+        reaction: ''
+      })
+
+      // send to client via socketIO
+      socketIONotificationObject.emit('new follower', notifications, { followeeId })
+
+      // send to email queue
+      const templateData: INotificationTemplate = {
+        username: res[1].username!,
+        message: `${username} followed you`,
+        header: 'Follower Notification'
+      }
+      const template: string = notification.render(templateData)
+      mailQueue.addMailJob('followNotification', {
+        receiver: res[1].email!,
+        template,
+        subject: 'New follower notification'
+      })
+    }
   }
 
   public async getFollowers(key: string): Promise<IFollowerData[]> {

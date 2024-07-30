@@ -1,9 +1,10 @@
-import mongoose, { model, Model, Schema } from 'mongoose'
+import { ObjectId } from 'mongodb'
+import { model, Model, Schema } from 'mongoose'
 
 import { ICommentDocument } from '@comment/interfaces/comment.interface'
 
 const commentSchema: Schema = new Schema({
-  postId: { type: mongoose.Schema.Types.ObjectId, ref: 'Post', index: true },
+  postId: { type: ObjectId, ref: 'Post', index: true },
   comment: { type: String, default: '' },
   username: { type: String },
   avataColor: { type: String },

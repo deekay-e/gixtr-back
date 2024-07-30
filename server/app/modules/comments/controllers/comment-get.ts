@@ -1,8 +1,7 @@
-import mongoose from 'mongoose'
+import { ObjectId } from 'mongodb'
 import { Request, Response } from 'express'
 import HTTP_STATUS from 'http-status-codes'
 
-//import { socketIONotificationObject } from '@socket/comment'
 import { CommentCache } from '@service/redis/comment.cache'
 import {
   ICommentDocument,
@@ -18,7 +17,7 @@ export class CommentGet {
     const { postId, commentId } = req.params
     const commentJob: ICommentJob = {
       query: {
-        _id: new mongoose.Types.ObjectId(commentId)
+        _id: new ObjectId(commentId)
       }
     } as ICommentJob
 
@@ -34,7 +33,7 @@ export class CommentGet {
   public async many(req: Request, res: Response): Promise<void> {
     const { postId } = req.params
     const commentJob: ICommentJob = {
-      query: { postId: new mongoose.Types.ObjectId(postId) },
+      query: { postId: new ObjectId(postId) },
       sort: { createdAt: -1 }
     } as unknown as ICommentJob
 
@@ -53,7 +52,7 @@ export class CommentGet {
   public async manyNames(req: Request, res: Response): Promise<void> {
     const { postId } = req.params
     const commentJob: ICommentJob = {
-      query: { postId: new mongoose.Types.ObjectId(postId) },
+      query: { postId: new ObjectId(postId) },
       sort: { createdAt: -1 }
     } as unknown as ICommentJob
     const cachedNames: ICommentNameList[] = await commentCache.getCommentsNames(postId)

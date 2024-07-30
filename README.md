@@ -1,2 +1,2 @@
-# Gen-eSys
-## Unleash the power to build effective systems
+# Gixtr
+## Connect and gist with those you love and care about

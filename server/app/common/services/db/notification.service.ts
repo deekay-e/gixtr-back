@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 
-import { INotificationDocument } from '@notification/interfaces/notification.interface'
+import { INotificationDocument, INotificationJob } from '@notification/interfaces/notification.interface'
 import { NotificationModel } from '@notification/models/notification.model'
 
 class NotificationService {
@@ -40,6 +40,22 @@ class NotificationService {
     ])
 
     return notifications
+  }
+
+  /**
+   * updateNotification
+   */
+  public async updateNotification(data: INotificationJob): Promise<void> {
+    const { key } = data
+    await NotificationModel.updateOne({ _id: key }, { $set: { read: true } }).exec()
+  }
+
+  /**
+   * deleteNotification
+   */
+  public async deleteNotification(data: INotificationJob): Promise<void> {
+    const { key } = data
+    await NotificationModel.deleteOne({ _id: key }).exec()
   }
 }
 

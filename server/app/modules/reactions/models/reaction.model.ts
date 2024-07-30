@@ -4,7 +4,7 @@ import { model, Model, Schema } from 'mongoose'
 import { IReactionDocument } from '@reaction/interfaces/reaction.interface'
 
 const reactionSchema: Schema = new Schema({
-  postId: { ObjectId, ref: 'Post', index: true },
+  postId: { type: ObjectId, ref: 'Post', index: true },
   type: { type: String, default: '' },
   username: { type: String, default: '' },
   avataColor: { type: String, default: '' },

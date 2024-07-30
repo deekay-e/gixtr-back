@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import HTTP_STATUS from 'http-status-codes'
 
-//import { socketIONotificationObject } from '@socket/comment'
 import { CommentCache } from '@service/redis/comment.cache'
 import { commentQueue } from '@service/queues/comment.queue'
 import { JoiValidator } from '@global/decorators/joi-validation'
@@ -28,8 +27,7 @@ export class CommentAdd {
       createdAt: new Date()
     } as ICommentDocument
 
-    // emit comment event to user and add comment data to redis
-    //socketIONotificationObject.emit('addNotification', newComment)
+    // add comment data to redis
     await commentCache.addComment(postId, newComment)
 
     // add comment data to databse

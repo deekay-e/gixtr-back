@@ -1,8 +1,7 @@
-import mongoose from 'mongoose'
+import { ObjectId } from 'mongodb'
 import { Request, Response } from 'express'
 import HTTP_STATUS from 'http-status-codes'
 
-//import { socketIONotificationObject } from '@socket/comment'
 import { CommentCache } from '@service/redis/comment.cache'
 import { commentQueue } from '@service/queues/comment.queue'
 import { ICommentJob } from '@comment/interfaces/comment.interface'
@@ -14,14 +13,13 @@ export class CommentDelete {
     const { postId, commentId } = req.params
 
     // emit comment event to user and delete comment data from redis
-    //socketIONotificationObject.emit('addNotification', newComment)
     await commentCache.deleteComment(postId, commentId)
 
     // delete comment data from databse
     const query: ICommentJob = {
       query: {
-        _id: new mongoose.Types.ObjectId(commentId),
-        postId: new mongoose.Types.ObjectId(postId)
+        _id: new ObjectId(commentId),
+        postId: new ObjectId(postId)
       }
     } as ICommentJob
     commentQueue.addCommentJob('deleteComment', query)

@@ -12,6 +12,14 @@ import {
   IReactionDocument,
   IReactionJob
 } from '@reaction/interfaces/reaction.interface'
+import {
+  INotificationDocument,
+  INotificationTemplate
+} from '@notification/interfaces/notification.interface'
+import { NotificationModel } from '@notification/models/notification.model'
+import { mailQueue } from '@service/queues/mail.queue'
+import { notification } from '@service/email/templates/notification/template'
+import { socketIONotificationObject } from '@socket/notification'
 
 const userCache: UserCache = new UserCache()
 
@@ -20,7 +28,7 @@ export class ReactionService {
     const { postId, userTo, userFrom, username, type, prevReaction, reactionObject } = reaction
     let metaReactionObj: IReactionDocument = reactionObject as IReactionDocument
     if (prevReaction) metaReactionObj = omit(reactionObject, ['_id'])
-    const updatedReaction: [IUserDocument, IReactionDocument, IPostDocument] = (await Promise.all([
+    const res: [IUserDocument, IReactionDocument, IPostDocument] = (await Promise.all([
       userCache.getUser(`${userTo}`),
       ReactionModel.replaceOne({ postId, username, type: prevReaction }, metaReactionObj, {
         upsert: true
@@ -38,6 +46,40 @@ export class ReactionService {
     ])) as unknown as [IUserDocument, IReactionDocument, IPostDocument]
 
     // send notifications here
+    if (res[0]?.notifications.reactions && userTo !== userFrom) {
+      const notificationModel: INotificationDocument = new NotificationModel()
+      const notifications = await notificationModel.insertNotification({
+        userFrom: userFrom!,
+        userTo: userTo!,
+        message: `${username} reacted to your post`,
+        type: 'reactiom',
+        entityId: new ObjectId(postId),
+        createdItemId: new ObjectId(metaReactionObj._id),
+        createdAt: new Date(),
+        comment: '',
+        post: res[2].post,
+        imgId: res[2].imgId!,
+        imgVersion: res[2].imgVersion!,
+        gifUrl: res[2].gifUrl!,
+        reaction: type!
+      })
+
+      // send to client via socketIO
+      socketIONotificationObject.emit('new follower', notifications, { userTo })
+
+      // send to email queue
+      const templateData: INotificationTemplate = {
+        username: res[1].username!,
+        message: `${username} reacted to your post`,
+        header: 'Reaction Notification'
+      }
+      const template: string = notification.render(templateData)
+      mailQueue.addMailJob('reactionNotification', {
+        receiver: res[0].email!,
+        template,
+        subject: 'New reaction notification'
+      })
+    }
   }
 
   public async getReactions(

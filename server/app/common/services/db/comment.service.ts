@@ -10,7 +10,10 @@ import {
   ICommentJob,
   ICommentNameList
 } from '@comment/interfaces/comment.interface'
-import { INotificationDocument, INotificationTemplate } from '@notification/interfaces/notification.interface'
+import {
+  INotificationDocument,
+  INotificationTemplate
+} from '@notification/interfaces/notification.interface'
 import { NotificationModel } from '@notification/models/notification.model'
 import { ObjectId } from 'mongodb'
 import { socketIONotificationObject } from '@socket/notification'

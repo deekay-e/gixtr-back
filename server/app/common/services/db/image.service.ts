@@ -9,9 +9,9 @@ class ImageService {
    * addProfilePicture
    */
   public async addProfilePicture(image: IFileImageJob): Promise<void> {
-    // key here represents the image url
-    const { userId, imgId, imgVersion, key } = image
-    await UserModel.updateOne({ _id: userId }, { $set: { profilePicture: key } })
+    // value here represents the image url
+    const { userId, imgId, imgVersion, value } = image
+    await UserModel.updateOne({ _id: userId }, { $set: { profilePicture: value } })
     await this.addImage({ userId, imgId, imgVersion, key: 'profile' })
   }
 

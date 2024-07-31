@@ -49,7 +49,7 @@ export class PostUpdate {
 
     // update post data in redis and emit post event to user
     const postUpdated = await postCache.updatePost(`${postId}`, updatedPost)
-    socketIOPostObject.emit('updatePost', postUpdated, 'posts')
+    socketIOPostObject.emit('update post', postUpdated, 'posts')
 
     // update post data in databse
     postQueue.addPostJob('updatePost', { key: postId, value: postUpdated })

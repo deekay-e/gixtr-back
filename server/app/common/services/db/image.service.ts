@@ -38,8 +38,8 @@ class ImageService {
       userId,
       bgImageVersion: key === 'background' ? imgVersion : '',
       bgImageId: key === 'background' ? imgId : '',
-      imgVersion: key === 'profile' ? imgVersion : '',
-      imgId: key === 'profile' ? imgId : ''
+      imgVersion,
+      imgId
     })
   }
 

@@ -4,9 +4,11 @@ import { config } from '@/config'
 import { Utils } from '@global/helpers/utils'
 import { BaseCache } from '@service/redis/base.cache'
 import { ServerError } from '@global/helpers/error-handler'
-import { IUserDocument } from '@user/interfaces/user.interface'
+import { INotificationSettings, ISocialLinks, IUserDocument } from '@user/interfaces/user.interface'
 
 const log: Logger = config.createLogger('userCache')
+
+type UserProp = string | ISocialLinks | INotificationSettings
 
 export class UserCache extends BaseCache {
   constructor() {
@@ -92,6 +94,27 @@ export class UserCache extends BaseCache {
       res.followingCount = Utils.parseJson(`${res.followingCount}`)
 
       return res
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
+
+  /**
+   * getUser
+   */
+  public async updateUserProp(
+    key: string,
+    prop: string,
+    value: UserProp
+  ): Promise<IUserDocument | null> {
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+
+      await this.client.HSET(`users:${key}`, prop, JSON.stringify(value))
+      const user: IUserDocument = (await this.getUser(key)) as IUserDocument
+
+      return user
     } catch (error) {
       log.error(error)
       throw new ServerError('Server error. Try again.')

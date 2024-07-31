@@ -15,6 +15,6 @@ const imageSchema: Schema = new Schema({
 const ImageModel: Model<IFileImageDocument> = model<IFileImageDocument>(
   'Image',
   imageSchema,
-  'Image'
+  'images'
 )
 export { ImageModel }

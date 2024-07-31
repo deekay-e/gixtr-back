@@ -7,6 +7,7 @@ import { BullAdapter } from '@bull-board/api/bullAdapter'
 import { config } from '@/config'
 import { IAuthJob } from '@auth/interfaces/auth.interface'
 import { IPostJob } from '@post/interfaces/post.interface'
+import { IFileImageJob } from '@image/interfaces/image.interface'
 import { ICommentJob } from '@comment/interfaces/comment.interface'
 import { IMailJob, IUserJob } from '@user/interfaces/user.interface'
 import { IReactionJob } from '@reaction/interfaces/reaction.interface'
@@ -23,6 +24,7 @@ type IBaseJob =
   | IFollowerJob
   | IBlockedUserJob
   | INotificationJob
+  | IFileImageJob
 
 let bullAdapters: BullAdapter[] = []
 

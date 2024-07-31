@@ -10,7 +10,7 @@ export interface IFileImageDocument extends Document {
   createdAt: Date
 }
 
-export interface IFileImageJobData {
+export interface IFileImageJob {
   key?: string
   value?: string
   imgId?: string

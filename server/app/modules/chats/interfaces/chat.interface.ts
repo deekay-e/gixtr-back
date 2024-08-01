@@ -85,7 +85,7 @@ export interface ISenderReceiver {
   receiverName: string
 }
 
-export interface IGetMessageFromCache {
+export interface IGetMessage {
   index: number
   message: string
   receiver: IChatList

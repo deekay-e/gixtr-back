@@ -14,12 +14,13 @@ import { Application, json, urlencoded, Response, Request, NextFunction } from '
 
 import appRoutes from '@/routes'
 import { config } from '@/config'
+import { SocketIOChatHandler } from '@socket/chat'
 import { SocketIOPostHandler } from '@socket/post'
 import { SocketIOUserHandler } from '@socket/user'
 import { SocketIOImageHandler } from '@socket/image'
 import { SocketIOFollowHandler } from '@socket/follow'
-import { CustomError, IErrorResponse } from '@global/helpers/error-handler'
 import { SocketIONotificationHandler } from '@socket/notification'
+import { CustomError, IErrorResponse } from '@global/helpers/error-handler'
 
 const LIMIT = '50mb'
 const SERVER_PORT = 8008
@@ -119,12 +120,14 @@ export class GeneSysServer {
 
   private socketIOConnections(io: Server): void {
     const imageSocket: SocketIOImageHandler = new SocketIOImageHandler()
+    const chatSocketHandler: SocketIOChatHandler = new SocketIOChatHandler(io)
     const postSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io)
     const userSocketHandler: SocketIOUserHandler = new SocketIOUserHandler(io)
     const followSocketHandler: SocketIOFollowHandler = new SocketIOFollowHandler(io)
     const notificationSocket: SocketIONotificationHandler = new SocketIONotificationHandler()
 
     imageSocket.listen(io)
+    chatSocketHandler.listen()
     postSocketHandler.listen()
     userSocketHandler.listen()
     followSocketHandler.listen()

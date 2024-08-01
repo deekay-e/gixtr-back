@@ -13,7 +13,7 @@ export class PostDelete {
     const userId = `${req.currentUser!.userId}`
 
     // emit the socketIO event to handle the post delete operation
-    socketIOPostObject.emit('deletePost', postId)
+    socketIOPostObject.emit('delete post', postId)
 
     // remove post from cache and database
     await postCache.deletePost(postId, userId)

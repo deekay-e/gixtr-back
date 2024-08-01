@@ -2,15 +2,17 @@ import { ObjectId } from 'mongodb'
 import { Request, Response } from 'express'
 import HTTP_STATUS from 'http-status-codes'
 
+import { UploadApiResponse } from 'cloudinary'
 import { socketIOPostObject } from '@socket/post'
 import { PostCache } from '@service/redis/post.cache'
 import { postQueue } from '@service/queues/post.queue'
-import { IPostDocument } from '@post/interfaces/post.interface'
-import { JoiValidator } from '@global/decorators/joi-validation'
-import { postSchema, postWithImageSchema } from '@post/schemas/post.schema'
+import { imageQueue } from '@service/queues/image.queue'
 import { uploads } from '@global/helpers/cloudinary-upload'
 import { BadRequestError } from '@global/helpers/error-handler'
-import { UploadApiResponse } from 'cloudinary'
+import { IPostDocument } from '@post/interfaces/post.interface'
+import { JoiValidator } from '@global/decorators/joi-validation'
+import { IFileImageJob } from '@image/interfaces/image.interface'
+import { postSchema, postWithImageSchema } from '@post/schemas/post.schema'
 
 const postCache: PostCache = new PostCache()
 
@@ -64,7 +66,9 @@ export class PostCreate {
 
     // upload post image to cloudinary
     const result: UploadApiResponse = (await uploads(image)) as UploadApiResponse
-    if (!result?.public_id) throw new BadRequestError(result.message)
+    const imgId = result?.public_id
+    const imgVersion = `${result.version}`
+    if (!imgId) throw new BadRequestError(result.message)
 
     const newPost: IPostDocument = {
       _id: postId,
@@ -79,14 +83,14 @@ export class PostCreate {
       scope,
       gifUrl,
       commentsCount: 0,
-      imgVersion: `${result.version}`,
-      imgId: result.public_id,
+      imgVersion,
+      imgId,
       createdAt: new Date(),
       reactions: { like: 0, love: 0, happy: 0, wow: 0, sad: 0, angry: 0 }
     } as IPostDocument
 
     // emit post event to user and add post data to redis
-    socketIOPostObject.emit('addPost', newPost)
+    socketIOPostObject.emit('add post', newPost)
     await postCache.addPost({
       key: postId,
       currentUserId: userId,
@@ -96,7 +100,10 @@ export class PostCreate {
 
     // add post data to databse
     postQueue.addPostJob('addToPost', { key: userId, value: newPost })
+
     // call image queue to add image to database
+    const imageJob: IFileImageJob = { userId, imgId, imgVersion, key: '' }
+    imageQueue.addImageJob('addImage', imageJob)
 
     res.status(HTTP_STATUS.CREATED).json({ message: 'Create post with image successful' })
   }

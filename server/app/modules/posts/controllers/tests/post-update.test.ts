@@ -50,7 +50,7 @@ describe('PostUpdate', () => {
       await PostUpdate.prototype.minusImage(req, res)
       expect(postSpy).toHaveBeenCalledWith(`${postMockData._id}`, updatedPost)
       expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith(
-        'updatePost',
+        'update post',
         postMockData,
         'posts'
       )
@@ -87,7 +87,7 @@ describe('PostUpdate', () => {
         postSpy.mock.calls[0][1]
       )
       expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith(
-        'updatePost',
+        'update post',
         postMockData,
         'posts'
       )
@@ -125,7 +125,7 @@ describe('PostUpdate', () => {
         postSpy.mock.calls[0][1]
       )
       expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith(
-        'updatePost',
+        'update post',
         postMockData,
         'posts'
       )

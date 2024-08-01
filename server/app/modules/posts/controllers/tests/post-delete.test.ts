@@ -42,7 +42,7 @@ describe('PostDelete', () => {
     await PostDelete.prototype.remove(req, res)
 
     // test expectations
-    expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith('deletePost', postId)
+    expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith('delete post', postId)
     expect(PostCache.prototype.deletePost).toHaveBeenCalledWith(postId, userId)
     expect(postQueue.addPostJob).toHaveBeenCalledWith('deletePost', {
       keyOne: postId,

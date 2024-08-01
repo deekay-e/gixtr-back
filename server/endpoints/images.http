@@ -1,0 +1,52 @@
+@baseUrl = http://localhost:8008
+@urlPath = api/v1
+@imageId =
+@userId =
+
+###
+GET {{baseUrl}}/{{urlPath}}/images/{{userId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{ }
+
+###
+GET {{baseUrl}}/{{urlPath}}/image/{{imageId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{ }
+
+###
+POST {{baseUrl}}/{{urlPath}}/image
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{ }
+
+###
+POST {{baseUrl}}/{{urlPath}}/image/profile
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{ }
+
+###
+POST {{baseUrl}}/{{urlPath}}/image/background
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{ }
+
+###
+DELETE  {{baseUrl}}/{{urlPath}}/image/{{imageId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{ }

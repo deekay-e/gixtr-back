@@ -42,7 +42,7 @@ describe('PostCreate', () => {
 
       await PostCreate.prototype.minusImage(req, res)
       const newPost = spy.mock.calls[0][0].newPost
-      expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith('addPost', newPost)
+      expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith('add post', newPost)
       expect(PostCache.prototype.addPost).toHaveBeenCalledWith({
         key: spy.mock.calls[0][0].key,
         currentUserId: `${req.currentUser?.userId}`,
@@ -101,7 +101,7 @@ describe('PostCreate', () => {
 
       await PostCreate.prototype.plusImage(req, res)
       const newPost = spy.mock.calls[0][0].newPost
-      expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith('addPost', newPost)
+      expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith('add post', newPost)
       expect(PostCache.prototype.addPost).toHaveBeenCalledWith({
         key: spy.mock.calls[0][0].key,
         currentUserId: `${req.currentUser?.userId}`,

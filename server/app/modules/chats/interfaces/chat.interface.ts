@@ -60,6 +60,7 @@ export interface IChatUsers {
 }
 
 export interface IChatList {
+  senderId: string
   receiverId: string
   conversationId: string
 }

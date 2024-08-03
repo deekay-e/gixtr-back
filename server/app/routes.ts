@@ -1,6 +1,7 @@
 import { Application } from 'express'
 
 import { authRoutes } from '@auth/routes/auth.route'
+import { chatRoutes } from '@chat/routes/chat.route'
 import { postRoutes } from '@post/routes/post.route'
 import { userRoutes } from '@user/routes/user.route'
 import { imageRoutes } from '@image/routes/image.route'
@@ -26,6 +27,7 @@ export default (app: Application) => {
     app.use(BASE_PATH, authMiddleware.verifyUser, reactionRoutes.routes())
     app.use(BASE_PATH, authMiddleware.verifyUser, commentRoutes.routes())
     app.use(BASE_PATH, authMiddleware.verifyUser, imageRoutes.routes())
+    app.use(BASE_PATH, authMiddleware.verifyUser, chatRoutes.routes())
     app.use(BASE_PATH, authMiddleware.verifyUser, postRoutes.routes())
     app.use(BASE_PATH, authMiddleware.verifyUser, userRoutes.routes())
   }

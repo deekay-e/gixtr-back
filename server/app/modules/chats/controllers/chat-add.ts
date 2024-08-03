@@ -16,8 +16,10 @@ import { IUserDocument } from '@user/interfaces/user.interface'
 import { notification } from '@service/email/templates/notification/template'
 import { INotificationTemplate } from '@notification/interfaces/notification.interface'
 import { IChatJob, IMessageData, IMessageNotification } from '@chat/interfaces/chat.interface'
+import { ChatCache } from '@service/redis/chat.cache'
 
 const CN: string = config.CLOUD_NAME!
+const chatCache: ChatCache = new ChatCache()
 const userCache: UserCache = new UserCache()
 
 export class ChatAdd {
@@ -74,7 +76,15 @@ export class ChatAdd {
     }
 
     // add chat data to redis
-    //chatCache.addChat(messageOId, message)
+    // - add sender to chat list in redis
+    chatCache.addChatList({ senderId: userId, receiverId, conversationId: `${conversationOId}` })
+    // - add receiver to chat list in redis
+    chatCache.addChatList({
+      senderId: receiverId,
+      receiverId: userId,
+      conversationId: `${conversationOId}`
+    })
+    // - add message data to redis
 
     // emit socket event for chat object
     ChatAdd.prototype.emitSocketIOEvent(message)

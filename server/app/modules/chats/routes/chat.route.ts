@@ -11,7 +11,7 @@ class ChatRoutes {
   }
 
   public routes(): Router {
-    this.router.post('/chat', authMiddleware.checkAuth, ChatAdd.prototype.message)
+    this.router.post('/chat/message', authMiddleware.checkAuth, ChatAdd.prototype.message)
 
     return this.router
   }

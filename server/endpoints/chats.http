@@ -18,3 +18,25 @@ withCredentials: true
   "isRead": false,
   "selectedImage": ""
 }
+
+###
+POST {{baseUrl}}/{{urlPath}}/chat/users/add
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userOne": "",
+  "userTwo": ""
+}
+
+###
+POST {{baseUrl}}/{{urlPath}}/chat/users/remove
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userOne": "",
+  "userTwo": ""
+}

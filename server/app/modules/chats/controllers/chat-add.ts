@@ -77,14 +77,19 @@ export class ChatAdd {
 
     // add chat data to redis
     // - add sender to chat list in redis
-    chatCache.addChatList({ senderId: userId, receiverId, conversationId: `${conversationOId}` })
+    await chatCache.addChatList({
+      senderId: userId,
+      receiverId,
+      conversationId: `${conversationOId}`
+    })
     // - add receiver to chat list in redis
-    chatCache.addChatList({
+    await chatCache.addChatList({
       senderId: receiverId,
       receiverId: userId,
       conversationId: `${conversationOId}`
     })
     // - add message data to redis
+    await chatCache.addChatMessage(`${conversationOId}`, message)
 
     // emit socket event for chat object
     ChatAdd.prototype.emitSocketIOEvent(message)
@@ -104,6 +109,18 @@ export class ChatAdd {
     res
       .status(HTTP_STATUS.OK)
       .json({ message: 'Chat message addition successful', conversationId: conversationOId })
+  }
+
+  public async addChatUsers(req: Request, res: Response): Promise<void> {
+    const chatUsers = await chatCache.addChatUsers(req.body)
+    socketIOChatObject.emit('add chat users', chatUsers)
+    res.status(HTTP_STATUS.OK).json({ message: 'Add chat users successful' })
+  }
+
+  public async removeChatUsers(req: Request, res: Response): Promise<void> {
+    const chatUsers = await chatCache.removeChatUsers(req.body)
+    socketIOChatObject.emit('remove chat users', chatUsers)
+    res.status(HTTP_STATUS.OK).json({ message: 'Remove chat users successful' })
   }
 
   private emitSocketIOEvent(data: IMessageData): void {

@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb'
 
 import { MessageModel } from '@chat/models/chat.model'
-import { IMessageData } from '@chat/interfaces/chat.interface'
 import { ConversationModel } from '@chat/models/conversation.model'
+import { IChatList, IMessageData } from '@chat/interfaces/chat.interface'
 import { IConversationDocument } from '@chat/interfaces/conversation.interface'
 
 class ChatService {
@@ -52,6 +52,26 @@ class ChatService {
         }
       },
       { $sort: { createdAt: 1 } }
+    ])
+
+    return messages
+  }
+
+  public async getChatMessages(
+    chatList: IChatList,
+    sort: Record<string, 1 | -1>
+  ): Promise<IMessageData[]> {
+    const { senderId, receiverId, conversationId } = chatList
+    const query = {
+      $or: [
+        { conversationId: new ObjectId(conversationId) },
+        { senderId: new ObjectId(senderId), receiverId: new ObjectId(receiverId) },
+        { senderId: new ObjectId(receiverId), receiverId: new ObjectId(senderId) }
+      ]
+    }
+    const messages: IMessageData[] = await MessageModel.aggregate([
+      { $match: query },
+      { $sort: sort }
     ])
 
     return messages

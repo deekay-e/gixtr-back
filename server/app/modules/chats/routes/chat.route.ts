@@ -30,6 +30,11 @@ class ChatRoutes {
       authMiddleware.checkAuth,
       ChatGet.prototype.conversations
     )
+    this.router.get(
+      '/chat/messages/:receiverId/:conversationId',
+      authMiddleware.checkAuth,
+      ChatGet.prototype.messages
+    )
 
     return this.router
   }

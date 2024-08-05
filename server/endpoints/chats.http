@@ -2,6 +2,8 @@
 @urlPath = api/v1
 
 @userId =
+@receiverId =
+@conversatiodId =
 
 ###
 POST {{baseUrl}}/{{urlPath}}/chat/message
@@ -49,12 +51,14 @@ Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
-{ }
-
 ###
 GET {{baseUrl}}/{{urlPath}}/chat/conversations/{{userId}}
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
-{ }
+###
+GET {{baseUrl}}/{{urlPath}}/chat/messages/{{receiverId}}/{{conversatiodId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true

@@ -1,5 +1,5 @@
 import Logger from 'bunyan'
-import { findIndex } from 'lodash'
+import { find, findIndex } from 'lodash'
 
 import { config } from '@/config'
 import { Utils } from '@global/helpers/utils'
@@ -128,6 +128,47 @@ export class ChatCache extends BaseCache {
       }
 
       return conversations
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
+
+  /**
+   * getChatMessages
+   */
+  public async getChatMessages(chatList: IChatList): Promise<IMessageData[]> {
+    const { senderId, receiverId, conversationId } = chatList
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+
+      const chatMessages: IMessageData[] = []
+      if (conversationId) {
+        const messages: string[] = await this.client.LRANGE(`messages:${conversationId}`, 0, -1)
+        for (const message of messages) {
+          const chat: IMessageData = Utils.parseJson(message) as IMessageData
+          chatMessages.push(chat)
+        }
+      } else {
+        const userChats: string[] = await this.client.LRANGE(`chatList:${senderId}`, 0, -1)
+        const receiver: string = find(userChats, (item: string) =>
+          item.includes(receiverId)
+        ) as string
+        const parsedReceiver: IChatList = Utils.parseJson(receiver) as IChatList
+        if (parsedReceiver) {
+          const messages: string[] = await this.client.LRANGE(
+            `messages:${parsedReceiver.conversationId}`,
+            0,
+            -1
+          )
+          for (const message of messages) {
+            const chat: IMessageData = Utils.parseJson(message) as IMessageData
+            chatMessages.push(chat)
+          }
+        } else return []
+      }
+
+      return chatMessages
     } catch (error) {
       log.error(error)
       throw new ServerError('Server error. Try again.')

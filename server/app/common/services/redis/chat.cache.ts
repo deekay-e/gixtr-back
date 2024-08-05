@@ -5,7 +5,7 @@ import { config } from '@/config'
 import { Utils } from '@global/helpers/utils'
 import { BaseCache } from '@service/redis/base.cache'
 import { ServerError } from '@global/helpers/error-handler'
-import { IChatJob, IChatList, IChatUsers, IMessageData } from '@chat/interfaces/chat.interface'
+import { IChatList, IChatUsers, IMessageData } from '@chat/interfaces/chat.interface'
 
 const log: Logger = config.createLogger('chatCache')
 
@@ -103,6 +103,31 @@ export class ChatCache extends BaseCache {
       } else chatUsers = users
 
       return chatUsers
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
+
+  /**
+   * getUserConversations
+   */
+  public async getUserConversations(key: string): Promise<IMessageData[]> {
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+
+      const conversations: IMessageData[] = []
+      const userChats: string[] = await this.client.LRANGE(`chatList:${key}`, 0, -1)
+      for (const item of userChats) {
+        const chat: IChatList = Utils.parseJson(item) as IChatList
+        const lastMessage: string = (await this.client.LINDEX(
+          `messages:${chat.conversationId}`,
+          -1
+        )) as string
+        conversations.push(Utils.parseJson(lastMessage))
+      }
+
+      return conversations
     } catch (error) {
       log.error(error)
       throw new ServerError('Server error. Try again.')

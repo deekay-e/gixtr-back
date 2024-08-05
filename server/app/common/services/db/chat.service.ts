@@ -2,8 +2,8 @@ import { ObjectId } from 'mongodb'
 
 import { MessageModel } from '@chat/models/chat.model'
 import { ConversationModel } from '@chat/models/conversation.model'
-import { IChatList, IMessageData } from '@chat/interfaces/chat.interface'
 import { IConversationDocument } from '@chat/interfaces/conversation.interface'
+import { IChatJob, IChatList, IMessageData } from '@chat/interfaces/chat.interface'
 
 class ChatService {
   public async addMessage(data: IMessageData): Promise<void> {
@@ -75,6 +75,18 @@ class ChatService {
     ])
 
     return messages
+  }
+
+  public async markMessageAsDeleted(chatJob: IChatJob): Promise<void> {
+    const { messageId, type } = chatJob
+    if (type === 'deleteForMe') {
+      await MessageModel.updateOne({ _id: messageId }, { $set: { deleteForMe: true } }).exec()
+    } else {
+      await MessageModel.updateOne(
+        { _id: messageId },
+        { $set: { deleteForMe: true, deleteForEveryone: true } }
+      ).exec()
+    }
   }
 }
 

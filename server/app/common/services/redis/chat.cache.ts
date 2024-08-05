@@ -5,7 +5,13 @@ import { config } from '@/config'
 import { Utils } from '@global/helpers/utils'
 import { BaseCache } from '@service/redis/base.cache'
 import { ServerError } from '@global/helpers/error-handler'
-import { IChatList, IChatUsers, IMessageData } from '@chat/interfaces/chat.interface'
+import {
+  IChatJob,
+  IChatList,
+  IChatUsers,
+  IGetMessage,
+  IMessageData
+} from '@chat/interfaces/chat.interface'
 
 const log: Logger = config.createLogger('chatCache')
 
@@ -175,6 +181,37 @@ export class ChatCache extends BaseCache {
     }
   }
 
+  public async markMessageAsDeleted(chatJob: IChatJob): Promise<IMessageData> {
+    const { senderId, receiverId, messageId, type } = chatJob
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+
+      const { index, message, receiver } = await this.getMessage({
+        senderId,
+        receiverId,
+        messageId
+      })
+      const chat: IMessageData = Utils.parseJson(message) as IMessageData
+      if (type === 'deleteForMe') chat.deleteForMe = true
+      else {
+        chat.deleteForMe = true
+        chat.deleteForEveryone = true
+      }
+      await this.client.LSET(`messages:${receiver.conversationId}`, index, JSON.stringify(chat))
+
+      // we can return the "chat" object or fetch it from the messages list
+      // - const updatedChat: string = (await this.client.LINDEX(
+      // -   `messages:${receiver.conversationId}`,
+      // -   index
+      // - )) as string
+      // - return Utils.parseJson(updatedChat) as IMessageData
+      return chat
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
+
   private async getChatUsersList(): Promise<IChatUsers[]> {
     const chatUsersList: IChatUsers[] = []
     const chatUsers = await this.client.LRANGE('chatUsers', 0, -1)
@@ -184,5 +221,25 @@ export class ChatCache extends BaseCache {
     }
 
     return chatUsersList
+  }
+
+  private async getMessage(chatJob: IChatJob): Promise<IGetMessage> {
+    const { senderId, receiverId, messageId } = chatJob
+    const userChats: string[] = await this.client.LRANGE(`chatList:${senderId}`, 0, -1)
+    const receiver: string = find(userChats, (item: string) =>
+      item.includes(`${receiverId}`)
+    ) as string
+    const parsedReceiver: IChatList = Utils.parseJson(receiver) as IChatList
+    const messages: string[] = await this.client.LRANGE(
+      `messages:${parsedReceiver.conversationId}`,
+      0,
+      -1
+    )
+    const message: string = find(messages, (item: string) =>
+      item.includes(`${messageId}`)
+    ) as string
+    const index: number = findIndex(messages, (item: string) => item.includes(`${messageId}`))
+
+    return { index, message, receiver: parsedReceiver }
   }
 }

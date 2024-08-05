@@ -1,6 +1,7 @@
 import express, { Router } from 'express'
 
 import { ChatAdd } from '@chat/controllers/chat-add'
+import { ChatGet } from '@chat/controllers/chat-get'
 import { authMiddleware } from '@global/helpers/auth-middleware'
 
 class ChatRoutes {
@@ -17,6 +18,17 @@ class ChatRoutes {
       '/chat/users/remove',
       authMiddleware.checkAuth,
       ChatAdd.prototype.removeChatUsers
+    )
+
+    this.router.get(
+      '/chat/conversations',
+      authMiddleware.checkAuth,
+      ChatGet.prototype.conversations
+    )
+    this.router.get(
+      '/chat/conversations/:userId',
+      authMiddleware.checkAuth,
+      ChatGet.prototype.conversations
     )
 
     return this.router

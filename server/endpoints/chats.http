@@ -1,6 +1,8 @@
 @baseUrl = http://localhost:8008
 @urlPath = api/v1
 
+@userId =
+
 ###
 POST {{baseUrl}}/{{urlPath}}/chat/message
 Content-Type: application/json
@@ -40,3 +42,19 @@ withCredentials: true
   "userOne": "",
   "userTwo": ""
 }
+
+###
+GET {{baseUrl}}/{{urlPath}}/chat/conversations
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{ }
+
+###
+GET {{baseUrl}}/{{urlPath}}/chat/conversations/{{userId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{ }

@@ -23,31 +23,35 @@ class ChatService {
   public async getUserConversations(key: ObjectId): Promise<IMessageData[]> {
     const messages: IMessageData[] = await MessageModel.aggregate([
       { $match: { $or: [{ senderId: key }, { receiverId: key }] } },
-      { $group: {
-        _id: '$conversationId',
-        result: { $last: '$$ROOT' }
-      }},
-      { $project: {
-        _id: '$result._id',
-        body: '$result.body',
-        isRead: '$result.isRead',
-        gifUrl: '$result.gifUrl',
-        reaction: '$result.reaction',
-        senderId: '$result.senderId',
-        createdAt: '$result.createdAt',
-        receiverId: '$result.receiverId',
-        deleteForMe: '$result.deleteForMe',
-        selectedImage: '$result.selectedImage',
-        conversationId: '$result.conversationId',
-        senderUsername: '$result.senderUsername',
-        receiverUsername: '$result.receiverUsername',
-        senderAvatarColor: '$result.senderAvatarColor',
-        deleteForEveryone: '$result.deleteForEveryone',
-        receiverAvatarColor: '$result.receiverAvatarColor',
-        senderProfilePicture: '$result.senderProfilePicture',
-        receiverProfilePicture: '$result.receiverProfilePicture'
-      }},
-      { $sort: { createdAt: 1} }
+      {
+        $group: {
+          _id: '$conversationId',
+          result: { $last: '$$ROOT' }
+        }
+      },
+      {
+        $project: {
+          _id: '$result._id',
+          body: '$result.body',
+          isRead: '$result.isRead',
+          gifUrl: '$result.gifUrl',
+          reaction: '$result.reaction',
+          senderId: '$result.senderId',
+          createdAt: '$result.createdAt',
+          receiverId: '$result.receiverId',
+          deleteForMe: '$result.deleteForMe',
+          selectedImage: '$result.selectedImage',
+          conversationId: '$result.conversationId',
+          senderUsername: '$result.senderUsername',
+          receiverUsername: '$result.receiverUsername',
+          senderAvatarColor: '$result.senderAvatarColor',
+          deleteForEveryone: '$result.deleteForEveryone',
+          receiverAvatarColor: '$result.receiverAvatarColor',
+          senderProfilePicture: '$result.senderProfilePicture',
+          receiverProfilePicture: '$result.receiverProfilePicture'
+        }
+      },
+      { $sort: { createdAt: 1 } }
     ])
 
     return messages

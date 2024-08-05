@@ -77,6 +77,7 @@ export interface IChatJob {
   senderName?: string
   reaction?: string
   type?: string
+  message?: IMessageData
 }
 
 export interface ISenderReceiver {

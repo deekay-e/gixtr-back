@@ -12,11 +12,7 @@ class ChatRoutes {
 
   public routes(): Router {
     this.router.post('/chat/message', authMiddleware.checkAuth, ChatAdd.prototype.message)
-    this.router.post(
-      '/chat/users/add',
-      authMiddleware.checkAuth,
-      ChatAdd.prototype.addChatUsers
-    )
+    this.router.post('/chat/users/add', authMiddleware.checkAuth, ChatAdd.prototype.addChatUsers)
     this.router.post(
       '/chat/users/remove',
       authMiddleware.checkAuth,

@@ -2,10 +2,10 @@ import Logger from 'bunyan'
 import { findIndex } from 'lodash'
 
 import { config } from '@/config'
-import { BaseCache } from '@service/redis/base.cache'
-import { IChatJob, IChatList, IChatUsers, IMessageData } from '@chat/interfaces/chat.interface'
-import { ServerError } from '@global/helpers/error-handler'
 import { Utils } from '@global/helpers/utils'
+import { BaseCache } from '@service/redis/base.cache'
+import { ServerError } from '@global/helpers/error-handler'
+import { IChatJob, IChatList, IChatUsers, IMessageData } from '@chat/interfaces/chat.interface'
 
 const log: Logger = config.createLogger('chatCache')
 

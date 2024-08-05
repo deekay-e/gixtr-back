@@ -7,7 +7,7 @@ import { config } from '@/config'
 import { socketIOChatObject } from '@socket/chat'
 import { UserCache } from '@service/redis/user.cache'
 import { mailQueue } from '@service/queues/mail.queue'
-//import { chatQueue } from '@service/queues/chat.queue'
+import { chatQueue } from '@service/queues/chat.queue'
 import { addChatSchema } from '@chat/schemas/chat.schema'
 import { uploads } from '@global/helpers/cloudinary-upload'
 import { BadRequestError } from '@global/helpers/error-handler'
@@ -103,8 +103,8 @@ export class ChatAdd {
     if (!isRead) ChatAdd.prototype.messageNotification(data)
 
     // add chat data to databse
-    //const chatJob: IChatJob = {  }
-    //chatQueue.addChatJob('addChat', chatJob)
+    const chatJob: IChatJob = { message }
+    chatQueue.addChatJob('addMessage', chatJob)
 
     res
       .status(HTTP_STATUS.OK)

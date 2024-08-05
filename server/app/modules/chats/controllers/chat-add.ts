@@ -5,6 +5,7 @@ import { UploadApiResponse } from 'cloudinary'
 
 import { config } from '@/config'
 import { socketIOChatObject } from '@socket/chat'
+import { ChatCache } from '@service/redis/chat.cache'
 import { UserCache } from '@service/redis/user.cache'
 import { mailQueue } from '@service/queues/mail.queue'
 import { chatQueue } from '@service/queues/chat.queue'
@@ -16,7 +17,6 @@ import { IUserDocument } from '@user/interfaces/user.interface'
 import { notification } from '@service/email/templates/notification/template'
 import { INotificationTemplate } from '@notification/interfaces/notification.interface'
 import { IChatJob, IMessageData, IMessageNotification } from '@chat/interfaces/chat.interface'
-import { ChatCache } from '@service/redis/chat.cache'
 
 const CN: string = config.CLOUD_NAME!
 const chatCache: ChatCache = new ChatCache()

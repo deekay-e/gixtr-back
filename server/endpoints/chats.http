@@ -2,8 +2,10 @@
 @urlPath = api/v1
 
 @userId =
+@senderId =
+@messageId =
 @receiverId =
-@conversatiodId =
+@conversationId =
 
 ###
 POST {{baseUrl}}/{{urlPath}}/chat/message
@@ -58,7 +60,13 @@ Accept: application/json
 withCredentials: true
 
 ###
-GET {{baseUrl}}/{{urlPath}}/chat/messages/{{receiverId}}/{{conversatiodId}}
+GET {{baseUrl}}/{{urlPath}}/chat/messages/{{receiverId}}/{{conversationId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+DELETE  {{baseUrl}}/{{urlPath}}/chat/message/delete/{{messageId}}/{{senderId}}/{{receiverId}}/deleteForMe
 Content-Type: application/json
 Accept: application/json
 withCredentials: true

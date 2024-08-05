@@ -2,6 +2,7 @@ import express, { Router } from 'express'
 
 import { ChatAdd } from '@chat/controllers/chat-add'
 import { ChatGet } from '@chat/controllers/chat-get'
+import { ChatDelete } from '@chat/controllers/chat-delete'
 import { authMiddleware } from '@global/helpers/auth-middleware'
 
 class ChatRoutes {
@@ -34,6 +35,12 @@ class ChatRoutes {
       '/chat/messages/:receiverId/:conversationId',
       authMiddleware.checkAuth,
       ChatGet.prototype.messages
+    )
+
+    this.router.delete(
+      '/chat/message/delete/:messageId/:senderId/:receiverId/:type',
+      authMiddleware.checkAuth,
+      ChatDelete.prototype.setStatus
     )
 
     return this.router

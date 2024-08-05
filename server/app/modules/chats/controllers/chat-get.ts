@@ -3,8 +3,8 @@ import { Request, Response } from 'express'
 import HTTP_STATUS from 'http-status-codes'
 
 import { ChatCache } from '@service/redis/chat.cache'
-import { IChatList, IMessageData } from '@chat/interfaces/chat.interface'
 import { chatService } from '@service/db/chat.service'
+import { IChatList, IMessageData } from '@chat/interfaces/chat.interface'
 
 const chatCache: ChatCache = new ChatCache()
 

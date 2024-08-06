@@ -1,11 +1,11 @@
 @baseUrl = http://localhost:8008
 @urlPath = api/v1
 
-@userId =
-@senderId =
-@messageId =
-@receiverId =
-@conversationId =
+@userId = 66b1cbb09f767d45354bd448
+@senderId = 66b1cbb09f767d45354bd448
+@messageId = 66b1cf669f767d45354bd45f
+@receiverId = 66b1cbff9f767d45354bd44f
+@conversationId = 66b1dddd872585e58da28c91
 
 ###
 POST {{baseUrl}}/{{urlPath}}/chat/message
@@ -14,14 +14,14 @@ Accept: application/json
 withCredentials: true
 
 {
-  "conversationId": "",
-  "receiverId": "",
-  "receiverUsername": "",
-  "receiverAvatarColor": "",
-  "receiverProfilePicture": "",
-  "body": "Hello.. howdy?",
+  "conversationId": "66b1dddd872585e58da28c91",
+  "receiverId": "66b1cbff9f767d45354bd44f",
+  "receiverUsername": "praise",
+  "receiverAvatarColor": "blue",
+  "receiverProfilePicture": "https://res.cloudinary.com/dahrlgvpt/image/upload/v1722928049/66b1cbb09f767d45354bd448",
+  "body": "I'm good.. trust you are as well?",
   "gifUrl": "",
-  "isRead": false,
+  "isRead": true,
   "selectedImage": ""
 }
 

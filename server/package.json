@@ -1,5 +1,5 @@
 {
-  "name": "gen.e-sys_server",
+  "name": "gixtr_server",
   "version": "1.0.0",
   "main": "root.ts",
   "scripts": {
@@ -12,12 +12,12 @@
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json"
   },
   "keywords": [
-    "Gen.eSys",
-    "OriGen"
+    "Gixtr",
+    "NewGen Social Network"
   ],
   "author": "Kelechi Karachi Egbuta (alias Dee Kay)",
   "license": "ISC",
-  "description": "Unleash the power to build effective systems",
+  "description": "Connect and gist with those you love and care about",
   "dependencies": {
     "@bull-board/express": "^5.20.5",
     "@jest/types": "^29.6.3",

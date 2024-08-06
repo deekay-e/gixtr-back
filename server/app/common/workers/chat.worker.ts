@@ -9,10 +9,10 @@ const log: Logger = config.createLogger('chatWorker')
 class ChatWorker {
   async addMessage(job: Job, done: DoneCallback): Promise<void> {
     try {
-      await chatService.addMessage(job.data)
+      await chatService.addMessage(job.data.message)
 
       job.progress(100)
-      done(null, job.data)
+      done(null, job.data.message)
     } catch (error) {
       log.error(error)
       done(error as Error)

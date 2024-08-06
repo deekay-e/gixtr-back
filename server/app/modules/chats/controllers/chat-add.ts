@@ -103,7 +103,7 @@ export class ChatAdd {
     if (!isRead) ChatAdd.prototype.messageNotification(data)
 
     // add chat data to databse
-    const chatJob: IChatJob = { message }
+    const chatJob: IChatJob = { message } as IChatJob
     chatQueue.addChatJob('addMessage', chatJob)
 
     res

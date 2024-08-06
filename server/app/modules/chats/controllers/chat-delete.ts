@@ -1,11 +1,10 @@
-import { ObjectId } from 'mongodb'
 import { Request, Response } from 'express'
 import HTTP_STATUS from 'http-status-codes'
 
-import { ChatCache } from '@service/redis/chat.cache'
-import { IMessageData } from '@chat/interfaces/chat.interface'
 import { socketIOChatObject } from '@socket/chat'
+import { ChatCache } from '@service/redis/chat.cache'
 import { chatQueue } from '@service/queues/chat.queue'
+import { IMessageData } from '@chat/interfaces/chat.interface'
 
 const chatCache: ChatCache = new ChatCache()
 

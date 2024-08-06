@@ -1,6 +1,6 @@
 import { chatWorker } from '@worker/chat.worker'
 import { BaseQueue } from '@service/queues/base.queue'
-import { IChatJob } from '@chat/interfaces/chat.interface'
+import { IChatJob, IChatList } from '@chat/interfaces/chat.interface'
 
 class ChatQueue extends BaseQueue {
   constructor() {
@@ -11,7 +11,7 @@ class ChatQueue extends BaseQueue {
     this.processJob('markMessageAsDeleted', 5, chatWorker.markMessageAsDeleted)
   }
 
-  public addChatJob(name: string, data: IChatJob): void {
+  public addChatJob(name: string, data: IChatJob | IChatList): void {
     this.addJob(name, data)
   }
 }

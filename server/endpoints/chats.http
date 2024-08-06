@@ -60,10 +60,22 @@ Accept: application/json
 withCredentials: true
 
 ###
-GET {{baseUrl}}/{{urlPath}}/chat/messages/{{receiverId}}/{{conversationId}}
+GET {{baseUrl}}/{{urlPath}}/chat/messages/read/{{senderId}}/{{receiverId}}
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
+
+###
+PUT {{baseUrl}}/{{urlPath}}/chat/messages/{{receiverId}}/{{conversationId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "senderId": {{senderId}},
+  "receiverId": {{receiverId}},
+  "conversationId": {{conversationId}}
+}
 
 ###
 DELETE  {{baseUrl}}/{{urlPath}}/chat/message/delete/{{messageId}}/{{senderId}}/{{receiverId}}/deleteForMe

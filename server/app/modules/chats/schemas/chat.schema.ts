@@ -13,8 +13,9 @@ const addChatSchema: ObjectSchema = Joi.object().keys({
 })
 
 const markChatSchema: ObjectSchema = Joi.object().keys({
-  senderId: Joi.string().required(),
-  receiverId: Joi.string().required()
+  senderId: Joi.string().optional().allow(null, ''),
+  receiverId: Joi.string().optional().allow(null, ''),
+  conversationId: Joi.string().optional().allow(null, '')
 })
 
 export { addChatSchema, markChatSchema }

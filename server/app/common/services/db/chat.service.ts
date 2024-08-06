@@ -88,6 +88,18 @@ class ChatService {
       ).exec()
     }
   }
+
+  public async markMessagesAsRead(chatList: IChatList): Promise<void> {
+    const { senderId, receiverId, conversationId } = chatList
+    const query = {
+      $or: [
+        { conversationId: new ObjectId(conversationId), isRead: false },
+        { senderId: new ObjectId(senderId), receiverId: new ObjectId(receiverId), isRead: false },
+        { senderId: new ObjectId(receiverId), receiverId: new ObjectId(senderId), isRead: false }
+      ]
+    }
+    await MessageModel.updateMany(query, { $set: { isRead: true } }).exec()
+  }
 }
 
 export const chatService: ChatService = new ChatService()

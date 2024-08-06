@@ -181,6 +181,9 @@ export class ChatCache extends BaseCache {
     }
   }
 
+  /**
+   * markMessageAsDeleted
+   */
   public async markMessageAsDeleted(chatJob: IChatJob): Promise<IMessageData> {
     const { senderId, receiverId, messageId, type } = chatJob
     try {
@@ -206,6 +209,27 @@ export class ChatCache extends BaseCache {
       // - )) as string
       // - return Utils.parseJson(updatedChat) as IMessageData
       return chat
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
+
+  /**
+   * markMessagesAsRead
+   */
+  public async markMessagesAsRead(chatList: IChatList): Promise<IMessageData> {
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+
+      const messages: IMessageData[] = await this.getChatMessages(chatList)
+      for (const [index, item] of messages.entries()) {
+        if (item.isRead) continue
+        item.isRead = true
+        await this.client.LSET(`messages:${item.conversationId}`, index, JSON.stringify(item))
+      }
+
+      return messages[-1]
     } catch (error) {
       log.error(error)
       throw new ServerError('Server error. Try again.')

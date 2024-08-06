@@ -45,7 +45,7 @@ describe('Update', () => {
     })
     expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith({
-      message: 'Notification marked as read'
+      message: 'Mark notification as read'
     })
   })
 })

@@ -60,13 +60,13 @@ Accept: application/json
 withCredentials: true
 
 ###
-GET {{baseUrl}}/{{urlPath}}/chat/messages/read/{{senderId}}/{{receiverId}}
+GET {{baseUrl}}/{{urlPath}}/chat/messages/{{receiverId}}/{{conversationId}}
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
 ###
-PUT {{baseUrl}}/{{urlPath}}/chat/messages/{{receiverId}}/{{conversationId}}
+PUT {{baseUrl}}/{{urlPath}}/chat/messages/read
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
@@ -75,6 +75,19 @@ withCredentials: true
   "senderId": {{senderId}},
   "receiverId": {{receiverId}},
   "conversationId": {{conversationId}}
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/chat/message/reaction
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "receiverId": {{receiverId}},
+  "messageId": {{messageId}},
+  "reaction": "happy",
+  "type": "add"
 }
 
 ###

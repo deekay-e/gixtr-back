@@ -100,6 +100,21 @@ class ChatService {
     }
     await MessageModel.updateMany(query, { $set: { isRead: true } }).exec()
   }
+
+  public async updateMessageReaction(chatJob: IChatJob): Promise<void> {
+    const { messageId, senderName, reaction, type } = chatJob
+    if (type === 'add') {
+      await MessageModel.updateOne(
+        { _id: messageId },
+        { $push: { reaction: { senderName, type: reaction } } }
+      ).exec()
+    } else {
+      await MessageModel.updateOne(
+        { _id: messageId },
+        { $pull: { reaction: { senderName } } }
+      ).exec()
+    }
+  }
 }
 
 export const chatService: ChatService = new ChatService()

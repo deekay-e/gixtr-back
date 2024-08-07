@@ -38,11 +38,11 @@ class ChatRoutes {
       ChatGet.prototype.messages
     )
 
-
+    this.router.put('/chat/messages/read', authMiddleware.checkAuth, ChatEdit.prototype.markAsRead)
     this.router.put(
-      '/chat/messages/read',
+      '/chat/message/reaction',
       authMiddleware.checkAuth,
-      ChatEdit.prototype.markAsRead
+      ChatEdit.prototype.messageReaction
     )
 
     this.router.delete(

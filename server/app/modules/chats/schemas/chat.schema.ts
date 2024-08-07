@@ -18,4 +18,11 @@ const markChatSchema: ObjectSchema = Joi.object().keys({
   conversationId: Joi.string().optional().allow(null, '')
 })
 
-export { addChatSchema, markChatSchema }
+const messageReactionSchema: ObjectSchema = Joi.object().keys({
+  type: Joi.string().required(),
+  reaction: Joi.string().required(),
+  messageId: Joi.string().required(),
+  receiverId: Joi.string().required()
+})
+
+export { addChatSchema, markChatSchema, messageReactionSchema }

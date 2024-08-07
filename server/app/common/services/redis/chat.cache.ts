@@ -1,5 +1,5 @@
 import Logger from 'bunyan'
-import { find, findIndex } from 'lodash'
+import { find, findIndex, remove } from 'lodash'
 
 import { config } from '@/config'
 import { Utils } from '@global/helpers/utils'
@@ -12,6 +12,7 @@ import {
   IGetMessage,
   IMessageData
 } from '@chat/interfaces/chat.interface'
+import { IReaction } from '@reaction/interfaces/reaction.interface'
 
 const log: Logger = config.createLogger('chatCache')
 
@@ -230,6 +231,43 @@ export class ChatCache extends BaseCache {
       }
 
       return messages[-1]
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
+
+  /**
+   * updateMessageReaction
+   */
+  public async updateMessageReaction(chatJob: IChatJob): Promise<IMessageData> {
+    const { reaction, senderName, type } = chatJob
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+
+      const reactions: IReaction[] = []
+      const { index, receiver, message } = await this.getMessage(chatJob)
+      const parsedMessage: IMessageData = Utils.parseJson(message) as IMessageData
+      if (parsedMessage) {
+        remove(parsedMessage.reaction, (item: IReaction) => item.senderName === senderName)
+        if (type === 'add') {
+          reactions.push({ senderName: senderName!, type: reaction! })
+          parsedMessage.reaction = [...parsedMessage.reaction, ...reactions]
+          await this.client.LSET(
+            `messages:${receiver.conversationId}`,
+            index,
+            JSON.stringify(parsedMessage)
+          )
+        } else {
+          await this.client.LSET(
+            `messages:${receiver.conversationId}`,
+            index,
+            JSON.stringify(parsedMessage)
+          )
+        }
+      }
+
+      return parsedMessage
     } catch (error) {
       log.error(error)
       throw new ServerError('Server error. Try again.')

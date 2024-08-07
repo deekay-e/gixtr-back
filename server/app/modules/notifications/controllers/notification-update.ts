@@ -16,6 +16,6 @@ export class NotificationUpdate {
     const notificationJob: INotificationJob = { key: notificationId }
     notificationQueue.addNotificationJob('updateNotification', notificationJob)
 
-    res.status(HTTP_STATUS.OK).json({ message: 'Notification marked as read' })
+    res.status(HTTP_STATUS.OK).json({ message: 'Mark notification as read' })
   }
 }

@@ -23,7 +23,7 @@ export class ImageAdd {
     const { image } = req.body
     const userId = req.currentUser!.userId
 
-    // upload post image to cloudinary
+    // upload image to cloudinary
     const result: UploadApiResponse = (await uploads(image)) as UploadApiResponse
     const imgId = result?.public_id
     const imgVersion = `${result.version}`
@@ -44,7 +44,7 @@ export class ImageAdd {
     const { image } = req.body
     const userId = req.currentUser!.userId
 
-    // upload post image to cloudinary
+    // upload profile image to cloudinary
     const result: UploadApiResponse = (await uploads(
       image,
       userId,
@@ -74,7 +74,7 @@ export class ImageAdd {
     const { image } = req.body
     const userId = req.currentUser!.userId
 
-    // upload post image to cloudinary
+    // upload background image to cloudinary
     const { version, publicId } = await ImageAdd.prototype.backgroundUpload(image)
 
     // update user background picture data in redis

@@ -1,0 +1,97 @@
+@baseUrl = http://localhost:8008
+@urlPath = api/v1
+
+@userId = 66b1cbb09f767d45354bd448
+@senderId = 66b1cbb09f767d45354bd448
+@messageId = 66b1cf669f767d45354bd45f
+@receiverId = 66b1cbff9f767d45354bd44f
+@conversationId = 66b1dddd872585e58da28c91
+
+###
+POST {{baseUrl}}/{{urlPath}}/chat/message
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "conversationId": "66b1dddd872585e58da28c91",
+  "receiverId": "66b1cbff9f767d45354bd44f",
+  "receiverUsername": "praise",
+  "receiverAvatarColor": "blue",
+  "receiverProfilePicture": "https://res.cloudinary.com/dahrlgvpt/image/upload/v1722928049/66b1cbb09f767d45354bd448",
+  "body": "I'm good.. trust you are as well?",
+  "gifUrl": "",
+  "isRead": true,
+  "selectedImage": ""
+}
+
+###
+POST {{baseUrl}}/{{urlPath}}/chat/users/add
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userOne": "",
+  "userTwo": ""
+}
+
+###
+POST {{baseUrl}}/{{urlPath}}/chat/users/remove
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userOne": "",
+  "userTwo": ""
+}
+
+###
+GET {{baseUrl}}/{{urlPath}}/chat/conversations
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/chat/conversations/{{userId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/chat/messages/{{receiverId}}/{{conversationId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+PUT {{baseUrl}}/{{urlPath}}/chat/messages/read
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "senderId": {{senderId}},
+  "receiverId": {{receiverId}},
+  "conversationId": {{conversationId}}
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/chat/message/reaction
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "receiverId": "66b1cbb09f767d45354bd448",
+  "messageId": "66b1df00872585e58da28c9f",
+  "reaction": "happy",
+  "type": "add"
+}
+
+###
+DELETE  {{baseUrl}}/{{urlPath}}/chat/message/delete/{{messageId}}/{{senderId}}/{{receiverId}}/deleteForMe
+Content-Type: application/json
+Accept: application/json
+withCredentials: true

@@ -6,6 +6,7 @@ import { BullAdapter } from '@bull-board/api/bullAdapter'
 
 import { config } from '@/config'
 import { IAuthJob } from '@auth/interfaces/auth.interface'
+import { IChatJob, IChatList } from '@chat/interfaces/chat.interface'
 import { IPostJob } from '@post/interfaces/post.interface'
 import { IFileImageJob } from '@image/interfaces/image.interface'
 import { ICommentJob } from '@comment/interfaces/comment.interface'
@@ -16,9 +17,11 @@ import { IBlockedUserJob, IFollowerJob } from '@follower/interfaces/follower.int
 
 type IBaseJob =
   | IAuthJob
+  | IChatJob
   | IUserJob
   | IMailJob
   | IPostJob
+  | IChatList
   | IReactionJob
   | ICommentJob
   | IFollowerJob

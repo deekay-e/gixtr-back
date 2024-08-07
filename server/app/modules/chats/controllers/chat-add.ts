@@ -108,7 +108,7 @@ export class ChatAdd {
 
     res
       .status(HTTP_STATUS.OK)
-      .json({ message: 'Chat message addition successful', conversationId: conversationOId })
+      .json({ message: 'Add chat message successful', conversationId: conversationOId })
   }
 
   public async addChatUsers(req: Request, res: Response): Promise<void> {

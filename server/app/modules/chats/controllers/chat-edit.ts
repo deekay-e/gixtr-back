@@ -41,8 +41,7 @@ export class ChatEdit {
       senderId,
       receiverId
     })
-    socketIOChatObject.emit('message read', message)
-    socketIOChatObject.emit('chat list', message)
+    socketIOChatObject.emit('message reaction', message)
 
     const chatJob: IChatJob = { messageId, senderName, reaction, type } as IChatJob
     chatQueue.addChatJob('updateMessageReaction', chatJob)

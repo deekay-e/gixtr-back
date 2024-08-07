@@ -84,8 +84,8 @@ Accept: application/json
 withCredentials: true
 
 {
-  "receiverId": {{receiverId}},
-  "messageId": {{messageId}},
+  "receiverId": "66b1cbb09f767d45354bd448",
+  "messageId": "66b1df00872585e58da28c9f",
   "reaction": "happy",
   "type": "add"
 }

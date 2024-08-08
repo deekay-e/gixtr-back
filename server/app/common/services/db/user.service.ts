@@ -33,7 +33,7 @@ class UserService {
       { $match: { _id: { $ne: new ObjectId(key) } } },
       { $skip: skip },
       { $limit: limit },
-      { $sort: { createdAt : -1 } },
+      { $sort: { createdAt: -1 } },
       { $lookup: { from: 'auth', localField: 'authId', foreignField: '_id', as: 'auth' } },
       { $unwind: '$auth' },
       { $project: this.projectAggregate() }

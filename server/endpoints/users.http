@@ -17,3 +17,11 @@ Accept: application/json
 withCredentials: true
 
 { }
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profiles/1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{ }

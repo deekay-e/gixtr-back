@@ -23,13 +23,15 @@ export class UserGet {
     const users: IUserDocument[] = cachedUsers.length
       ? cachedUsers
       : await userService.getUsers(userId, skip, limit)
-    const cacheFollowers: IFollowerData[] = await followCache.getFollows(userId)
+    const cachedUserCount: number = await userCache.getUsersCount()
+    const count: number = cachedUserCount ? cachedUserCount : await userService.getUsersCount()
+    const cacheFollowers: IFollowerData[] = await followCache.getFollows(`followers:${userId}`)
     const followers: IFollowerData[] = cacheFollowers.length
       ? cacheFollowers
-      : await followService.getFollowees(userId)
+      : await followService.getFollowers(userId)
 
     res
       .status(HTTP_STATUS.OK)
-      .json({ message: 'Get user profiles successful', users, count: users.length, followers })
+      .json({ message: 'Get user profiles successful', users, count, followers })
   }
 }

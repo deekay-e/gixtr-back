@@ -168,4 +168,19 @@ export class UserCache extends BaseCache {
       throw new ServerError('Server error. Try again.')
     }
   }
+
+  /**
+   * getUsersCount
+   */
+  public async getUsersCount(): Promise<number> {
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+
+      const userCount: number = await this.client.ZCARD('user')
+      return userCount
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
 }

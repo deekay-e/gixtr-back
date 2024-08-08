@@ -41,6 +41,11 @@ class UserService {
     return users
   }
 
+  public async getUsersCount(): Promise<number> {
+    const userCount: number = await UserModel.find({}).countDocuments()
+    return userCount
+  }
+
   private projectAggregate() {
     return {
       _id: 1,

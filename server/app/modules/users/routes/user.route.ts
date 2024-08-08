@@ -13,6 +13,8 @@ class UserRoutes {
 
   public routes(): Router {
     this.router.get('/user/profiles/:page', authMiddleware.checkAuth, UserGet.prototype.profiles)
+    this.router.get('/user/profile', authMiddleware.checkAuth, UserGet.prototype.profile)
+    this.router.get('/user/profile/:id', authMiddleware.checkAuth, UserGet.prototype.profile)
 
     this.router.put('/user/block/:followeeId', authMiddleware.checkAuth, UserBlock.prototype.block)
     this.router.put(

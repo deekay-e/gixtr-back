@@ -19,7 +19,7 @@ export class UserGet {
     const skip: number = (parseInt(page) - 1) * PAGE_SIZE
     const limit: number = PAGE_SIZE * parseInt(page)
     const start: number = skip === 0 ? skip : skip + 1
-    const cachedUsers: IUserDocument[] = await userCache.getUsers('user', start, limit)
+    const cachedUsers: IUserDocument[] = await userCache.getUsers(userId, start, limit)
     const users: IUserDocument[] = cachedUsers.length
       ? cachedUsers
       : await userService.getUsers(userId, skip, limit)
@@ -33,5 +33,14 @@ export class UserGet {
     res
       .status(HTTP_STATUS.OK)
       .json({ message: 'Get user profiles successful', users, count, followers })
+  }
+
+  public async profile(req: Request, res: Response): Promise<void> {
+    const { id } = req.params
+    const userId = id ? id : req.currentUser!.userId
+    const cachedUser: IUserDocument = await userCache.getUser(userId) as IUserDocument
+    const user: IUserDocument = cachedUser ? cachedUser : await userService.getUserById(userId)
+
+    res.status(HTTP_STATUS.OK).json({ message: 'Get user profile', user })
   }
 }

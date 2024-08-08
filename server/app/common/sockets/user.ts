@@ -5,7 +5,7 @@ import { ILogin, ISocketData } from '@user/interfaces/user.interface'
 export let socketIOUserObject: Server
 export const connectedUsersMap: Map<string, string> = new Map()
 
-const users: string[] = []
+let users: string[] = []
 
 export class SocketIOUserHandler {
   private io: Server
@@ -19,6 +19,8 @@ export class SocketIOUserHandler {
     this.io.on('connection', (socket: Socket) => {
       socket.on('setup', (data: ILogin) => {
         this.addClientToMap(data.userId, socket.id)
+        this.addUser(data.userId)
+        this.io.emit('users online', users)
       })
 
       socket.on('block user', (data: ISocketData) => {
@@ -35,8 +37,8 @@ export class SocketIOUserHandler {
     })
   }
 
-  private addClientToMap(userId: string, socketId: string): void {
-    if (!connectedUsersMap.has(userId)) connectedUsersMap.set(userId, socketId)
+  private addClientToMap(username: string, socketId: string): void {
+    if (!connectedUsersMap.has(username)) connectedUsersMap.set(username, socketId)
   }
 
   private removeClientFromMap(socketId: string): void {
@@ -47,7 +49,17 @@ export class SocketIOUserHandler {
         }
       ) as [string, string]
       connectedUsersMap.delete(disconnectedUser[0])
-      // send event to the client
+      this.removeUser(disconnectedUser[0])
+      this.io.emit('users online', users)
     }
+  }
+
+  private addUser(username: string): void {
+    users.push(username)
+    users = [...new Set(users)]
+  }
+
+  private removeUser(username: string): void {
+    users = users.filter((name: string) => name !== username)
   }
 }

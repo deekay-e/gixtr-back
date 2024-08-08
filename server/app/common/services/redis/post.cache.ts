@@ -1,4 +1,5 @@
 import Logger from 'bunyan'
+import { filter } from 'lodash'
 
 import { config } from '@/config'
 import { Utils } from '@global/helpers/utils'
@@ -181,13 +182,19 @@ export class PostCache extends BaseCache {
   /**
    * getUserPosts
    */
-  public async getUserPosts(key: string, uId: number): Promise<IPostDocument[]> {
+  public async getUserPosts(
+    key: string,
+    uId: number,
+    start: number,
+    end: number
+  ): Promise<IPostDocument[]> {
     try {
       if (!this.client.isOpen) await this.client.connect()
 
-      const reply: string[] = await this.client.ZRANGE(key, uId, uId, { REV: true, BY: 'SCORE' })
+      const res: string[] = await this.client.ZRANGE(key, uId, uId, { REV: true, BY: 'SCORE' })
+      const filteredPosts: string[] = filter(res, (key, index) => index >= start && index < end)
       const multi: ReturnType<typeof this.client.multi> = this.client.multi()
-      for (const score of reply) multi.HGETALL(`posts:${score}`)
+      for (const score of filteredPosts) multi.HGETALL(`posts:${score}`)
 
       const posts: IPostDocument[] = []
       const replies: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType

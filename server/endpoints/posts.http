@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:8008
 @urlPath = api/v1
-@postId =
+@postId = 66b4e78203e42a2b634785d9
 
 ###
 POST {{baseUrl}}/{{urlPath}}/post

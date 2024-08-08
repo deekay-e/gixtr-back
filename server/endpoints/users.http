@@ -2,6 +2,8 @@
 @urlPath = api/v1
 @followeeId = 66914a50b5b3537535533054
 @userId = 66b1cbff9f767d45354bd44f
+@uId =
+@username =
 
 ###
 PUT {{baseUrl}}/{{urlPath}}/user/block/{{followeeId}}
@@ -33,6 +35,18 @@ withCredentials: true
 
 ###
 GET {{baseUrl}}/{{urlPath}}/user/profile/{{userId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile/posts/3
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile/{{username}}/{{userId}}/{{uId}}/posts/1
 Content-Type: application/json
 Accept: application/json
 withCredentials: true

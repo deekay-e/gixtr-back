@@ -15,6 +15,16 @@ class UserRoutes {
     this.router.get('/user/profiles/:page', authMiddleware.checkAuth, UserGet.prototype.profiles)
     this.router.get('/user/profile', authMiddleware.checkAuth, UserGet.prototype.profile)
     this.router.get('/user/profile/:id', authMiddleware.checkAuth, UserGet.prototype.profile)
+    this.router.get(
+      '/user/profile/posts/:page',
+      authMiddleware.checkAuth,
+      UserGet.prototype.profileAndPosts
+    )
+    this.router.get(
+      '/user/profile/:username/:userId/:uId/posts/:page',
+      authMiddleware.checkAuth,
+      UserGet.prototype.profileAndPosts
+    )
 
     this.router.put('/user/block/:followeeId', authMiddleware.checkAuth, UserBlock.prototype.block)
     this.router.put(

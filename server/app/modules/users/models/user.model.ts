@@ -5,6 +5,9 @@ import { IUserDocument } from '@user/interfaces/user.interface'
 
 const userSchema: Schema = new Schema({
   authId: { type: ObjectId, ref: 'Auth', index: true },
+  firstname: { type: String, default: '' },
+  lastname: { type: String, default: '' },
+  nickname: { type: String, default: '' },
   profilePicture: { type: String, default: '' },
   postsCount: { type: Number, default: 0 },
   followersCount: { type: Number, default: 0 },

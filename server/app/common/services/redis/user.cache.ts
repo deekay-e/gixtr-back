@@ -4,11 +4,19 @@ import { config } from '@/config'
 import { Utils } from '@global/helpers/utils'
 import { BaseCache } from '@service/redis/base.cache'
 import { ServerError } from '@global/helpers/error-handler'
+import { RedisCommandRawReply } from '@redis/client/dist/lib/commands'
 import { INotificationSettings, ISocialLinks, IUserDocument } from '@user/interfaces/user.interface'
 
 const log: Logger = config.createLogger('userCache')
 
 type UserProp = string | ISocialLinks | INotificationSettings
+type UserCacheMultiType =
+  | string
+  | number
+  | Buffer
+  | RedisCommandRawReply
+  | IUserDocument
+  | IUserDocument[]
 
 export class UserCache extends BaseCache {
   constructor() {
@@ -81,6 +89,7 @@ export class UserCache extends BaseCache {
   public async getUser(key: string): Promise<IUserDocument | null> {
     try {
       if (!this.client.isOpen) await this.client.connect()
+
       const res: IUserDocument = (await this.client.HGETALL(
         `users:${key}`
       )) as unknown as IUserDocument
@@ -92,8 +101,47 @@ export class UserCache extends BaseCache {
       res.social = Utils.parseJson(`${res.social}`)
       res.followersCount = Utils.parseJson(`${res.followersCount}`)
       res.followingCount = Utils.parseJson(`${res.followingCount}`)
+      res.bgImageId = Utils.parseJson(`${res.bgImageId}`)
+      res.bgImageVersion = Utils.parseJson(`${res.bgImageVersion}`)
+      res.profilePicture = Utils.parseJson(`${res.profilePicture}`)
 
       return res
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
+
+  /**
+   * getUsers
+   */
+  public async getUsers(key: string, start: number, end: number): Promise<IUserDocument[]> {
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+
+      const res: string[] = await this.client.ZRANGE('user', start, end, { REV: true })
+      const multi: ReturnType<typeof this.client.multi> = this.client.multi()
+      for (const score of res) if (score !== key) multi.HGETALL(`users:${score}`)
+
+      const replies: UserCacheMultiType = (await multi.exec()) as UserCacheMultiType
+      const userReplies: IUserDocument[] = []
+      for (const reply of replies as IUserDocument[]) {
+        reply.createdAt = new Date(Utils.parseJson(`${reply.createdAt}`))
+        reply.postsCount = Utils.parseJson(`${reply.postsCount}`)
+        reply.blocked = Utils.parseJson(`${reply.blocked}`)
+        reply.blockedBy = Utils.parseJson(`${reply.blockedBy}`)
+        reply.notifications = Utils.parseJson(`${reply.notifications}`)
+        reply.social = Utils.parseJson(`${reply.social}`)
+        reply.followersCount = Utils.parseJson(`${reply.followersCount}`)
+        reply.followingCount = Utils.parseJson(`${reply.followingCount}`)
+        reply.bgImageId = Utils.parseJson(`${reply.bgImageId}`)
+        reply.bgImageVersion = Utils.parseJson(`${reply.bgImageVersion}`)
+        reply.profilePicture = Utils.parseJson(`${reply.profilePicture}`)
+
+        userReplies.push(reply)
+      }
+
+      return userReplies
     } catch (error) {
       log.error(error)
       throw new ServerError('Server error. Try again.')

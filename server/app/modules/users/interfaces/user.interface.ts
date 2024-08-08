@@ -5,6 +5,9 @@ export interface IUserDocument extends Document {
   _id: string | ObjectId
   authId: string | ObjectId
   username?: string
+  firstname?: string
+  lastname?: string
+  nickname?: string
   email?: string
   password?: string
   avatarColor?: string
@@ -41,6 +44,9 @@ export interface INotificationSettings {
 }
 
 export interface IBasicInfo {
+  firstname: string
+  lastname: string
+  nickname: string
   quote: string
   work: string
   school: string

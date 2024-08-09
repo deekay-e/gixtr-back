@@ -1,5 +1,8 @@
 import { ObjectId } from 'mongodb'
+import { forEach } from 'lodash'
 
+import { Utils } from '@global/helpers/utils'
+import { followService } from './follow.service'
 import { UserModel } from '@user/models/user.model'
 import { IUserDocument } from '@user/interfaces/user.interface'
 
@@ -37,6 +40,39 @@ class UserService {
       { $lookup: { from: 'auth', localField: 'authId', foreignField: '_id', as: 'auth' } },
       { $unwind: '$auth' },
       { $project: this.projectAggregate() }
+    ])
+    return users
+  }
+
+  public async getRandomUsers(key: string): Promise<IUserDocument[]> {
+    const followees: string[] = await followService.getFolloweeIds(key)
+    const users: IUserDocument[] = await UserModel.aggregate([
+      {
+        $match: {
+          $and: [
+            { _id: { $ne: new ObjectId(key) } },
+            { _id: { $nin: followees.map((item) => new ObjectId(item)) } }
+          ]
+        }
+      },
+      { $sample: { size: 10 } },
+      { $lookup: { from: 'auth', localField: 'authId', foreignField: '_id', as: 'auth' } },
+      { $unwind: '$auth' },
+      {
+        $addFields: {
+          email: '$auth.email',
+          username: '$auth.username',
+          avatarColor: '$auth.avatarColor',
+          createdAt: '$auth.createdAt',
+          uId: '$auth.uId'
+        }
+      },
+      {
+        $project: {
+          auth: 0,
+          __v: 0
+        }
+      }
     ])
     return users
   }

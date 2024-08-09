@@ -73,4 +73,15 @@ export class UserGet {
       .status(HTTP_STATUS.OK)
       .json({ message: 'Get user profile and posts successful', user, posts })
   }
+
+  public async suggestions(req: Request, res: Response): Promise<void> {
+    const userId = req.currentUser!.userId
+
+    const randomUsers: IUserDocument[] = await userCache.getRandomUsers(userId)
+    const users: IUserDocument[] = randomUsers.length
+      ? randomUsers
+      : await userService.getRandomUsers(userId)
+
+    res.status(HTTP_STATUS.OK).json({ message: 'Get user suggestions successful', users })
+  }
 }

@@ -192,9 +192,9 @@ export class PostCache extends BaseCache {
       if (!this.client.isOpen) await this.client.connect()
 
       const res: string[] = await this.client.ZRANGE(key, uId, uId, { REV: true, BY: 'SCORE' })
-      const filteredPosts: string[] = filter(res, (key, index) => index >= start && index < end)
+      const resPosts: string[] = filter(res, (key, index) => index >= start && index < end)
       const multi: ReturnType<typeof this.client.multi> = this.client.multi()
-      for (const score of filteredPosts) multi.HGETALL(`posts:${score}`)
+      for (const score of resPosts) multi.HGETALL(`posts:${score}`)
 
       const posts: IPostDocument[] = []
       const replies: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType

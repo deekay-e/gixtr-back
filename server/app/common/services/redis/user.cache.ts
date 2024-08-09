@@ -1,4 +1,5 @@
 import Logger from 'bunyan'
+import { filter } from 'lodash'
 
 import { config } from '@/config'
 import { Utils } from '@global/helpers/utils'
@@ -31,52 +32,52 @@ export class UserCache extends BaseCache {
     const {
       _id,
       uId,
-      username,
       email,
-      avatarColor,
       blocked,
+      username,
       blockedBy,
       postsCount,
+      avatarColor,
       profilePicture,
       followersCount,
       followingCount,
       notifications,
-      work,
+      bgImageVersion,
+      bgImageId,
       location,
       school,
+      social,
       quote,
-      bgImageId,
-      bgImageVersion,
-      social
+      work
     } = createdUser
     const dataToSave = {
       _id: `${_id}`,
       uId: `${uId}`,
-      username: `${username}`,
       email: `${email}`,
-      avatarColor: `${avatarColor}`,
+      username: `${username}`,
       createdAt: `${createdAt}`,
       postsCount: `${postsCount}`,
+      avatarColor: `${avatarColor}`,
       blocked: JSON.stringify(blocked),
-      blockedBy: JSON.stringify(blockedBy),
       profilePicture: `${profilePicture}`,
       followersCount: `${followersCount}`,
       followingCount: `${followingCount}`,
+      blockedBy: JSON.stringify(blockedBy),
       notifications: JSON.stringify(notifications),
+      bgImageVersion: `${bgImageVersion}`,
       social: JSON.stringify(social),
-      work: `${work}`,
+      bgImageId: `${bgImageId}`,
       location: `${location}`,
       school: `${school}`,
       quote: `${quote}`,
-      bgImageVersion: `${bgImageVersion}`,
-      bgImageId: `${bgImageId}`
+      work: `${work}`
     }
 
     try {
       if (!this.client.isOpen) await this.client.connect()
-      await this.client.ZADD('user', { score: parseInt(userUId, 10), value: `${key}` })
+      await this.client.ZADD('user', { score: parseInt(userUId, 10), value: key })
       for (const [itemKey, itemValue] of Object.entries(dataToSave))
-        await this.client.HSET(`users:${key}`, `${itemKey}`, `${itemValue}`)
+        await this.client.HSET(`users:${key}`, itemKey, itemValue)
     } catch (error) {
       log.error(error)
       throw new ServerError('Server error. Try again.')
@@ -93,15 +94,15 @@ export class UserCache extends BaseCache {
       const res: IUserDocument = (await this.client.HGETALL(
         `users:${key}`
       )) as unknown as IUserDocument
-      res.createdAt = new Date(Utils.parseJson(`${res.createdAt}`))
-      res.postsCount = Utils.parseJson(`${res.postsCount}`)
-      res.blocked = Utils.parseJson(`${res.blocked}`)
-      res.blockedBy = Utils.parseJson(`${res.blockedBy}`)
-      res.notifications = Utils.parseJson(`${res.notifications}`)
       res.social = Utils.parseJson(`${res.social}`)
+      res.blocked = Utils.parseJson(`${res.blocked}`)
+      res.bgImageId = Utils.parseJson(`${res.bgImageId}`)
+      res.blockedBy = Utils.parseJson(`${res.blockedBy}`)
+      res.postsCount = Utils.parseJson(`${res.postsCount}`)
+      res.notifications = Utils.parseJson(`${res.notifications}`)
+      res.createdAt = new Date(Utils.parseJson(`${res.createdAt}`))
       res.followersCount = Utils.parseJson(`${res.followersCount}`)
       res.followingCount = Utils.parseJson(`${res.followingCount}`)
-      res.bgImageId = Utils.parseJson(`${res.bgImageId}`)
       res.bgImageVersion = Utils.parseJson(`${res.bgImageVersion}`)
       res.profilePicture = Utils.parseJson(`${res.profilePicture}`)
 
@@ -126,19 +127,59 @@ export class UserCache extends BaseCache {
       const replies: UserCacheMultiType = (await multi.exec()) as UserCacheMultiType
       const userReplies: IUserDocument[] = []
       for (const reply of replies as IUserDocument[]) {
-        reply.createdAt = new Date(Utils.parseJson(`${reply.createdAt}`))
-        reply.postsCount = Utils.parseJson(`${reply.postsCount}`)
+        reply.social = Utils.parseJson(`${reply.social}`)
         reply.blocked = Utils.parseJson(`${reply.blocked}`)
         reply.blockedBy = Utils.parseJson(`${reply.blockedBy}`)
+        reply.bgImageId = Utils.parseJson(`${reply.bgImageId}`)
+        reply.postsCount = Utils.parseJson(`${reply.postsCount}`)
         reply.notifications = Utils.parseJson(`${reply.notifications}`)
-        reply.social = Utils.parseJson(`${reply.social}`)
         reply.followersCount = Utils.parseJson(`${reply.followersCount}`)
         reply.followingCount = Utils.parseJson(`${reply.followingCount}`)
-        reply.bgImageId = Utils.parseJson(`${reply.bgImageId}`)
         reply.bgImageVersion = Utils.parseJson(`${reply.bgImageVersion}`)
         reply.profilePicture = Utils.parseJson(`${reply.profilePicture}`)
+        reply.createdAt = new Date(Utils.parseJson(`${reply.createdAt}`))
 
         userReplies.push(reply)
+      }
+
+      return userReplies
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
+
+  /**
+   * getRandomUsers
+   */
+  public async getRandomUsers(key: string): Promise<IUserDocument[]> {
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+
+      const userReplies: IUserDocument[] = []
+      const users: string[] = await this.client.ZRANGE('user', 0, -1)
+      const followers: string[] = await this.client.LRANGE(`followers:${key}`, 0, -1)
+      const filteredUsers = filter(users, (user) => !followers.includes(user) && user !== key)
+      const randomUsers: string[] = Utils.shuffle(filteredUsers).slice(0, 10)
+      for (const user of randomUsers) {
+        const userHash: IUserDocument = (await this.client.HGETALL(
+          `users:${user}`
+        )) as unknown as IUserDocument
+        userReplies.push(userHash)
+      }
+
+      for (const reply of userReplies) {
+        reply.social = Utils.parseJson(`${reply.social}`)
+        reply.blocked = Utils.parseJson(`${reply.blocked}`)
+        reply.bgImageId = Utils.parseJson(`${reply.bgImageId}`)
+        reply.blockedBy = Utils.parseJson(`${reply.blockedBy}`)
+        reply.postsCount = Utils.parseJson(`${reply.postsCount}`)
+        reply.notifications = Utils.parseJson(`${reply.notifications}`)
+        reply.createdAt = new Date(Utils.parseJson(`${reply.createdAt}`))
+        reply.followersCount = Utils.parseJson(`${reply.followersCount}`)
+        reply.followingCount = Utils.parseJson(`${reply.followingCount}`)
+        reply.bgImageVersion = Utils.parseJson(`${reply.bgImageVersion}`)
+        reply.profilePicture = Utils.parseJson(`${reply.profilePicture}`)
       }
 
       return userReplies

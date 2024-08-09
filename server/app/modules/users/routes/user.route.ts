@@ -25,6 +25,11 @@ class UserRoutes {
       authMiddleware.checkAuth,
       UserGet.prototype.profileAndPosts
     )
+    this.router.get(
+      '/user/suggestions',
+      authMiddleware.checkAuth,
+      UserGet.prototype.suggestions
+    )
 
     this.router.put('/user/block/:followeeId', authMiddleware.checkAuth, UserBlock.prototype.block)
     this.router.put(

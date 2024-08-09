@@ -3,15 +3,19 @@ import moment from 'moment'
 import { Request, Response } from 'express'
 import HTTP_STATUS from 'http-status-codes'
 
+import { UserCache } from '@service/redis/user.cache'
 import { authService } from '@service/db/auth.service'
 import { userService } from '@service/db/user.service'
 import { mailQueue } from '@service/queues/mail.queue'
+import { userQueue } from '@service/queues/user.queue'
 import { BadRequestError } from '@global/helpers/error-handler'
-import { joiValidator } from '@global/decorators/joi-validation'
-import { changePasswordSchema } from '@user/schemas/user.schema'
 import { IAuthDocument } from '@auth/interfaces/auth.interface'
+import { joiValidator } from '@global/decorators/joi-validation'
 import { IResetPasswordParams } from '@user/interfaces/user.interface'
 import { resetPassword } from '@service/email/templates/reset-password/template'
+import { basicInfoSchema, changePasswordSchema, socialLinksSchema } from '@user/schemas/user.schema'
+
+const userCache: UserCache = new UserCache()
 
 export class UserUpdate {
   @joiValidator(changePasswordSchema)
@@ -26,7 +30,7 @@ export class UserUpdate {
     if (!isPassword) throw new BadRequestError('Invalid password. Try again')
 
     const passwordHash: string = await authUser.hashPassword(newPassword)
-    userService.updatePassword(req.currentUser!.userId, passwordHash)
+    await userService.updatePassword(req.currentUser!.userId, passwordHash)
 
     const templateParams: IResetPasswordParams = {
       username,
@@ -45,5 +49,26 @@ export class UserUpdate {
     res.status(HTTP_STATUS.OK).json({
       message: 'Change password successful. You will be redirected to the login page shortly.'
     })
+  }
+
+  @joiValidator(basicInfoSchema)
+  public async info(req: Request, res: Response): Promise<void> {
+    const userId = req.currentUser!.userId
+    for (const [key, value] of Object.entries(req.body))
+      await userCache.updateUserProp(userId, key, `${value}`)
+
+    userQueue.addUserJob('updateUserInfo', { key: userId, value: req.body })
+
+    res.status(HTTP_STATUS.OK).json({ message: 'Update user info successful' })
+  }
+
+  @joiValidator(socialLinksSchema)
+  public async socials(req: Request, res: Response): Promise<void> {
+    const userId = req.currentUser!.userId
+
+    await userCache.updateUserProp(userId, 'social', req.body)
+    userQueue.addUserJob('updateSocials', { key: userId, value: req.body })
+
+    res.status(HTTP_STATUS.OK).json({ message: 'Update social links successful' })
   }
 }

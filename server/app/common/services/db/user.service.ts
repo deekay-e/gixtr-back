@@ -3,7 +3,12 @@ import { ObjectId } from 'mongodb'
 import { Utils } from '@global/helpers/utils'
 import { followService } from './follow.service'
 import { UserModel } from '@user/models/user.model'
-import { ISearchUser, IUserDocument } from '@user/interfaces/user.interface'
+import {
+  IBasicInfo,
+  ISearchUser,
+  ISocialLinks,
+  IUserDocument
+} from '@user/interfaces/user.interface'
 import { AuthModel } from '@auth/models/auth.model'
 
 class UserService {
@@ -102,6 +107,27 @@ class UserService {
 
   public async updatePassword(userId: string, password: string): Promise<void> {
     await UserModel.updateOne({ _id: userId }, { $set: { password } }).exec()
+  }
+
+  public async updateUserInfo(userId: string, info: IBasicInfo): Promise<void> {
+    await UserModel.updateOne(
+      { _id: userId },
+      {
+        $set: {
+          firstname: info['firstname'],
+          lastname: info['lastname'],
+          nickname: info['nickname'],
+          work: info['work'],
+          quote: info['quote'],
+          school: info['school'],
+          location: info['location']
+        }
+      }
+    ).exec()
+  }
+
+  public async updateSocials(userId: string, links: ISocialLinks): Promise<void> {
+    await UserModel.updateOne({ _id: userId }, { $set: { social: links } }).exec()
   }
 
   private projectAggregate() {

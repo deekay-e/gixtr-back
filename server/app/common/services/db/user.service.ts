@@ -1,10 +1,10 @@
 import { ObjectId } from 'mongodb'
-import { forEach } from 'lodash'
 
 import { Utils } from '@global/helpers/utils'
 import { followService } from './follow.service'
 import { UserModel } from '@user/models/user.model'
-import { IUserDocument } from '@user/interfaces/user.interface'
+import { ISearchUser, IUserDocument } from '@user/interfaces/user.interface'
+import { AuthModel } from '@auth/models/auth.model'
 
 class UserService {
   public async createUser(data: IUserDocument): Promise<void> {
@@ -80,6 +80,24 @@ class UserService {
   public async getUsersCount(): Promise<number> {
     const userCount: number = await UserModel.find({}).countDocuments()
     return userCount
+  }
+
+  public async searchUsers(regExp: RegExp): Promise<ISearchUser[]> {
+    const users = await AuthModel.aggregate([
+      { $match: { username: regExp } },
+      { $lookup: { from: 'users', localField: '_id', foreignField: 'authId', as: 'user' } },
+      { $unwind: '$user' },
+      {
+        $project: {
+          _id: '$user._id',
+          username: 1,
+          email: 1,
+          avatarColor: 1,
+          profilePicture: 1
+        }
+      }
+    ])
+    return users
   }
 
   private projectAggregate() {

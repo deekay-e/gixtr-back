@@ -4,6 +4,7 @@
 @userId = 66b1cbff9f767d45354bd44f
 @uId =
 @username =
+@query = oma
 
 ###
 PUT {{baseUrl}}/{{urlPath}}/user/block/{{followeeId}}
@@ -53,6 +54,12 @@ withCredentials: true
 
 ###
 GET {{baseUrl}}/{{urlPath}}/user/suggestions
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/search/{{query}}
 Content-Type: application/json
 Accept: application/json
 withCredentials: true

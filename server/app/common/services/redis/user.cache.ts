@@ -158,8 +158,8 @@ export class UserCache extends BaseCache {
 
       const userReplies: IUserDocument[] = []
       const users: string[] = await this.client.ZRANGE('user', 0, -1)
-      const followers: string[] = await this.client.LRANGE(`followers:${key}`, 0, -1)
-      const filteredUsers = filter(users, (user) => !followers.includes(user) && user !== key)
+      const followees: string[] = await this.client.LRANGE(`followees:${key}`, 0, -1)
+      const filteredUsers = filter(users, (user) => !followees.includes(user) && user !== key)
       const randomUsers: string[] = Utils.shuffle(filteredUsers).slice(0, 10)
       for (const user of randomUsers) {
         const userHash: IUserDocument = (await this.client.HGETALL(

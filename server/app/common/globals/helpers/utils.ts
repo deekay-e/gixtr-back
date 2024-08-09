@@ -50,4 +50,8 @@ export class Utils {
     }
     return list
   }
+
+  static escapeRegex(text: string): string {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+  }
 }

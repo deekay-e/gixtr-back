@@ -3,9 +3,14 @@ import moment from 'moment'
 import { Request, Response } from 'express'
 import HTTP_STATUS from 'http-status-codes'
 
+import {
+  basicInfoSchema,
+  changePasswordSchema,
+  notificationSettingsSchema,
+  socialLinksSchema
+} from '@user/schemas/user.schema'
 import { UserCache } from '@service/redis/user.cache'
 import { authService } from '@service/db/auth.service'
-import { userService } from '@service/db/user.service'
 import { mailQueue } from '@service/queues/mail.queue'
 import { userQueue } from '@service/queues/user.queue'
 import { BadRequestError } from '@global/helpers/error-handler'
@@ -13,7 +18,6 @@ import { IAuthDocument } from '@auth/interfaces/auth.interface'
 import { joiValidator } from '@global/decorators/joi-validation'
 import { IResetPasswordParams } from '@user/interfaces/user.interface'
 import { resetPassword } from '@service/email/templates/reset-password/template'
-import { basicInfoSchema, changePasswordSchema, socialLinksSchema } from '@user/schemas/user.schema'
 
 const userCache: UserCache = new UserCache()
 
@@ -30,7 +34,7 @@ export class UserUpdate {
     if (!isPassword) throw new BadRequestError('Invalid password. Try again')
 
     const passwordHash: string = await authUser.hashPassword(newPassword)
-    await userService.updatePassword(req.currentUser!.userId, passwordHash)
+    await authService.updatePassword(email, passwordHash)
 
     const templateParams: IResetPasswordParams = {
       username,
@@ -70,5 +74,15 @@ export class UserUpdate {
     userQueue.addUserJob('updateSocials', { key: userId, value: req.body })
 
     res.status(HTTP_STATUS.OK).json({ message: 'Update social links successful' })
+  }
+
+  @joiValidator(notificationSettingsSchema)
+  public async notifications(req: Request, res: Response): Promise<void> {
+    const userId = req.currentUser!.userId
+
+    await userCache.updateUserProp(userId, 'notifications', req.body)
+    userQueue.addUserJob('updateNotifications', { key: userId, value: req.body })
+
+    res.status(HTTP_STATUS.OK).json({ message: 'Update notification settings successful' })
   }
 }

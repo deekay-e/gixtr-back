@@ -40,6 +40,10 @@ class AuthService {
     return user
   }
 
+  public async updatePassword(email: string, password: string): Promise<void> {
+    await AuthModel.updateOne({ email }, { $set: { password } }).exec()
+  }
+
   public getToken(data: IAuthDocument, userObjectId: string): string {
     return AuthService.prototype.signToken(data, userObjectId)
   }

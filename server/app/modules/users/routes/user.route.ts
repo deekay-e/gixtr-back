@@ -41,6 +41,11 @@ class UserRoutes {
       authMiddleware.checkAuth,
       UserUpdate.prototype.password
     )
+    this.router.put(
+      '/user/notifications/change',
+      authMiddleware.checkAuth,
+      UserUpdate.prototype.notifications
+    )
     this.router.put('/user/info/change', authMiddleware.checkAuth, UserUpdate.prototype.info)
     this.router.put('/user/socials/change', authMiddleware.checkAuth, UserUpdate.prototype.socials)
 

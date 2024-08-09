@@ -5,6 +5,7 @@ import { followService } from './follow.service'
 import { UserModel } from '@user/models/user.model'
 import {
   IBasicInfo,
+  INotificationSettings,
   ISearchUser,
   ISocialLinks,
   IUserDocument
@@ -105,10 +106,6 @@ class UserService {
     return users
   }
 
-  public async updatePassword(userId: string, password: string): Promise<void> {
-    await UserModel.updateOne({ _id: userId }, { $set: { password } }).exec()
-  }
-
   public async updateUserInfo(userId: string, info: IBasicInfo): Promise<void> {
     await UserModel.updateOne(
       { _id: userId },
@@ -128,6 +125,13 @@ class UserService {
 
   public async updateSocials(userId: string, links: ISocialLinks): Promise<void> {
     await UserModel.updateOne({ _id: userId }, { $set: { social: links } }).exec()
+  }
+
+  public async editNotificationSettings(
+    userId: string,
+    notifications: INotificationSettings
+  ): Promise<void> {
+    await UserModel.updateOne({ _id: userId }, { $set: { notifications } }).exec()
   }
 
   private projectAggregate() {

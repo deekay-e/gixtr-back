@@ -64,6 +64,19 @@ withCredentials: true
 }
 
 ###
+PUT {{baseUrl}}/{{urlPath}}/user/notifications/change
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "facebook": "",
+  "twitter": "",
+  "youtube": "",
+  "instagram": ""
+}
+
+###
 GET {{baseUrl}}/{{urlPath}}/user/profiles/1
 Content-Type: application/json
 Accept: application/json

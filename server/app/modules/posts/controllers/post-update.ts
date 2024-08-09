@@ -8,20 +8,20 @@ import { postQueue } from '@service/queues/post.queue'
 import { uploads } from '@global/helpers/cloudinary-upload'
 import { BadRequestError } from '@global/helpers/error-handler'
 import { IPostDocument } from '@post/interfaces/post.interface'
-import { JoiValidator } from '@global/decorators/joi-validation'
+import { joiValidator } from '@global/decorators/joi-validation'
 import { postSchema, postWithImageSchema } from '@post/schemas/post.schema'
 
 const postCache: PostCache = new PostCache()
 
 export class PostUpdate {
-  @JoiValidator(postSchema)
+  @joiValidator(postSchema)
   public async minusImage(req: Request, res: Response): Promise<void> {
     PostUpdate.prototype.updatePost(req)
 
     res.status(HTTP_STATUS.OK).json({ message: 'Post update successful' })
   }
 
-  @JoiValidator(postWithImageSchema)
+  @joiValidator(postWithImageSchema)
   public async plusImage(req: Request, res: Response): Promise<void> {
     const { imgId, imgVersion } = req.body
     if (imgId && imgVersion) PostUpdate.prototype.updatePost(req)

@@ -4,14 +4,14 @@ import HTTP_STATUS from 'http-status-codes'
 //import { socketIONotificationObject } from '@socket/reaction'
 import { ReactionCache } from '@service/redis/reaction.cache'
 import { reactionQueue } from '@service/queues/reaction.queue'
-import { JoiValidator } from '@global/decorators/joi-validation'
+import { joiValidator } from '@global/decorators/joi-validation'
 import { removeReactionSchema } from '@reaction/schemas/reactions'
 import { IReactionJob, IReactions } from '@reaction/interfaces/reaction.interface'
 
 const reactionCache: ReactionCache = new ReactionCache()
 
 export class ReactionRemove {
-  @JoiValidator(removeReactionSchema)
+  @joiValidator(removeReactionSchema)
   public async init(req: Request, res: Response): Promise<void> {
     const username = req.currentUser!.username
     const { postId, prevReaction } = req.params

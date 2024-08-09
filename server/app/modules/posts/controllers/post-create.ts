@@ -10,14 +10,14 @@ import { imageQueue } from '@service/queues/image.queue'
 import { uploads } from '@global/helpers/cloudinary-upload'
 import { BadRequestError } from '@global/helpers/error-handler'
 import { IPostDocument } from '@post/interfaces/post.interface'
-import { JoiValidator } from '@global/decorators/joi-validation'
+import { joiValidator } from '@global/decorators/joi-validation'
 import { IFileImageJob } from '@image/interfaces/image.interface'
 import { postSchema, postWithImageSchema } from '@post/schemas/post.schema'
 
 const postCache: PostCache = new PostCache()
 
 export class PostCreate {
-  @JoiValidator(postSchema)
+  @joiValidator(postSchema)
   public async minusImage(req: Request, res: Response): Promise<void> {
     const userId: string = req.currentUser!.userId
     const { post, bgColor, scope, gifUrl, profilePicture, feelings } = req.body
@@ -57,7 +57,7 @@ export class PostCreate {
     res.status(HTTP_STATUS.CREATED).json({ message: 'Create post successful' })
   }
 
-  @JoiValidator(postWithImageSchema)
+  @joiValidator(postWithImageSchema)
   public async plusImage(req: Request, res: Response): Promise<void> {
     const userId: string = req.currentUser!.userId
     const { post, bgColor, scope, gifUrl, profilePicture, feelings, image } = req.body

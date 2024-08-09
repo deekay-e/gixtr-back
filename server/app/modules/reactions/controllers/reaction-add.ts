@@ -5,13 +5,13 @@ import HTTP_STATUS from 'http-status-codes'
 import { ReactionCache } from '@service/redis/reaction.cache'
 import { reactionQueue } from '@service/queues/reaction.queue'
 import { addReactionSchema } from '@reaction/schemas/reactions'
-import { JoiValidator } from '@global/decorators/joi-validation'
+import { joiValidator } from '@global/decorators/joi-validation'
 import { IReactionDocument, IReactionJob } from '@reaction/interfaces/reaction.interface'
 
 const reactionCache: ReactionCache = new ReactionCache()
 
 export class ReactionAdd {
-  @JoiValidator(addReactionSchema)
+  @joiValidator(addReactionSchema)
   public async init(req: Request, res: Response): Promise<void> {
     const username = req.currentUser!.username
     const { userTo, postId, type, prevReaction, postReactions, profilePicture } = req.body

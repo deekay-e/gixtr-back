@@ -5,7 +5,7 @@ import { JoiRequestValidationError } from '@global/helpers/error-handler'
 
 type IJoiDecorator = (target: any, key: string, descriptor: PropertyDescriptor) => void
 
-export function JoiValidator(schema: ObjectSchema): IJoiDecorator {
+export function joiValidator(schema: ObjectSchema): IJoiDecorator {
   return (_target: any, _key: any, descriptor: PropertyDescriptor) => {
     const OriginalMethod = descriptor.value
 

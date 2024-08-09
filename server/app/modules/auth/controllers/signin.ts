@@ -8,10 +8,10 @@ import { userService } from '@service/db/user.service'
 import { IAuthDocument } from '@auth/interfaces/auth.interface'
 import { IUserDocument } from '@user/interfaces/user.interface'
 import { BadRequestError } from '@global/helpers/error-handler'
-import { JoiValidator } from '@global/decorators/joi-validation'
+import { joiValidator } from '@global/decorators/joi-validation'
 
 export class Signin {
-  @JoiValidator(loginSchema)
+  @joiValidator(loginSchema)
   public async read(req: Request, res: Response): Promise<void> {
     const { login, password } = req.body
     const email = Utils.isEmail(login) ? login : ''

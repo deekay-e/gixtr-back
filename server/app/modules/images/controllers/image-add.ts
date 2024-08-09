@@ -10,7 +10,7 @@ import { uploads } from '@global/helpers/cloudinary-upload'
 import { addImageSchema } from '@image/schemas/image.schema'
 import { BadRequestError } from '@global/helpers/error-handler'
 import { IUserDocument } from '@user/interfaces/user.interface'
-import { JoiValidator } from '@global/decorators/joi-validation'
+import { joiValidator } from '@global/decorators/joi-validation'
 import { IBgUploadResponse, IFileImageJob } from '@image/interfaces/image.interface'
 import { Utils } from '@global/helpers/utils'
 
@@ -18,7 +18,7 @@ const CN: string = config.CLOUD_NAME!
 const userCache: UserCache = new UserCache()
 
 export class ImageAdd {
-  @JoiValidator(addImageSchema)
+  @joiValidator(addImageSchema)
   public async init(req: Request, res: Response): Promise<void> {
     const { image } = req.body
     const userId = req.currentUser!.userId
@@ -39,7 +39,7 @@ export class ImageAdd {
     res.status(HTTP_STATUS.OK).json({ message: 'Add image successful' })
   }
 
-  @JoiValidator(addImageSchema)
+  @joiValidator(addImageSchema)
   public async profilePicture(req: Request, res: Response): Promise<void> {
     const { image } = req.body
     const userId = req.currentUser!.userId
@@ -69,7 +69,7 @@ export class ImageAdd {
     res.status(HTTP_STATUS.OK).json({ message: 'Add profile picture successful' })
   }
 
-  @JoiValidator(addImageSchema)
+  @joiValidator(addImageSchema)
   public async backgroundPicture(req: Request, res: Response): Promise<void> {
     const { image } = req.body
     const userId = req.currentUser!.userId

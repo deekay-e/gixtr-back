@@ -100,6 +100,10 @@ class UserService {
     return users
   }
 
+  public async updatePassword(userId: string, password: string): Promise<void> {
+    await UserModel.updateOne({ _id: userId }, { $set: { password } } ).exec()
+  }
+
   private projectAggregate() {
     return {
       _id: 1,

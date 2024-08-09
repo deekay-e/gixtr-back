@@ -14,14 +14,14 @@ import { userQueue } from '@service/queues/user.queue'
 import { uploads } from '@global/helpers/cloudinary-upload'
 import { IUserDocument } from '@user/interfaces/user.interface'
 import { BadRequestError } from '@global/helpers/error-handler'
-import { JoiValidator } from '@global/decorators/joi-validation'
+import { joiValidator } from '@global/decorators/joi-validation'
 import { IAuthDocument, ISignUpData } from '@auth/interfaces/auth.interface'
 
 const CN: string = config.CLOUD_NAME!
 const userCache: UserCache = new UserCache()
 
 export class Signup {
-  @JoiValidator(registerSchema)
+  @joiValidator(registerSchema)
   public async create(req: Request, res: Response): Promise<void> {
     const { username, password, email, avatarColor, avatarImage } = req.body
     const dupUser: IAuthDocument = await authService.getUser(username, email)

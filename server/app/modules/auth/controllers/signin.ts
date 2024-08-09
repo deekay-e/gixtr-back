@@ -17,7 +17,7 @@ export class Signin {
     const email = Utils.isEmail(login) ? login : ''
     const username = !Utils.isEmail(login) ? login : ''
 
-    const authUser: IAuthDocument = await authService.getUser(username, email)
+    const authUser: IAuthDocument = await authService.getAuthUser(username, email)
     if (!authUser) throw new BadRequestError('Invalid login credentials')
 
     const isPassword: boolean = await authUser.comparePassword(password)

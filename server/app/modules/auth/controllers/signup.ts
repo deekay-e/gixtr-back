@@ -24,7 +24,7 @@ export class Signup {
   @joiValidator(registerSchema)
   public async create(req: Request, res: Response): Promise<void> {
     const { username, password, email, avatarColor, avatarImage } = req.body
-    const dupUser: IAuthDocument = await authService.getUser(username, email)
+    const dupUser: IAuthDocument = await authService.getAuthUser(username, email)
     if (dupUser) throw new BadRequestError('User already exists')
 
     const uId = `${Utils.genRandomInt(16)}`

@@ -21,7 +21,7 @@ export class Password {
   @joiValidator(emailSchema)
   public async forgot(req: Request, res: Response): Promise<void> {
     const { email } = req.body
-    const authUser: IAuthDocument = await authService.getAuthUserByEmail(email)
+    const authUser: IAuthDocument = await authService.getAuthUser('', email)
     if (!authUser) throw new BadRequestError('Invalid email credential.')
 
     const randomBytes: Buffer = await Promise.resolve(crypto.randomBytes(20))

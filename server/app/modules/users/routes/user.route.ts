@@ -4,6 +4,7 @@ import { UserGet } from '@user/controllers/user-get'
 import { UserBlock } from '@user/controllers/user-block'
 import { UserSearch } from '@user/controllers/user-search'
 import { authMiddleware } from '@global/helpers/auth-middleware'
+import { UserUpdate } from '@user/controllers/user-update'
 
 class UserRoutes {
   private router: Router
@@ -27,17 +28,18 @@ class UserRoutes {
       authMiddleware.checkAuth,
       UserGet.prototype.profileAndPosts
     )
-    this.router.get(
-      '/user/suggestions',
-      authMiddleware.checkAuth,
-      UserGet.prototype.suggestions
-    )
+    this.router.get('/user/suggestions', authMiddleware.checkAuth, UserGet.prototype.suggestions)
 
     this.router.put('/user/block/:followeeId', authMiddleware.checkAuth, UserBlock.prototype.block)
     this.router.put(
       '/user/unblock/:followeeId',
       authMiddleware.checkAuth,
       UserBlock.prototype.unblock
+    )
+    this.router.put(
+      '/user/password/change',
+      authMiddleware.checkAuth,
+      UserUpdate.prototype.password
     )
 
     return this.router

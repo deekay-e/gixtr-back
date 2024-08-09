@@ -59,7 +59,7 @@ export class Password {
     }
 
     const template: string = resetPassword.render(templateParams)
-    mailQueue.addMailJob('resetPasswordMail', {
+    mailQueue.addMailJob('resetPassword', {
       template,
       receiver: authUser.email!,
       subject: 'Password reset confirmation'

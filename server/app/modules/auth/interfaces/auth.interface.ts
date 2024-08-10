@@ -12,12 +12,13 @@ declare global {
 }
 
 export interface AuthPayload {
-  userId: string
   uId: string
+  iat?: number
   email: string
+  userId: string
+  roles: string[]
   username: string
   avatarColor: string
-  iat?: number
 }
 
 export interface IAuthDocument extends Document {
@@ -25,6 +26,7 @@ export interface IAuthDocument extends Document {
   uId: string
   username: string
   email: string
+  roles: string[]
   password?: string
   avatarColor: string
   createdAt: Date
@@ -38,6 +40,7 @@ export interface ISignUpData {
   _id: ObjectId
   uId: string
   email: string
+  roles: string[]
   username: string
   password: string
   avatarColor: string

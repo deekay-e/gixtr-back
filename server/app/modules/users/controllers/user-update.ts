@@ -13,6 +13,7 @@ import { UserCache } from '@service/redis/user.cache'
 import { authService } from '@service/db/auth.service'
 import { mailQueue } from '@service/queues/mail.queue'
 import { userQueue } from '@service/queues/user.queue'
+import { roleSchema } from '@user/schemas/role.schema'
 import { BadRequestError } from '@global/helpers/error-handler'
 import { IAuthDocument } from '@auth/interfaces/auth.interface'
 import { joiValidator } from '@global/decorators/joi-validation'
@@ -64,6 +65,17 @@ export class UserUpdate {
     userQueue.addUserJob('updateUserInfo', { key: userId, value: req.body })
 
     res.status(HTTP_STATUS.OK).json({ message: 'Update user info successful' })
+  }
+
+  @joiValidator(roleSchema)
+  public async roles(req: Request, res: Response): Promise<void> {
+    const { userId, type, role } = req.body
+    const userID = userId ? userId : req.currentUser!.userId
+
+    await userCache.updateUserPropArray({ userId: userID, type, role }, 'roles')
+    userQueue.addUserJob('updateRoles', { value: { type, role, userId: userID } })
+
+    res.status(HTTP_STATUS.OK).json({ message: 'Update social links successful' })
   }
 
   @joiValidator(socialLinksSchema)

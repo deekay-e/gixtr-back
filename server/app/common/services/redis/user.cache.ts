@@ -1,12 +1,12 @@
 import Logger from 'bunyan'
-import { filter } from 'lodash'
+import { filter, remove } from 'lodash'
 
 import { config } from '@/config'
 import { Utils } from '@global/helpers/utils'
 import { BaseCache } from '@service/redis/base.cache'
 import { ServerError } from '@global/helpers/error-handler'
 import { RedisCommandRawReply } from '@redis/client/dist/lib/commands'
-import { INotificationSettings, ISocialLinks, IUserDocument } from '@user/interfaces/user.interface'
+import { INotificationSettings, IRole, ISocialLinks, IUserDocument } from '@user/interfaces/user.interface'
 
 const log: Logger = config.createLogger('userCache')
 
@@ -190,7 +190,7 @@ export class UserCache extends BaseCache {
   }
 
   /**
-   * getUser
+   * updateUserProp
    */
   public async updateUserProp(
     key: string,
@@ -204,6 +204,27 @@ export class UserCache extends BaseCache {
       const user: IUserDocument = (await this.getUser(key)) as IUserDocument
 
       return user
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
+
+  /**
+   * updateUserPropArray
+   */
+  public async updateUserPropArray(value: IRole, prop: string): Promise<void> {
+    const { type, userId, role } = value
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+
+      const props: string = (await this.client.HGET(`users:${userId}`, prop)) as string
+      let roles: string[] = Utils.parseJson(props) as string[]
+      if (type === 'add' && !roles.includes(role)) roles.push(role)
+      if (type === 'remove' && roles.includes(role))
+        remove(roles, (id: string) => id === role)
+
+      await this.client.HSET(`users:${userId}`, prop, JSON.stringify(roles))
     } catch (error) {
       log.error(error)
       throw new ServerError('Server error. Try again.')

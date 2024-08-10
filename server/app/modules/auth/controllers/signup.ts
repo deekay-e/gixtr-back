@@ -23,7 +23,8 @@ const userCache: UserCache = new UserCache()
 export class Signup {
   @joiValidator(registerSchema)
   public async create(req: Request, res: Response): Promise<void> {
-    const { username, password, email, avatarColor, avatarImage } = req.body
+    const { username, password, email, avatarColor, avatarImage, roles } = req.body
+    const defaultRoles = roles.length ? roles : ['org:user']
     const dupUser: IAuthDocument = await authService.getAuthUser(username, email)
     if (dupUser) throw new BadRequestError('User already exists')
 
@@ -36,7 +37,8 @@ export class Signup {
       username,
       email,
       password,
-      avatarColor
+      avatarColor,
+      roles: defaultRoles
     })
     const img: UploadApiResponse = (await uploads(
       avatarImage,

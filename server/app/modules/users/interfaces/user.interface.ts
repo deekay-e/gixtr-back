@@ -1,3 +1,4 @@
+import { string } from 'joi'
 import { ObjectId } from 'mongodb'
 import { Document } from 'mongoose'
 
@@ -77,11 +78,17 @@ export interface ILogin {
   userId: string
 }
 
+export interface IRole {
+  type: string
+  role: string
+  userId?: string
+}
+
 export interface IUserJob {
   keyOne?: string
   keyTwo?: string
   key?: string
-  value?: string | INotificationSettings | IUserDocument | ISocialLinks
+  value?: string | INotificationSettings | IUserDocument | ISocialLinks | IRole
 }
 
 export interface IMailJob {

@@ -17,8 +17,9 @@ import { roleSchema } from '@user/schemas/role.schema'
 import { BadRequestError } from '@global/helpers/error-handler'
 import { IAuthDocument } from '@auth/interfaces/auth.interface'
 import { joiValidator } from '@global/decorators/joi-validation'
-import { IResetPasswordParams } from '@user/interfaces/user.interface'
+import { IResetPasswordParams, IUserDocument } from '@user/interfaces/user.interface'
 import { resetPassword } from '@service/email/templates/reset-password/template'
+import { userService } from '@service/db/user.service'
 
 const userCache: UserCache = new UserCache()
 
@@ -70,12 +71,11 @@ export class UserUpdate {
   @joiValidator(roleSchema)
   public async roles(req: Request, res: Response): Promise<void> {
     const { userId, type, role } = req.body
-    const userID = userId ? userId : req.currentUser!.userId
+    const user: IUserDocument = await userService.getUserById(userId)
+    await userCache.updateUserPropArray(req.body, 'roles')
+    userQueue.addUserJob('updateRoles', { value: { userId: `${user.authId}`, type, role } })
 
-    await userCache.updateUserPropArray({ userId: userID, type, role }, 'roles')
-    userQueue.addUserJob('updateRoles', { value: { type, role, userId: userID } })
-
-    res.status(HTTP_STATUS.OK).json({ message: 'Update social links successful' })
+    res.status(HTTP_STATUS.OK).json({ message: 'Update user roles successful' })
   }
 
   @joiValidator(socialLinksSchema)

@@ -1,5 +1,5 @@
 import JWT from 'jsonwebtoken'
-import { PullOperator, PushOperator } from 'mongodb'
+import { ObjectId, PullOperator, PushOperator } from 'mongodb'
 
 import { config } from '@/config'
 import { Utils } from '@global/helpers/utils'
@@ -46,16 +46,17 @@ class AuthService {
     await AuthModel.updateOne({ email }, { $set: { password } }).exec()
   }
 
-  public async updateRoles(role: IRole): Promise<void> {
-    if (role.type === 'add') {
+  public async updateRoles(data: IRole): Promise<void> {
+    const { type, userId, role } = data
+    if (type === 'add') {
       await AuthModel.updateOne(
-        { _id: role.userId },
-        { $push: { roles: role.role } as PushOperator<IAuthDocument> }
+        { _id: userId },
+        { $push: { roles: role } as PushOperator<IAuthDocument> }
       ).exec()
     } else {
       await AuthModel.updateOne(
-        { _id: role.userId },
-        { $pull: { roles: role.role } as PullOperator<IAuthDocument> }
+        { _id: userId },
+        { $pull: { roles: role } as PullOperator<IAuthDocument> }
       ).exec()
     }
   }

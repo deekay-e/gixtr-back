@@ -20,8 +20,8 @@ class UserService {
   public async getUserById(userId: string): Promise<IUserDocument> {
     const users: IUserDocument[] = await UserModel.aggregate([
       { $match: { _id: new ObjectId(userId) } },
-      { $lookup: { from: 'auth', localField: 'authId', foreignField: '_id', as: 'authId' } },
-      { $unwind: '$authId' },
+      { $lookup: { from: 'auth', localField: 'authId', foreignField: '_id', as: 'auth' } },
+      { $unwind: '$auth' },
       { $project: this.projectAggregate() }
     ])
     return users[0]
@@ -138,6 +138,7 @@ class UserService {
     return {
       _id: 1,
       uId: '$auth.uId',
+      authId: '$auth._id',
       email: '$auth.email',
       username: '$auth.username',
       avatarColor: '$auth.avatarColor',

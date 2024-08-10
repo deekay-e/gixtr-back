@@ -67,10 +67,11 @@ export class Signup {
   }
 
   private getSignupData(data: ISignUpData): IAuthDocument {
-    const { _id, uId, username, email, password, avatarColor } = data
+    const { _id, uId, username, email, password, avatarColor, roles } = data
     return {
       _id,
       uId,
+      roles,
       username: Utils.capitalize(username),
       email: Utils.lowercase(email),
       password,
@@ -80,11 +81,11 @@ export class Signup {
   }
 
   private getUserData(data: IAuthDocument, userOId: ObjectId): IUserDocument {
-    const { _id, username, email, uId, password, avatarColor } = data
+    const { _id, username, email, uId, password, avatarColor, roles } = data
     return {
       _id: userOId,
-      authId: _id,
       uId,
+      authId: _id,
       username: Utils.capitalize(username),
       email,
       password,
@@ -112,7 +113,8 @@ export class Signup {
         instagram: '',
         twitter: '',
         youtube: ''
-      }
+      },
+      roles
     } as unknown as IUserDocument
   }
 }

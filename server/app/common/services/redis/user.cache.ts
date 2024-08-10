@@ -32,6 +32,7 @@ export class UserCache extends BaseCache {
     const {
       _id,
       uId,
+      authId,
       email,
       blocked,
       username,
@@ -48,12 +49,14 @@ export class UserCache extends BaseCache {
       school,
       social,
       quote,
-      work
+      work,
+      roles
     } = createdUser
     const dataToSave = {
       _id: `${_id}`,
       uId: `${uId}`,
       email: `${email}`,
+      authId: `${authId}`,
       username: `${username}`,
       createdAt: `${createdAt}`,
       postsCount: `${postsCount}`,
@@ -62,10 +65,11 @@ export class UserCache extends BaseCache {
       profilePicture: `${profilePicture}`,
       followersCount: `${followersCount}`,
       followingCount: `${followingCount}`,
-      blockedBy: JSON.stringify(blockedBy),
       notifications: JSON.stringify(notifications),
+      blockedBy: JSON.stringify(blockedBy),
       bgImageVersion: `${bgImageVersion}`,
       social: JSON.stringify(social),
+      roles: JSON.stringify(roles),
       bgImageId: `${bgImageId}`,
       location: `${location}`,
       school: `${school}`,
@@ -94,6 +98,7 @@ export class UserCache extends BaseCache {
       const res: IUserDocument = (await this.client.HGETALL(
         `users:${key}`
       )) as unknown as IUserDocument
+      res.roles = Utils.parseJson(`${res.roles}`)
       res.social = Utils.parseJson(`${res.social}`)
       res.blocked = Utils.parseJson(`${res.blocked}`)
       res.bgImageId = Utils.parseJson(`${res.bgImageId}`)
@@ -219,7 +224,7 @@ export class UserCache extends BaseCache {
       if (!this.client.isOpen) await this.client.connect()
 
       const props: string = (await this.client.HGET(`users:${userId}`, prop)) as string
-      let roles: string[] = Utils.parseJson(props) as string[]
+      const roles: string[] = Utils.parseJson(props) as string[]
       if (type === 'add' && !roles.includes(role)) roles.push(role)
       if (type === 'remove' && roles.includes(role))
         remove(roles, (id: string) => id === role)

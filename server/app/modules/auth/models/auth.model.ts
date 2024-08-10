@@ -30,7 +30,7 @@ const authSchema: Schema = new Schema(
 authSchema.pre('save', async function (this: IAuthDocument, next: () => void) {
   const hashedPassword: string = await hash(this.password as string, SALT_ROUND)
   this.password = hashedPassword
-  if (!this.roles.length) this.roles.push('user')
+  if (!this.roles.length) this.roles.push('org:user')
   next()
 })
 

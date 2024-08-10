@@ -29,7 +29,7 @@ export interface IGetPostsQuery {
   gifUrl?: string
 }
 
-export interface ISavePostToCache {
+export interface ISavePost {
   key: ObjectId | string
   currentUserId: string
   uId: string

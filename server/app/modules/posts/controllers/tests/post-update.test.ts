@@ -37,7 +37,7 @@ describe('PostUpdate', () => {
     jest.clearAllTimers()
   })
 
-  describe('minusImage', () => {
+  describe('solo', () => {
     it('should send correct json response', async () => {
       const req: Request = postMockRequest(updatedPost, authUserPayload, {
         postId: `${postMockData._id}`
@@ -47,7 +47,7 @@ describe('PostUpdate', () => {
       jest.spyOn(postServer.socketIOPostObject, 'emit')
       jest.spyOn(postQueue, 'addPostJob')
 
-      await PostUpdate.prototype.minusImage(req, res)
+      await PostUpdate.prototype.solo(req, res)
       expect(postSpy).toHaveBeenCalledWith(`${postMockData._id}`, updatedPost)
       expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith(
         'update post',

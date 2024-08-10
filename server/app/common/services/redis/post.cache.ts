@@ -6,7 +6,7 @@ import { Utils } from '@global/helpers/utils'
 import { BaseCache } from '@service/redis/base.cache'
 import { ServerError } from '@global/helpers/error-handler'
 import { RedisCommandRawReply } from '@redis/client/dist/lib/commands'
-import { IPostDocument, ISavePostToCache } from '@post/interfaces/post.interface'
+import { IPostDocument, ISavePost } from '@post/interfaces/post.interface'
 
 const log: Logger = config.createLogger('postCache')
 
@@ -26,7 +26,7 @@ export class PostCache extends BaseCache {
   /**
    * addPost
    */
-  public async addPost(data: ISavePostToCache): Promise<void> {
+  public async addPost(data: ISavePost): Promise<void> {
     const { key, currentUserId, uId, newPost } = data
     const {
       _id,
@@ -148,9 +148,9 @@ export class PostCache extends BaseCache {
   }
 
   /**
-   * getPostsWithImages
+   * getPostsWithImage
    */
-  public async getPostsWithImages(
+  public async getPostsWithImage(
     key: string,
     start: number,
     end: number
@@ -178,6 +178,11 @@ export class PostCache extends BaseCache {
       throw new ServerError('Server error. Try again.')
     }
   }
+
+  /**
+   * getPostWithVideos
+   */
+  public async getPostWithVideo(data: ISavePost): Promise<void> {}
 
   /**
    * getUserPosts

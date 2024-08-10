@@ -15,7 +15,7 @@ const postCache: PostCache = new PostCache()
 
 export class PostUpdate {
   @joiValidator(postSchema)
-  public async minusImage(req: Request, res: Response): Promise<void> {
+  public async solo(req: Request, res: Response): Promise<void> {
     PostUpdate.prototype.updatePost(req)
 
     res.status(HTTP_STATUS.OK).json({ message: 'Post update successful' })
@@ -32,6 +32,9 @@ export class PostUpdate {
 
     res.status(HTTP_STATUS.OK).json({ message: 'Post update with image successful' })
   }
+
+  @joiValidator(postWithImageSchema)
+  public async plusVideo(req: Request, res: Response): Promise<void> {}
 
   private async updatePost(req: Request): Promise<void> {
     const { postId } = req.params

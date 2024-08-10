@@ -18,7 +18,7 @@ const postCache: PostCache = new PostCache()
 
 export class PostCreate {
   @joiValidator(postSchema)
-  public async minusImage(req: Request, res: Response): Promise<void> {
+  public async solo(req: Request, res: Response): Promise<void> {
     const userId: string = req.currentUser!.userId
     const { post, bgColor, scope, gifUrl, profilePicture, feelings } = req.body
 
@@ -106,5 +106,10 @@ export class PostCreate {
     imageQueue.addImageJob('addImage', imageJob)
 
     res.status(HTTP_STATUS.CREATED).json({ message: 'Create post with image successful' })
+  }
+
+  @joiValidator(postWithImageSchema)
+  public async plusVidee(req: Request, res: Response): Promise<void> {
+    //
   }
 }

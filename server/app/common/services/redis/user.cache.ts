@@ -6,7 +6,12 @@ import { Utils } from '@global/helpers/utils'
 import { BaseCache } from '@service/redis/base.cache'
 import { ServerError } from '@global/helpers/error-handler'
 import { RedisCommandRawReply } from '@redis/client/dist/lib/commands'
-import { INotificationSettings, IRole, ISocialLinks, IUserDocument } from '@user/interfaces/user.interface'
+import {
+  INotificationSettings,
+  IRole,
+  ISocialLinks,
+  IUserDocument
+} from '@user/interfaces/user.interface'
 
 const log: Logger = config.createLogger('userCache')
 
@@ -226,8 +231,7 @@ export class UserCache extends BaseCache {
       const props: string = (await this.client.HGET(`users:${userId}`, prop)) as string
       const roles: string[] = Utils.parseJson(props) as string[]
       if (type === 'add' && !roles.includes(role)) roles.push(role)
-      if (type === 'remove' && roles.includes(role))
-        remove(roles, (id: string) => id === role)
+      if (type === 'remove' && roles.includes(role)) remove(roles, (id: string) => id === role)
 
       await this.client.HSET(`users:${userId}`, prop, JSON.stringify(roles))
     } catch (error) {

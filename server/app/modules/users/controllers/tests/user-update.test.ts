@@ -4,7 +4,6 @@ import { existingUser } from '@mock/user.mock'
 import { UserCache } from '@service/redis/user.cache'
 import { userQueue } from '@service/queues/user.queue'
 import { mailQueue } from '@service/queues/mail.queue'
-import { userService } from '@service/db/user.service'
 import { authService } from '@service/db/auth.service'
 import { UserUpdate } from '@user/controllers/user-update'
 import { CustomError } from '@global/helpers/error-handler'
@@ -70,7 +69,9 @@ describe('UserUpdate', () => {
       const res: Response = authMockResponse()
       UserUpdate.prototype.password(req, res).catch((error: CustomError) => {
         expect(error.statusCode).toEqual(400)
-        expect(error.serializeErrors().message).toEqual('Confirm password does not match new password.')
+        expect(error.serializeErrors().message).toEqual(
+          'Confirm password does not match new password.'
+        )
       })
     })
 
@@ -118,7 +119,10 @@ describe('UserUpdate', () => {
       const spy = jest.spyOn(mailQueue, 'addMailJob')
 
       await UserUpdate.prototype.password(req, res)
-      expect(authService.updatePassword).toHaveBeenCalledWith(`${req.currentUser!.username}`, 'djejdjr123482ejsj')
+      expect(authService.updatePassword).toHaveBeenCalledWith(
+        `${req.currentUser!.username}`,
+        'djejdjr123482ejsj'
+      )
       expect(mailQueue.addMailJob).toHaveBeenCalledWith(spy.mock.calls[0][0], spy.mock.calls[0][1])
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
@@ -141,7 +145,11 @@ describe('UserUpdate', () => {
 
       await UserUpdate.prototype.info(req, res)
       for (const [key, value] of Object.entries(req.body)) {
-        expect(UserCache.prototype.updateUserProp).toHaveBeenCalledWith(`${req.currentUser?.userId}`, key, `${value}`)
+        expect(UserCache.prototype.updateUserProp).toHaveBeenCalledWith(
+          `${req.currentUser?.userId}`,
+          key,
+          `${value}`
+        )
       }
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
@@ -185,7 +193,11 @@ describe('UserUpdate', () => {
       jest.spyOn(UserCache.prototype, 'updateUserProp')
 
       await UserUpdate.prototype.socials(req, res)
-      expect(UserCache.prototype.updateUserProp).toHaveBeenCalledWith(`${req.currentUser?.userId}`, 'social', req.body)
+      expect(UserCache.prototype.updateUserProp).toHaveBeenCalledWith(
+        `${req.currentUser?.userId}`,
+        'social',
+        req.body
+      )
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
         message: 'Update social links successful'
@@ -229,13 +241,20 @@ describe('UserUpdate', () => {
       jest.spyOn(userQueue, 'addUserJob')
 
       await UserUpdate.prototype.notifications(req, res)
-      expect(UserCache.prototype.updateUserProp).toHaveBeenCalledWith(`${req.currentUser?.userId}`, 'notifications', req.body)
+      expect(UserCache.prototype.updateUserProp).toHaveBeenCalledWith(
+        `${req.currentUser?.userId}`,
+        'notifications',
+        req.body
+      )
       expect(userQueue.addUserJob).toHaveBeenCalledWith('updateNotifications', {
         key: `${req.currentUser?.userId}`,
         value: req.body
       })
       expect(res.status).toHaveBeenCalledWith(200)
-      expect(res.json).toHaveBeenCalledWith({ message: 'Update notification settings successful', settings: req.body })
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Update notification settings successful',
+        settings: req.body
+      })
     })
   })
 })

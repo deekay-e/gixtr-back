@@ -71,8 +71,10 @@ export class UserUpdate {
   @joiValidator(roleSchema)
   public async roles(req: Request, res: Response): Promise<void> {
     const { userId, type, role } = req.body
-    const cachedUser: IUserDocument = await userCache.getUser(userId) as IUserDocument
-    const user: IUserDocument = cachedUser.authId ? cachedUser : await userService.getUserById(userId)
+    const cachedUser: IUserDocument = (await userCache.getUser(userId)) as IUserDocument
+    const user: IUserDocument = cachedUser.authId
+      ? cachedUser
+      : await userService.getUserById(userId)
     await userCache.updateUserPropArray(req.body, 'roles')
     userQueue.addUserJob('updateRoles', { value: { userId: `${user.authId}`, type, role } })
 

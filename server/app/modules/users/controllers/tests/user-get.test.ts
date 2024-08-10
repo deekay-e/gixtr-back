@@ -40,7 +40,9 @@ describe('UserGet', () => {
       jest.spyOn(UserCache.prototype, 'getUsersCount').mockResolvedValue(1)
       jest.spyOn(FollowCache.prototype, 'getFollows').mockResolvedValue([mockFollowerData])
       await UserGet.prototype.profiles(req, res)
-      expect(FollowCache.prototype.getFollows).toHaveBeenCalledWith(`followees:${req.currentUser!.userId}`)
+      expect(FollowCache.prototype.getFollows).toHaveBeenCalledWith(
+        `followees:${req.currentUser!.userId}`
+      )
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
         message: 'Get user profiles successful',
@@ -61,7 +63,9 @@ describe('UserGet', () => {
       jest.spyOn(userService, 'getUsersCount').mockResolvedValue(1)
 
       await UserGet.prototype.profiles(req, res)
-      expect(followService.getFollowees).toHaveBeenCalledWith(new mongoose.Types.ObjectId(req.currentUser!.userId))
+      expect(followService.getFollowees).toHaveBeenCalledWith(
+        new mongoose.Types.ObjectId(req.currentUser!.userId)
+      )
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
         message: 'Get user profiles successful',
@@ -115,7 +119,10 @@ describe('UserGet', () => {
 
       await UserGet.prototype.profileAndPosts(req, res)
       expect(UserCache.prototype.getUser).toHaveBeenCalledWith(`${req.currentUser?.userId}`)
-      expect(PostCache.prototype.getUserPosts).toHaveBeenCalledWith('post', parseInt(req.params.uId, 10))
+      expect(PostCache.prototype.getUserPosts).toHaveBeenCalledWith(
+        'post',
+        parseInt(req.params.uId, 10)
+      )
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
         message: 'Get user profile and posts successful',
@@ -140,7 +147,9 @@ describe('UserGet', () => {
 
       await UserGet.prototype.profileAndPosts(req, res)
       expect(userService.getUserById).toHaveBeenCalledWith(existingUser._id)
-      expect(postService.getPosts).toHaveBeenCalledWith({ username: userName }, 0, 100, { createdAt: -1 })
+      expect(postService.getPosts).toHaveBeenCalledWith({ username: userName }, 0, 100, {
+        createdAt: -1
+      })
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
         message: 'Get user profile and posts successful',

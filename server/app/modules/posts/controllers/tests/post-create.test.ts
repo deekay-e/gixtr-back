@@ -118,4 +118,63 @@ describe('PostCreate', () => {
       })
     })
   })
+
+  describe('postWithVideo', () => {
+    it('should throw an error if video is not available', () => {
+      delete post.video
+      const req: Request = postMockRequest(post, authUserPayload) as Request
+      const res: Response = postMockResponse()
+
+      PostCreate.prototype.plusVideo(req, res).catch((error: CustomError) => {
+        expect(error.statusCode).toEqual(400)
+        expect(error.serializeErrors().message).toEqual('Video is a required field')
+      })
+    })
+
+    it('should throw an upload error', () => {
+      post.video = 'data:text/plainbase64,SGVsbG8sIFdvcmxkIQ=='
+      const req: Request = postMockRequest(post, authUserPayload) as Request
+      const res: Response = postMockResponse()
+      jest
+        .spyOn(cloudinaryUploads, 'uploads')
+        .mockImplementation((): any =>
+          Promise.resolve({ version: '', public_id: '', message: 'Upload error' })
+        )
+
+      PostCreate.prototype.plusVideo(req, res).catch((error: CustomError) => {
+        expect(error.statusCode).toEqual(400)
+        expect(error.serializeErrors().message).toEqual('Upload error')
+      })
+    })
+
+    it('should send correct json response', async () => {
+      post.video = 'testing video'
+      const req: Request = postMockRequest(post, authUserPayload) as Request
+      const res: Response = postMockResponse()
+      jest.spyOn(postServer.socketIOPostObject, 'emit')
+      const spy = jest.spyOn(PostCache.prototype, 'addPost')
+      jest.spyOn(postQueue, 'addPostJob')
+      jest
+        .spyOn(cloudinaryUploads, 'uploads')
+        .mockImplementation((): any => Promise.resolve({ version: '1234', public_id: '123456' }))
+
+      await PostCreate.prototype.plusVideo(req, res)
+      const newPost = spy.mock.calls[0][0].newPost
+      expect(postServer.socketIOPostObject.emit).toHaveBeenCalledWith('add post', newPost)
+      expect(PostCache.prototype.addPost).toHaveBeenCalledWith({
+        key: spy.mock.calls[0][0].key,
+        currentUserId: `${req.currentUser?.userId}`,
+        uId: `${req.currentUser?.uId}`,
+        newPost
+      })
+      expect(postQueue.addPostJob).toHaveBeenCalledWith('addToPost', {
+        key: req.currentUser?.userId,
+        value: newPost
+      })
+      expect(res.status).toHaveBeenCalledWith(201)
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Create post with video successful'
+      })
+    })
+  })
 })

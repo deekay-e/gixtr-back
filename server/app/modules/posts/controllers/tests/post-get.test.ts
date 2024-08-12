@@ -118,4 +118,51 @@ describe('PostGet', () => {
       })
     })
   })
+
+  describe('postWithVideos', () => {
+    it('should send correct json response if posts exist in cache', async () => {
+      const req: Request = postMockRequest(post, authUserPayload, { page: '1' }) as Request
+      const res: Response = postMockResponse()
+      jest.spyOn(PostCache.prototype, 'getPostsWithVideo').mockResolvedValue([postMockData])
+
+      await PostGet.prototype.plusVideo(req, res)
+      expect(PostCache.prototype.getPostsWithVideo).toHaveBeenCalledWith('post', 0, 10)
+      expect(res.status).toHaveBeenCalledWith(200)
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Get all posts with videos',
+        posts: [postMockData]
+      })
+    })
+
+    it('should send correct json response if posts exist in database', async () => {
+      const req: Request = postMockRequest(post, authUserPayload, { page: '1' }) as Request
+      const res: Response = postMockResponse()
+      jest.spyOn(PostCache.prototype, 'getPostsWithVideo').mockResolvedValue([])
+      jest.spyOn(postService, 'getPosts').mockResolvedValue([postMockData])
+
+      await PostGet.prototype.plusVideo(req, res)
+      expect(postService.getPosts).toHaveBeenCalledWith({ vidId: '$ne', gifUrl: '$ne' }, 0, 10, {
+        createdAt: -1
+      })
+      expect(res.status).toHaveBeenCalledWith(200)
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Get all posts with videos',
+        posts: [postMockData]
+      })
+    })
+
+    it('should send empty posts', async () => {
+      const req: Request = postMockRequest(post, authUserPayload, { page: '1' }) as Request
+      const res: Response = postMockResponse()
+      jest.spyOn(PostCache.prototype, 'getPostsWithVideo').mockResolvedValue([])
+      jest.spyOn(postService, 'getPosts').mockResolvedValue([])
+
+      await PostGet.prototype.plusVideo(req, res)
+      expect(res.status).toHaveBeenCalledWith(200)
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Get all posts with videos',
+        posts: []
+      })
+    })
+  })
 })

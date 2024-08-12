@@ -17,9 +17,7 @@ class HealthRoutes {
     this.router.get('/health', (req: Request, res: Response) => {
       res
         .status(HTTP_STATUS.OK)
-        .send(
-          `Server: Instance running with process id ${process.pid} on ${moment().format('LL')}`
-        )
+        .send(`Server: Instance running with process id ${process.pid} on ${moment().format('LL')}`)
     })
 
     return this.router
@@ -27,11 +25,7 @@ class HealthRoutes {
 
   public environment(): Router {
     this.router.get('/env', (req: Request, res: Response) => {
-      res
-        .status(HTTP_STATUS.OK)
-        .send(
-          `Environment: ${config.NODE_ENV}}`
-        )
+      res.status(HTTP_STATUS.OK).send(`Environment: ${config.NODE_ENV}}`)
     })
 
     return this.router
@@ -47,9 +41,9 @@ class HealthRoutes {
       res
         .status(HTTP_STATUS.OK)
         .send(
-          `Server: EC2 Instance running with id ${ins.data} and process id ${process.pid}} on ${
-            moment().format('LL')
-          }`
+          `Server: EC2 Instance running with id ${ins.data} and process id ${process.pid}} on ${moment().format(
+            'LL'
+          )}`
         )
     })
 

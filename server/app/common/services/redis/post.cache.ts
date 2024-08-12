@@ -30,39 +30,43 @@ export class PostCache extends BaseCache {
     const { key, currentUserId, uId, newPost } = data
     const {
       _id,
-      userId,
-      username,
       email,
-      avatarColor,
-      profilePicture,
       post,
-      bgColor,
-      feelings,
       scope,
       gifUrl,
+      userId,
+      bgColor,
+      feelings,
+      username,
+      avatarColor,
+      profilePicture,
       commentsCount,
       imgVersion,
-      imgId,
+      vidVersion,
       reactions,
-      createdAt
+      createdAt,
+      imgId,
+      vidId
     } = newPost
     const dataToSave = {
       _id: `${_id}`,
-      userId: `${userId}`,
-      username: `${username}`,
-      email: `${email}`,
-      avatarColor: `${avatarColor}`,
-      profilePicture: `${profilePicture}`,
       post: `${post}`,
+      email: `${email}`,
+      userId: `${userId}`,
       bgColor: `${bgColor}`,
       feelings: `${feelings}`,
-      scope: `${scope}`,
-      gifUrl: `${gifUrl}`,
+      username: `${username}`,
+      avatarColor: `${avatarColor}`,
+      profilePicture: `${profilePicture}`,
+      reactions: `${JSON.stringify(reactions)}`,
       commentsCount: `${commentsCount}`,
       imgVersion: `${imgVersion}`,
+      vidVersion: `${vidVersion}`,
+      createdAt: `${createdAt}`,
+      gifUrl: `${gifUrl}`,
       imgId: `${imgId}`,
-      reactions: `${JSON.stringify(reactions)}`,
-      createdAt: `${createdAt}`
+      vidId: `${vidId}`,
+      scope: `${scope}`
     }
 
     try {
@@ -180,9 +184,36 @@ export class PostCache extends BaseCache {
   }
 
   /**
-   * getPostWithVideos
+   * getPostsWithVideo
    */
-  public async getPostWithVideo(data: ISavePost): Promise<void> {}
+  public async getPostsWithVideo(
+    key: string,
+    start: number,
+    end: number
+  ): Promise<IPostDocument[]> {
+    try {
+      if (!this.client.isOpen) await this.client.connect()
+
+      const reply: string[] = await this.client.ZRANGE(key, start, end, { REV: true })
+      const multi: ReturnType<typeof this.client.multi> = this.client.multi()
+      for (const score of reply) multi.HGETALL(`posts:${score}`)
+
+      const posts: IPostDocument[] = []
+      const replies: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType
+      for (const post of replies as IPostDocument[]) {
+        if (!(post.vidId && post.vidVersion) && !post.gifUrl) continue
+        post.createdAt = new Date(Utils.parseJson(`${post.createdAt}`))
+        post.commentsCount = Utils.parseJson(`${post.commentsCount}`)
+        post.reactions = Utils.parseJson(`${post.reactions}`)
+        posts.push(post)
+      }
+
+      return posts
+    } catch (error) {
+      log.error(error)
+      throw new ServerError('Server error. Try again.')
+    }
+  }
 
   /**
    * getUserPosts
@@ -236,14 +267,24 @@ export class PostCache extends BaseCache {
    * updatePost
    *
    * @key - the post _id
-   * @post - the updated post data
+   * @updatedPost - the updated post data
    */
   public async updatePost(key: string, updatedPost: IPostDocument): Promise<IPostDocument> {
     try {
       if (!this.client.isOpen) await this.client.connect()
 
-      const { post, bgColor, feelings, gifUrl, imgVersion, imgId, profilePicture, scope } =
-        updatedPost
+      const {
+        post,
+        bgColor,
+        feelings,
+        gifUrl,
+        imgVersion,
+        imgId,
+        vidVersion,
+        vidId,
+        profilePicture,
+        scope
+      } = updatedPost
       const dataToSave = {
         post: `${post}`,
         bgColor: `${bgColor}`,
@@ -251,6 +292,8 @@ export class PostCache extends BaseCache {
         gifUrl: `${gifUrl}`,
         imgVersion: `${imgVersion}`,
         imgId: `${imgId}`,
+        vidVersion: `${vidVersion}`,
+        vidId: `${vidId}`,
         profilePicture: `${profilePicture}`,
         scope: `${scope}`
       }

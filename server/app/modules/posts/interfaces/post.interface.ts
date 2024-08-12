@@ -4,43 +4,46 @@ import { Document } from 'mongoose'
 import { IReactions } from '@reaction/interfaces/reaction.interface'
 
 export interface IPostDocument extends Document {
-  _id?: string | ObjectId
-  userId: string
-  username: string
+  post: string
   email: string
+  userId: string
+  bgColor: string
+  username: string
   avatarColor: string
   profilePicture: string
-  post: string
-  bgColor: string
+  _id?: string | ObjectId
+  reactions?: IReactions
   commentsCount: number
   imgVersion?: string
-  imgId?: string
+  vidVersion?: string
   feelings?: string
+  createdAt?: Date
   gifUrl?: string
   scope?: string
-  reactions?: IReactions
-  createdAt?: Date
+  imgId?: string
+  vidId?: string
 }
 
 export interface IGetPostsQuery {
   _id?: ObjectId | string
   username?: string
-  imgId?: string
   gifUrl?: string
+  imgId?: string
+  vidId?: string
 }
 
 export interface ISavePost {
+  newPost: IPostDocument
   key: ObjectId | string
   currentUserId: string
   uId: string
-  newPost: IPostDocument
 }
 
 export interface IPostJob {
   key?: string
-  value?: IPostDocument
   keyOne?: string
   keyTwo?: string
+  value?: IPostDocument
 }
 
 export interface IQueryComplete {

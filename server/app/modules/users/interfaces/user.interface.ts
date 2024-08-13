@@ -1,3 +1,4 @@
+import { string } from 'joi'
 import { ObjectId } from 'mongodb'
 import { Document } from 'mongoose'
 
@@ -5,6 +6,9 @@ export interface IUserDocument extends Document {
   _id: string | ObjectId
   authId: string | ObjectId
   username?: string
+  firstname?: string
+  lastname?: string
+  nickname?: string
   email?: string
   password?: string
   avatarColor?: string
@@ -24,6 +28,7 @@ export interface IUserDocument extends Document {
   bgImageId: string
   profilePicture: string
   createdAt?: Date
+  roles?: string[]
 }
 
 export interface IResetPasswordParams {
@@ -41,6 +46,9 @@ export interface INotificationSettings {
 }
 
 export interface IBasicInfo {
+  firstname: string
+  lastname: string
+  nickname: string
   quote: string
   work: string
   school: string
@@ -71,16 +79,17 @@ export interface ILogin {
   userId: string
 }
 
-export interface IUserJobInfo {
-  key?: string
-  value?: string | ISocialLinks
+export interface IRole {
+  type: string
+  role: string
+  userId?: string
 }
 
 export interface IUserJob {
   keyOne?: string
   keyTwo?: string
   key?: string
-  value?: string | INotificationSettings | IUserDocument
+  value?: string | INotificationSettings | IUserDocument | ISocialLinks | IRole
 }
 
 export interface IMailJob {

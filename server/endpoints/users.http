@@ -1,6 +1,10 @@
 @baseUrl = http://localhost:8008
 @urlPath = api/v1
 @followeeId = 66914a50b5b3537535533054
+@userId = 66b1cbff9f767d45354bd44f
+@uId =
+@username =
+@query = oma
 
 ###
 PUT {{baseUrl}}/{{urlPath}}/user/block/{{followeeId}}
@@ -17,3 +21,111 @@ Accept: application/json
 withCredentials: true
 
 { }
+
+###
+PUT {{baseUrl}}/{{urlPath}}/user/password/change
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "currentPassword": "",
+  "newPassword": "",
+  "confirmPassword": ""
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/user/info/change
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "firstname": "",
+  "lastname": "",
+  "nickname": "",
+  "work": "",
+  "quote": "",
+  "school": "",
+  "location": ""
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/user/roles/change
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userId": "66b766278110f7306bc6df43",
+  "type": "add",
+  "role": "org:user"
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/user/socials/change
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "facebook": "",
+  "twitter": "",
+  "youtube": "",
+  "instagram": ""
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/user/notifications/change
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "reactions": false,
+  "comments": true,
+  "follows": false,
+  "messages": true
+}
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profiles/1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile/{{userId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile/posts/1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile/{{username}}/{{userId}}/{{uId}}/posts/1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/suggestions
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/search/{{query}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true

@@ -1,3 +1,4 @@
+import { map } from 'lodash'
 import { ObjectId } from 'mongodb'
 import { mongo, Query } from 'mongoose'
 
@@ -116,6 +117,19 @@ class FollowService {
       { $project: this.getProjection() }
     ])
     return followees
+  }
+
+  public async getFolloweeIds(key: string): Promise<string[]> {
+    const followees = await FollowerModel.aggregate([
+      { $match: { followerId: new ObjectId(key) } },
+      {
+        $project: {
+          _id: 0,
+          followeeId: 1
+        }
+      }
+    ])
+    return map(followees, (res) => res.followeeId.toString())
   }
 
   public async removeFollower(follow: IFollowerJob): Promise<void> {

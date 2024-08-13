@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:8008
 @urlPath = api/v1
-@postId =
+@postId = 66b4e78203e42a2b634785d9
 
 ###
 POST {{baseUrl}}/{{urlPath}}/post
@@ -34,6 +34,22 @@ withCredentials: true
 }
 
 ###
+POST {{baseUrl}}/{{urlPath}}/post-video
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "post": "This is my second sample post with an video",
+  "bgColor": "#000066",
+  "scope": "Private",
+  "gifUrl": "",
+  "profilePicture": "https://res.cloudinary.com/dahrlgvpt/image/upload/v1719781047/6681c6a275b313a186073ee3",
+  "feelings": "happy",
+  "video": ""
+}
+
+###
 GET {{baseUrl}}/{{urlPath}}/post/1
 Content-Type: application/json
 Accept: application/json
@@ -41,6 +57,12 @@ withCredentials: true
 
 ###
 GET {{baseUrl}}/{{urlPath}}/post-image/1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/post-vdeo/1
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
@@ -60,6 +82,40 @@ withCredentials: true
   "feelings": "happy",
   "imgId": "",
   "imgVersion": ""
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/post-image/{{postId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "post": "This is my second updated post",
+  "bgColor": "#4aa1f3",
+  "scope": "Private",
+  "gifUrl": "",
+  "profilePicture": "https://res.cloudinary.com/dahrlgvpt/image/upload/v1719781047/6681c6a275b313a186073ee3",
+  "feelings": "happy",
+  "imgId": "",
+  "imgVersion": ""
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/post-video/{{postId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "post": "This is my third updated post",
+  "bgColor": "#4aa1f3",
+  "scope": "Public",
+  "gifUrl": "",
+  "profilePicture": "https://res.cloudinary.com/dahrlgvpt/image/upload/v1719781047/6681c6a275b313a186073ee3",
+  "feelings": "wow",
+  "vidId": "",
+  "vidVersion": ""
 }
 
 ###

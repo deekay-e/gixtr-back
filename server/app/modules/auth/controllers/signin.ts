@@ -8,16 +8,16 @@ import { userService } from '@service/db/user.service'
 import { IAuthDocument } from '@auth/interfaces/auth.interface'
 import { IUserDocument } from '@user/interfaces/user.interface'
 import { BadRequestError } from '@global/helpers/error-handler'
-import { JoiValidator } from '@global/decorators/joi-validation'
+import { joiValidator } from '@global/decorators/joi-validation'
 
 export class Signin {
-  @JoiValidator(loginSchema)
+  @joiValidator(loginSchema)
   public async read(req: Request, res: Response): Promise<void> {
     const { login, password } = req.body
     const email = Utils.isEmail(login) ? login : ''
     const username = !Utils.isEmail(login) ? login : ''
 
-    const authUser: IAuthDocument = await authService.getUser(username, email)
+    const authUser: IAuthDocument = await authService.getAuthUser(username, email)
     if (!authUser) throw new BadRequestError('Invalid login credentials')
 
     const isPassword: boolean = await authUser.comparePassword(password)

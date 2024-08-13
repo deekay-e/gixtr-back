@@ -26,7 +26,7 @@ describe('PostGet', () => {
       jest.spyOn(PostCache.prototype, 'getPosts').mockResolvedValue([postMockData])
       jest.spyOn(PostCache.prototype, 'getPostsCount').mockResolvedValue(1)
 
-      await PostGet.prototype.minusImage(req, res)
+      await PostGet.prototype.solo(req, res)
       expect(PostCache.prototype.getPosts).toHaveBeenCalledWith('post', 0, 10)
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
@@ -44,7 +44,7 @@ describe('PostGet', () => {
       jest.spyOn(postService, 'getPosts').mockResolvedValue([postMockData])
       jest.spyOn(postService, 'getPostsCount').mockResolvedValue(1)
 
-      await PostGet.prototype.minusImage(req, res)
+      await PostGet.prototype.solo(req, res)
       expect(postService.getPosts).toHaveBeenCalledWith({}, 0, 10, { createdAt: -1 })
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
@@ -62,7 +62,7 @@ describe('PostGet', () => {
       jest.spyOn(postService, 'getPosts').mockResolvedValue([])
       jest.spyOn(postService, 'getPostsCount').mockResolvedValue(0)
 
-      await PostGet.prototype.minusImage(req, res)
+      await PostGet.prototype.solo(req, res)
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
         message: 'Get all posts',
@@ -76,10 +76,10 @@ describe('PostGet', () => {
     it('should send correct json response if posts exist in cache', async () => {
       const req: Request = postMockRequest(post, authUserPayload, { page: '1' }) as Request
       const res: Response = postMockResponse()
-      jest.spyOn(PostCache.prototype, 'getPostsWithImages').mockResolvedValue([postMockData])
+      jest.spyOn(PostCache.prototype, 'getPostsWithImage').mockResolvedValue([postMockData])
 
       await PostGet.prototype.plusImage(req, res)
-      expect(PostCache.prototype.getPostsWithImages).toHaveBeenCalledWith('post', 0, 10)
+      expect(PostCache.prototype.getPostsWithImage).toHaveBeenCalledWith('post', 0, 10)
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
         message: 'Get all posts with images',
@@ -90,7 +90,7 @@ describe('PostGet', () => {
     it('should send correct json response if posts exist in database', async () => {
       const req: Request = postMockRequest(post, authUserPayload, { page: '1' }) as Request
       const res: Response = postMockResponse()
-      jest.spyOn(PostCache.prototype, 'getPostsWithImages').mockResolvedValue([])
+      jest.spyOn(PostCache.prototype, 'getPostsWithImage').mockResolvedValue([])
       jest.spyOn(postService, 'getPosts').mockResolvedValue([postMockData])
 
       await PostGet.prototype.plusImage(req, res)
@@ -107,13 +107,60 @@ describe('PostGet', () => {
     it('should send empty posts', async () => {
       const req: Request = postMockRequest(post, authUserPayload, { page: '1' }) as Request
       const res: Response = postMockResponse()
-      jest.spyOn(PostCache.prototype, 'getPostsWithImages').mockResolvedValue([])
+      jest.spyOn(PostCache.prototype, 'getPostsWithImage').mockResolvedValue([])
       jest.spyOn(postService, 'getPosts').mockResolvedValue([])
 
       await PostGet.prototype.plusImage(req, res)
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({
         message: 'Get all posts with images',
+        posts: []
+      })
+    })
+  })
+
+  describe('postWithVideos', () => {
+    it('should send correct json response if posts exist in cache', async () => {
+      const req: Request = postMockRequest(post, authUserPayload, { page: '1' }) as Request
+      const res: Response = postMockResponse()
+      jest.spyOn(PostCache.prototype, 'getPostsWithVideo').mockResolvedValue([postMockData])
+
+      await PostGet.prototype.plusVideo(req, res)
+      expect(PostCache.prototype.getPostsWithVideo).toHaveBeenCalledWith('post', 0, 10)
+      expect(res.status).toHaveBeenCalledWith(200)
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Get all posts with videos',
+        posts: [postMockData]
+      })
+    })
+
+    it('should send correct json response if posts exist in database', async () => {
+      const req: Request = postMockRequest(post, authUserPayload, { page: '1' }) as Request
+      const res: Response = postMockResponse()
+      jest.spyOn(PostCache.prototype, 'getPostsWithVideo').mockResolvedValue([])
+      jest.spyOn(postService, 'getPosts').mockResolvedValue([postMockData])
+
+      await PostGet.prototype.plusVideo(req, res)
+      expect(postService.getPosts).toHaveBeenCalledWith({ vidId: '$ne', gifUrl: '$ne' }, 0, 10, {
+        createdAt: -1
+      })
+      expect(res.status).toHaveBeenCalledWith(200)
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Get all posts with videos',
+        posts: [postMockData]
+      })
+    })
+
+    it('should send empty posts', async () => {
+      const req: Request = postMockRequest(post, authUserPayload, { page: '1' }) as Request
+      const res: Response = postMockResponse()
+      jest.spyOn(PostCache.prototype, 'getPostsWithVideo').mockResolvedValue([])
+      jest.spyOn(postService, 'getPosts').mockResolvedValue([])
+
+      await PostGet.prototype.plusVideo(req, res)
+      expect(res.status).toHaveBeenCalledWith(200)
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Get all posts with videos',
         posts: []
       })
     })

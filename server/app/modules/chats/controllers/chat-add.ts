@@ -12,7 +12,7 @@ import { chatQueue } from '@service/queues/chat.queue'
 import { addChatSchema } from '@chat/schemas/chat.schema'
 import { uploads } from '@global/helpers/cloudinary-upload'
 import { BadRequestError } from '@global/helpers/error-handler'
-import { JoiValidator } from '@global/decorators/joi-validation'
+import { joiValidator } from '@global/decorators/joi-validation'
 import { IUserDocument } from '@user/interfaces/user.interface'
 import { notification } from '@service/email/templates/notification/template'
 import { INotificationTemplate } from '@notification/interfaces/notification.interface'
@@ -23,7 +23,7 @@ const chatCache: ChatCache = new ChatCache()
 const userCache: UserCache = new UserCache()
 
 export class ChatAdd {
-  @JoiValidator(addChatSchema)
+  @joiValidator(addChatSchema)
   public async message(req: Request, res: Response): Promise<void> {
     const {
       conversationId,

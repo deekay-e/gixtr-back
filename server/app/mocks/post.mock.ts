@@ -32,9 +32,12 @@ interface IBody {
   post?: string
   gifUrl?: string
   image?: string
+  video?: string
   scope?: string
   imgId?: string
   imgVersion?: string
+  vidId?: string
+  vidVersion?: string
   profilePicture?: string
   feelings?: string
 }
@@ -46,6 +49,9 @@ export const post: IBody = {
   imgId: '',
   imgVersion: '',
   image: '',
+  vidId: '',
+  vidVersion: '',
+  video: '',
   scope: 'Public',
   profilePicture: 'http://place-hold.it/500x500',
   feelings: 'happy'
@@ -62,6 +68,8 @@ export const postMockData: IPostDocument = {
   bgColor: '#f44336',
   imgId: '',
   imgVersion: '',
+  vidId: '',
+  vidVersion: '',
   feelings: 'happy',
   gifUrl: '',
   scope: 'Public',
@@ -85,7 +93,9 @@ export const updatedPost: IBody = {
   scope: 'Private',
   gifUrl: '',
   imgId: '',
-  imgVersion: ''
+  imgVersion: '',
+  vidId: '',
+  vidVersion: ''
 }
 
 export const updatedPostWithImage: IBody = {
@@ -98,4 +108,16 @@ export const updatedPostWithImage: IBody = {
   imgId: '',
   imgVersion: '',
   image: ''
+}
+
+export const updatedPostWithVideo: IBody = {
+  profilePicture: postMockData.profilePicture,
+  post: 'Wonderful',
+  bgColor: postMockData.bgColor,
+  feelings: 'wow',
+  scope: 'Private',
+  gifUrl: '',
+  vidId: '',
+  vidVersion: '',
+  video: ''
 }

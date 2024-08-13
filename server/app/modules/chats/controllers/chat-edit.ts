@@ -4,14 +4,14 @@ import HTTP_STATUS from 'http-status-codes'
 import { socketIOChatObject } from '@socket/chat'
 import { ChatCache } from '@service/redis/chat.cache'
 import { chatQueue } from '@service/queues/chat.queue'
-import { JoiValidator } from '@global/decorators/joi-validation'
+import { joiValidator } from '@global/decorators/joi-validation'
 import { IChatJob, IMessageData } from '@chat/interfaces/chat.interface'
 import { markChatSchema, messageReactionSchema } from '@chat/schemas/chat.schema'
 
 const chatCache: ChatCache = new ChatCache()
 
 export class ChatEdit {
-  @JoiValidator(markChatSchema)
+  @joiValidator(markChatSchema)
   public async markAsRead(req: Request, res: Response): Promise<void> {
     const { senderId, receiverId, conversationId } = req.body
 
@@ -27,7 +27,7 @@ export class ChatEdit {
     res.status(HTTP_STATUS.OK).json({ message: 'Mark messages as read successful' })
   }
 
-  @JoiValidator(messageReactionSchema)
+  @joiValidator(messageReactionSchema)
   public async messageReaction(req: Request, res: Response): Promise<void> {
     const senderId = req.currentUser!.userId
     const senderName = req.currentUser!.username

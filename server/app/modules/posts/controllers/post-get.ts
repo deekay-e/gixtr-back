@@ -9,7 +9,7 @@ const postCache: PostCache = new PostCache()
 const PAGE_SIZE = 10
 
 export class PostGet {
-  public async minusImage(req: Request, res: Response): Promise<void> {
+  public async solo(req: Request, res: Response): Promise<void> {
     const { page } = req.params
     const skip: number = (parseInt(page) - 1) * PAGE_SIZE
     const limit: number = PAGE_SIZE * parseInt(page)
@@ -34,11 +34,25 @@ export class PostGet {
     const limit: number = PAGE_SIZE * parseInt(page)
     const start: number = skip === 0 ? skip : skip + 1
     let posts: IPostDocument[] = []
-    const cachedPosts: IPostDocument[] = await postCache.getPostsWithImages('post', start, limit)
+    const cachedPosts: IPostDocument[] = await postCache.getPostsWithImage('post', start, limit)
     posts = cachedPosts.length
       ? cachedPosts
       : await postService.getPosts({ imgId: '$ne', gifUrl: '$ne' }, skip, limit, { createdAt: -1 })
 
     res.status(HTTP_STATUS.OK).json({ message: 'Get all posts with images', posts })
+  }
+
+  public async plusVideo(req: Request, res: Response): Promise<void> {
+    const { page } = req.params
+    const skip: number = (parseInt(page) - 1) * PAGE_SIZE
+    const limit: number = PAGE_SIZE * parseInt(page)
+    const start: number = skip === 0 ? skip : skip + 1
+    let posts: IPostDocument[] = []
+    const cachedPosts: IPostDocument[] = await postCache.getPostsWithVideo('post', start, limit)
+    posts = cachedPosts.length
+      ? cachedPosts
+      : await postService.getPosts({ vidId: '$ne', gifUrl: '$ne' }, skip, limit, { createdAt: -1 })
+
+    res.status(HTTP_STATUS.OK).json({ message: 'Get all posts with videos', posts })
   }
 }

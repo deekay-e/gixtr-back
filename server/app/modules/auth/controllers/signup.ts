@@ -14,17 +14,18 @@ import { userQueue } from '@service/queues/user.queue'
 import { uploads } from '@global/helpers/cloudinary-upload'
 import { IUserDocument } from '@user/interfaces/user.interface'
 import { BadRequestError } from '@global/helpers/error-handler'
-import { JoiValidator } from '@global/decorators/joi-validation'
+import { joiValidator } from '@global/decorators/joi-validation'
 import { IAuthDocument, ISignUpData } from '@auth/interfaces/auth.interface'
 
 const CN: string = config.CLOUD_NAME!
 const userCache: UserCache = new UserCache()
 
 export class Signup {
-  @JoiValidator(registerSchema)
+  @joiValidator(registerSchema)
   public async create(req: Request, res: Response): Promise<void> {
-    const { username, password, email, avatarColor, avatarImage } = req.body
-    const dupUser: IAuthDocument = await authService.getUser(username, email)
+    const { username, password, email, avatarColor, avatarImage, roles } = req.body
+    const defaultRoles = roles.length ? roles : ['org:user']
+    const dupUser: IAuthDocument = await authService.getAuthUser(username, email)
     if (dupUser) throw new BadRequestError('User already exists')
 
     const uId = `${Utils.genRandomInt(16)}`
@@ -36,7 +37,8 @@ export class Signup {
       username,
       email,
       password,
-      avatarColor
+      avatarColor,
+      roles: defaultRoles
     })
     const img: UploadApiResponse = (await uploads(
       avatarImage,
@@ -65,10 +67,11 @@ export class Signup {
   }
 
   private getSignupData(data: ISignUpData): IAuthDocument {
-    const { _id, uId, username, email, password, avatarColor } = data
+    const { _id, uId, username, email, password, avatarColor, roles } = data
     return {
       _id,
       uId,
+      roles,
       username: Utils.capitalize(username),
       email: Utils.lowercase(email),
       password,
@@ -78,11 +81,11 @@ export class Signup {
   }
 
   private getUserData(data: IAuthDocument, userOId: ObjectId): IUserDocument {
-    const { _id, username, email, uId, password, avatarColor } = data
+    const { _id, username, email, uId, password, avatarColor, roles } = data
     return {
       _id: userOId,
-      authId: _id,
       uId,
+      authId: _id,
       username: Utils.capitalize(username),
       email,
       password,
@@ -110,7 +113,8 @@ export class Signup {
         instagram: '',
         twitter: '',
         youtube: ''
-      }
+      },
+      roles
     } as unknown as IUserDocument
   }
 }

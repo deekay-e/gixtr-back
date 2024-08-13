@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:8008
 @urlPath = api/v1
-@followeeId = 66914a50b5b3537535533054
+@followeeId = 66b1cb709f767d45354bd441
 @userId = 66914a50b5b3537535533054
 
 ###

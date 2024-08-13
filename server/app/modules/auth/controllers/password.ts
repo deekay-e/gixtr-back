@@ -9,7 +9,7 @@ import { authService } from '@service/db/auth.service'
 import { mailQueue } from '@service/queues/mail.queue'
 import { IAuthDocument } from '@auth/interfaces/auth.interface'
 import { BadRequestError } from '@global/helpers/error-handler'
-import { JoiValidator } from '@global/decorators/joi-validation'
+import { joiValidator } from '@global/decorators/joi-validation'
 import { emailSchema, passwordSchema } from '@auth/schemas/password'
 import { forgotPassword } from '@service/email/templates/forgot-password/template'
 import { resetPassword } from '@service/email/templates/reset-password/template'
@@ -18,10 +18,10 @@ import { IResetPasswordParams } from '@user/interfaces/user.interface'
 const EXPIRES = Date.now() * 60 * 60 * 1000 // I hour
 
 export class Password {
-  @JoiValidator(emailSchema)
+  @joiValidator(emailSchema)
   public async forgot(req: Request, res: Response): Promise<void> {
     const { email } = req.body
-    const authUser: IAuthDocument = await authService.getAuthUserByEmail(email)
+    const authUser: IAuthDocument = await authService.getAuthUser('', email)
     if (!authUser) throw new BadRequestError('Invalid email credential.')
 
     const randomBytes: Buffer = await Promise.resolve(crypto.randomBytes(20))
@@ -38,7 +38,7 @@ export class Password {
     res.status(HTTP_STATUS.OK).json({ message: 'Password reset email sent.' })
   }
 
-  @JoiValidator(passwordSchema)
+  @joiValidator(passwordSchema)
   public async reset(req: Request, res: Response): Promise<void> {
     const { password, confirmPassword } = req.body
     const { token } = req.params
@@ -59,7 +59,7 @@ export class Password {
     }
 
     const template: string = resetPassword.render(templateParams)
-    mailQueue.addMailJob('resetPasswordMail', {
+    mailQueue.addMailJob('resetPassword', {
       template,
       receiver: authUser.email!,
       subject: 'Password reset confirmation'

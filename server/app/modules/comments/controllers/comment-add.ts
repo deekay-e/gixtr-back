@@ -3,7 +3,7 @@ import HTTP_STATUS from 'http-status-codes'
 
 import { CommentCache } from '@service/redis/comment.cache'
 import { commentQueue } from '@service/queues/comment.queue'
-import { JoiValidator } from '@global/decorators/joi-validation'
+import { joiValidator } from '@global/decorators/joi-validation'
 import { addCommentSchema } from '@comment/schemas/comment.schema'
 import { ICommentDocument, ICommentJob } from '@comment/interfaces/comment.interface'
 import { ObjectId } from 'mongodb'
@@ -11,7 +11,7 @@ import { ObjectId } from 'mongodb'
 const commentCache: CommentCache = new CommentCache()
 
 export class CommentAdd {
-  @JoiValidator(addCommentSchema)
+  @joiValidator(addCommentSchema)
   public async init(req: Request, res: Response): Promise<void> {
     const username = req.currentUser!.username
     const avatarColor = req.currentUser!.avatarColor

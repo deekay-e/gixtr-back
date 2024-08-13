@@ -21,6 +21,9 @@ const registerSchema: ObjectSchema = Joi.object().keys({
   avatarColor: Joi.string().required().messages({
     'any.required': 'Avatar color is required'
   }),
+  roles: Joi.array().optional().messages({
+    //'any.required': 'Role is required'
+  }),
   avatarImage: Joi.string().required().messages({
     'any.required': 'Avatar image is required'
   })

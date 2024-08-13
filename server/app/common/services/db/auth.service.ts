@@ -1,8 +1,10 @@
 import JWT from 'jsonwebtoken'
+import { ObjectId, PullOperator, PushOperator } from 'mongodb'
 
 import { config } from '@/config'
 import { Utils } from '@global/helpers/utils'
 import { AuthModel } from '@auth/models/auth.model'
+import { IRole } from '@user/interfaces/user.interface'
 import { IAuthDocument } from '@auth/interfaces/auth.interface'
 
 class AuthService {
@@ -24,18 +26,11 @@ class AuthService {
     )
   }
 
-  public async getUser(username: string, email: string): Promise<IAuthDocument> {
+  public async getAuthUser(username: string, email: string): Promise<IAuthDocument> {
     const query = {
       $or: [{ username: Utils.capitalize(username) }, { email: Utils.lowercase(email) }]
     }
     const user: IAuthDocument = (await AuthModel.findOne(query).exec()) as IAuthDocument
-    return user
-  }
-
-  public async getAuthUserByEmail(email: string): Promise<IAuthDocument> {
-    const user: IAuthDocument = (await AuthModel.findOne({
-      email: Utils.lowercase(email)
-    }).exec()) as IAuthDocument
     return user
   }
 
@@ -45,6 +40,25 @@ class AuthService {
       passwordResetExpires: { $gt: Date.now() }
     }).exec()) as IAuthDocument
     return user
+  }
+
+  public async updatePassword(email: string, password: string): Promise<void> {
+    await AuthModel.updateOne({ email }, { $set: { password } }).exec()
+  }
+
+  public async updateRoles(data: IRole): Promise<void> {
+    const { type, userId, role } = data
+    if (type === 'add') {
+      await AuthModel.updateOne(
+        { _id: userId },
+        { $push: { roles: role } as PushOperator<IAuthDocument> }
+      ).exec()
+    } else {
+      await AuthModel.updateOne(
+        { _id: userId },
+        { $pull: { roles: role } as PullOperator<IAuthDocument> }
+      ).exec()
+    }
   }
 
   public getToken(data: IAuthDocument, userObjectId: string): string {

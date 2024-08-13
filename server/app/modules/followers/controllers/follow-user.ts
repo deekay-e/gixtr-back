@@ -35,8 +35,8 @@ export class FollowUser {
 
     // add following data to cache
     await Promise.all([
-      followCache.addFollower(`followers:${followerId}`, followeeId),
-      followCache.addFollower(`following:${followeeId}`, followerId)
+      followCache.addFollower(`followers:${followeeId}`, followerId),
+      followCache.addFollower(`followees:${followerId}`, followeeId)
     ])
 
     // send data to queue

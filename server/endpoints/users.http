@@ -1,9 +1,9 @@
 @baseUrl = http://localhost:8008
 @urlPath = api/v1
-@followeeId = 66914a50b5b3537535533054
-@userId = 66b1cbff9f767d45354bd44f
-@uId =
-@username =
+@followeeId = 66b78592f8a3d910dca04a4f
+@userId = 66b1cbb09f767d45354bd448
+@uId = 2860602189185590
+@username = Praise
 @query = oma
 
 ###

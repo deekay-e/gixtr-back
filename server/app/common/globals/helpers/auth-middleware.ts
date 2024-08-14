@@ -25,7 +25,7 @@ export class AuthMiddleware {
 
   public checkPermissions(...roles: string[]) {
     return (req: Request, _res: Response, next: NextFunction) => {
-      const index = req.currentUser!.roles.findIndex((role: string) => roles.includes(role))
+      const index = req.currentUser!.roles?.findIndex((role: string) => roles.includes(role))
       if (index < 0) throw new UnauthorizedError("You can't access this route")
       next()
     }

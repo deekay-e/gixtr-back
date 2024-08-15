@@ -140,6 +140,7 @@ class UserService {
       uId: '$auth.uId',
       authId: '$auth._id',
       email: '$auth.email',
+      roles: '$auth.roles',
       username: '$auth.username',
       avatarColor: '$auth.avatarColor',
       createdAt: '$auth.createdAt',
@@ -156,7 +157,8 @@ class UserService {
       social: 1,
       imageVersion: 1,
       bgImageId: 1,
-      profilePicture: 1
+      profilePicture: 1,
+      nickname: 1
     }
   }
 }

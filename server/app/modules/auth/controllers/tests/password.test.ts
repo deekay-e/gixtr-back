@@ -37,7 +37,7 @@ describe('Password', () => {
     it('should throw "Invalid credentials" if email does not exist', () => {
       const req: Request = authMockRequest({}, { email: WRONG_EMAIL }) as Request
       const res: Response = authMockResponse()
-      jest.spyOn(authService, 'getAuthUserByEmail').mockResolvedValue(null as any)
+      jest.spyOn(authService, 'getAuthUser').mockResolvedValue(null as any)
       Password.prototype.forgot(req, res).catch((error: CustomError) => {
         expect(error.statusCode).toEqual(400)
         expect(error.serializeErrors().message).toEqual('Invalid email credential.')
@@ -47,7 +47,7 @@ describe('Password', () => {
     it('should send correct json response', async () => {
       const req: Request = authMockRequest({}, { email: CORRECT_EMAIL }) as Request
       const res: Response = authMockResponse()
-      jest.spyOn(authService, 'getAuthUserByEmail').mockResolvedValue(authMock)
+      jest.spyOn(authService, 'getAuthUser').mockResolvedValue(authMock)
       jest.spyOn(mailQueue, 'addMailJob')
       await Password.prototype.forgot(req, res)
       expect(mailQueue.addMailJob).toHaveBeenCalled()

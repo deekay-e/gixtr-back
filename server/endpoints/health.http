@@ -1,26 +1,25 @@
 @baseUrl = http://localhost:8008
-@urlPath = api/v1
 
 ###
-GET {{baseUrl}}/{{urlPath}}/health
+GET {{baseUrl}}/health
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
 ###
-GET {{baseUrl}}/{{urlPath}}/env
+GET {{baseUrl}}/env
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
 ###
-GET {{baseUrl}}/{{urlPath}}/instance
+GET {{baseUrl}}/instance
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
 ###
-GET {{baseUrl}}/{{urlPath}}/fibo/10
+GET {{baseUrl}}/fibo/10
 Content-Type: application/json
 Accept: application/json
 withCredentials: true

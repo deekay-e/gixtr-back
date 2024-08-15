@@ -25,7 +25,7 @@ class HealthRoutes {
 
   public environment(): Router {
     this.router.get('/env', (req: Request, res: Response) => {
-      res.status(HTTP_STATUS.OK).send(`Environment: ${config.NODE_ENV}}`)
+      res.status(HTTP_STATUS.OK).send(`Environment: ${config.NODE_ENV}`)
     })
 
     return this.router

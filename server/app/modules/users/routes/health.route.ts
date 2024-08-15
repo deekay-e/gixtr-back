@@ -32,7 +32,7 @@ class HealthRoutes {
   }
 
   public instance(): Router {
-    this.router.get('/env', async (req: Request, res: Response) => {
+    this.router.get('/instance', async (req: Request, res: Response) => {
       const ins = await axios({
         method: 'get',
         url: config.EC2_URL

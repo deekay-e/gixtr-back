@@ -39,9 +39,9 @@ export class GeneSysServer {
     this.securityMiddleware(this.app)
     this.standardMiddleware(this.app)
     this.routesMiddleware(this.app)
-    this.startServer(this.app)
     this.monitorApi(this.app)
     this.globalErrorHandler(this.app)
+    this.startServer(this.app)
   }
 
   private securityMiddleware(app: Application): void {

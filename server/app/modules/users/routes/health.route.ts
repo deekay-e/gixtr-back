@@ -25,14 +25,14 @@ class HealthRoutes {
 
   public environment(): Router {
     this.router.get('/env', (req: Request, res: Response) => {
-      res.status(HTTP_STATUS.OK).send(`Environment: ${config.NODE_ENV}}`)
+      res.status(HTTP_STATUS.OK).send(`Environment: ${config.NODE_ENV}`)
     })
 
     return this.router
   }
 
   public instance(): Router {
-    this.router.get('/env', async (req: Request, res: Response) => {
+    this.router.get('/instance', async (req: Request, res: Response) => {
       const ins = await axios({
         method: 'get',
         url: config.EC2_URL

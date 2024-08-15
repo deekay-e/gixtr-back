@@ -159,7 +159,7 @@ describe('Signup', () => {
     ) as Request
     const res: Response = authMockResponse()
 
-    jest.spyOn(authService, 'getUser').mockResolvedValue(authMock)
+    jest.spyOn(authService, 'getAuthUser').mockResolvedValue(authMock)
 
     Signup.prototype.create(req, res).catch((error: CustomError) => {
       expect(error.statusCode).toEqual(400)
@@ -180,7 +180,7 @@ describe('Signup', () => {
     ) as Request
     const res: Response = authMockResponse()
 
-    jest.spyOn(authService, 'getUser').mockResolvedValue(null as any)
+    jest.spyOn(authService, 'getAuthUser').mockResolvedValue(null as any)
     jest
       .spyOn(cloudinaryUploads, 'uploads')
       .mockImplementation((): any =>

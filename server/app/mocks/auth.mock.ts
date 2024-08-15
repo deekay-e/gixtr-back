@@ -66,12 +66,17 @@ export interface IAuthMock {
   reactions?: boolean
   comments?: boolean
   follows?: boolean
+  roles?: string[]
+  firstname?: string
+  lastname?: string
+  nickname?: string
 }
 
 export const authUserPayload: AuthPayload = {
   userId: '60263f14648fed5246e322d9',
   uId: '1621613119252066',
   username: 'Esther',
+  roles: ['org:user'],
   email: 'a.star@kaycee.me',
   avatarColor: '#9c27b0',
   iat: 12345
@@ -81,6 +86,7 @@ export const authMock = {
   _id: '60263f14648fed5246e322d3',
   uId: '1621613119252066',
   username: 'Esther',
+  roles: ['org:user'],
   email: 'a.star@kaycee.me',
   avatarColor: '#9c27b0',
   createdAt: '2024-05-30T07:42:24.451Z',

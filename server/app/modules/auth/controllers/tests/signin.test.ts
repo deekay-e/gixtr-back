@@ -86,10 +86,10 @@ describe('Signin', () => {
   it('should throw "Invalid login credentials" if login does not exist', () => {
     const req: Request = loginMockRequest({}, { login: LOGIN, password: PASSWORD }) as Request
     const res: Response = authMockResponse()
-    jest.spyOn(authService, 'getUser').mockResolvedValueOnce(null as any)
+    jest.spyOn(authService, 'getAuthUser').mockResolvedValueOnce(null as any)
 
     Signin.prototype.read(req, res).catch((error: CustomError) => {
-      //expect(authService.getUser).toHaveBeenCalledWith(req.body.login, EMAIL)
+      //expect(authService.getAuthUser).toHaveBeenCalledWith(req.body.login, EMAIL)
       expect(error.statusCode).toEqual(400)
       expect(error.serializeErrors().message).toEqual('Invalid login credentials')
     })
@@ -98,10 +98,10 @@ describe('Signin', () => {
   it('should throw "Invalid login password" if password does not exist', () => {
     const req: Request = loginMockRequest({}, { login: LOGIN, password: PASSWORD }) as Request
     const res: Response = authMockResponse()
-    jest.spyOn(authService, 'getUser').mockResolvedValueOnce(null as any)
+    jest.spyOn(authService, 'getAuthUser').mockResolvedValueOnce(null as any)
 
     Signin.prototype.read(req, res).catch((error: CustomError) => {
-      //expect(authService.getUser).toHaveBeenCalledWith(req.body.login, EMAIL)
+      //expect(authService.getAuthUser).toHaveBeenCalledWith(req.body.login, EMAIL)
       expect(error.statusCode).toEqual(400)
       expect(error.serializeErrors().message).toEqual('Invalid login credentials')
     })
@@ -111,7 +111,7 @@ describe('Signin', () => {
     const req: Request = loginMockRequest({}, { login: LOGIN, password: PASSWORD }) as Request
     const res: Response = authMockResponse()
     authMock.comparePassword = () => Promise.resolve(true)
-    jest.spyOn(authService, 'getUser').mockResolvedValue(authMock)
+    jest.spyOn(authService, 'getAuthUser').mockResolvedValue(authMock)
     jest.spyOn(userService, 'getUserByAuthId').mockResolvedValue(mergedAuthAndUserData)
 
     await Signin.prototype.read(req, res)

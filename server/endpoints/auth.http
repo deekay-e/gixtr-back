@@ -23,8 +23,8 @@ Accept: application/json
 withCredentials: true
 
 {
-  "login": "a-star",
-  "password": "kira22bo"
+  "login": "caleb",
+  "password": "kara28chi"
 }
 
 ###

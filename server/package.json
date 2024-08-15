@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "main": "root.ts",
   "scripts": {
+    "start": "NODE_ENV=production pm2 start ./build/app/root.js -i 3 --attach --watch | ./node_modules/.bin/bunyan",
+    "stop": "NODE_ENV=development pm2 stop all && pm2 delete all",
     "dev": "nodemon -r tsconfig-paths/register app/root.ts | ./node_modules/.bin/bunyan",
     "lint": "eslint 'app/**/*.ts'",
     "lint:fix": "eslint 'app/**/*.ts' --fix",
     "prettier": "prettier --check 'app/**/*.{ts,json}'",
     "prettier:fix": "prettier --write 'app/**/*.{ts,json}'",
     "test": "jest --coverage=true -w=1 --forceExit --detectOpenHandles --watchAll=false",
-    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json"
+    "build": "rm -rf ./build && tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
+    "seed:dev": "npx ts-node app/seed/*.ts",
+    "seed:prod": "npx ts-node /build/app/seed/*.js"
   },
   "keywords": [
     "Gixtr",

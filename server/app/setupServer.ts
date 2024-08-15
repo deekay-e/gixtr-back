@@ -6,6 +6,7 @@ import Logger from 'bunyan'
 import 'express-async-errors'
 import { Server } from 'socket.io'
 import { createClient } from 'redis'
+import apiStats from 'swagger-stats'
 import compression from 'compression'
 import cookieSession from 'cookie-session'
 import HTTP_STATUS from 'http-status-codes'
@@ -38,8 +39,9 @@ export class GeneSysServer {
     this.securityMiddleware(this.app)
     this.standardMiddleware(this.app)
     this.routesMiddleware(this.app)
-    this.globalErrorHandler(this.app)
     this.startServer(this.app)
+    this.monitorApi(this.app)
+    this.globalErrorHandler(this.app)
   }
 
   private securityMiddleware(app: Application): void {
@@ -73,6 +75,14 @@ export class GeneSysServer {
     appRoutes(app)
   }
 
+  private monitorApi(app: Application): void {
+    app.use(
+      apiStats.getMiddleware({
+        uriPath: '/api-monitor'
+      })
+    )
+  }
+
   private globalErrorHandler(app: Application): void {
     app.all('*', (req: Request, res: Response) => {
       res.status(HTTP_STATUS.NOT_FOUND).json({ message: `${req.originalUrl} not found` })
@@ -87,6 +97,8 @@ export class GeneSysServer {
   }
 
   private async startServer(app: Application): Promise<void> {
+    if (!config.JWT_TOKEN) throw new Error('JWT_TOKEN must be provided')
+
     try {
       const server: http.Server = new http.Server(app)
       const socketIO: Server = await this.createSocketIO(server)
@@ -113,6 +125,7 @@ export class GeneSysServer {
 
   private startHttpServer(server: http.Server): void {
     log.info(`Server has started with process ${process.pid}`)
+    log.info(`Worker with process id ${process.pid} has started...`)
     server.listen(SERVER_PORT, () => {
       log.info(`Server running on port ${SERVER_PORT}`)
     })

@@ -20,13 +20,13 @@ resource "aws_autosclaing_group" "ec2_asg" {
 
   depends_on = [aws_elasticache_replication_group.gixtr_redis_cluster]
 
-  tag = {
+  tag {
     key = "Name"
     value = "EC2-ASG-${terraform.workspace}"
     propagate_at_launch = true
   }
 
-  tag = {
+  tag {
     key = "Type"
     value = "Backend-${terraform.workspace}"
     propagate_at_launch = true

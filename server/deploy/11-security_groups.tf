@@ -115,7 +115,6 @@ resource "aws_security_group" "elasticache_sg" {
   name = "${local.prefix}-elasticache-sg"
   description = "Allows internet access for elasticache service"
   vpc_id = aws_vpc.main.vpc_id
-  }
 
   ingress {
     from_port = 6379
@@ -131,6 +130,7 @@ resource "aws_security_group" "elasticache_sg" {
     protocol = "TCP"
     security_groups = [aws_security_group.autoscaling_group_sg.id]
     description = "Allows access to redis server via ASG"
+  }
 
   egress {
     from_port = 0

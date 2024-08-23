@@ -8,6 +8,12 @@ function is_installed {
 }
 
 sudo yum update -y
+sudo yum install -y ruby
+sudo yum install -y wget
+cd /home/ec2-user
+wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
+sudo chmod +x ./install
+sudo ./install auto
 
 # install curl if it doesn't exist
 if [ $(is_installed curl) == 0 ]; then
@@ -42,7 +48,7 @@ cd /home/ec2-user
 git clone -b dev https://github.com/deekay-e/gixtr-back.git
 cd gixtr-back
 npm install
-aws s3 sync s3://gixtr-env/dev .
+aws s3 sync s3://gixtr-env/back/dev .
 unzip env-file.zip
 cp .env.dev .env
 npm run build

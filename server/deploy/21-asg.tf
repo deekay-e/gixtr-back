@@ -1,4 +1,4 @@
-resource "aws_autosclaing_group" "ec2_asg" {
+resource "aws_autoscaling_group" "ec2_asg" {
   name = "${local-prefix}-ASG"
   vpc_zone_identifier = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id]
   max_size = 1

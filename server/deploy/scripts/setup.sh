@@ -44,6 +44,6 @@ cd gixtr-back
 npm install
 aws s3 sync s3://gixtr-env/dev .
 unzip env-file.zip
-cp .env.production .env
+cp .env.dev .env
 npm run build
 npm run start

@@ -49,6 +49,7 @@ resource "aws_alb_listener_rule" "alb_https_listener_rule" {
   priority = 100
   action {
     type = "forward"
+    target_group_arn = aws_alb_target_group.server_backend_tg.arn
   }
 
   condition {

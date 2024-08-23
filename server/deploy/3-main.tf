@@ -2,7 +2,7 @@ terraform {
   backend "s3" {
     bucket = "gixtr-terraform-state"
     key = "dev/gixtr.tfstate"
-    region = var.aws_region
+    region = "us-east-1"
     encrypt = true
   }
 }

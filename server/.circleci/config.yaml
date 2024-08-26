@@ -40,3 +40,54 @@ aliases:
           rm -rf node_modules
           zip gxitr.zip -r .
           echo "Zip successful"
+
+jobs:
+  build:
+    executor: app-init
+    steps:
+      - checkout
+      - *show-current-branch-name
+      - *restore-cache
+      - *install-dependencies
+      - *save-cache
+
+  code-lint:
+    executor: app-init
+    steps:
+      - checkout
+      - *show-current-branch-name
+      - *restore-cache
+      - run:
+          name: Run linting
+          command: npm run lint:check
+      - *notify-on-fail
+
+  code-format:
+    executor: app-init
+    steps:
+      - checkout
+      - *show-current-branch-name
+      - *restore-cache
+      - run:
+          name: Run prettier check
+          command: npm run prettier:check
+      - *notify-on-fail
+
+  code-test:
+    executor: app-init
+    steps:
+      - checkout
+      - setup_remote_docker
+      - *show-current-branch-name
+      - *restore-cache
+      - run:
+          name: Start redis server
+          command: docker run --name gixtr-redis -p 6379:6379 -d redis
+          background: true
+      - run:
+          name: Run unit test
+          command: |
+            sleep 3
+            npm run test
+      - codecov/upload
+      - *notify-on-fail

@@ -165,3 +165,67 @@ jobs:
                     --s3-location bucket=gixtr-server-${CIRCLE_BRANCH}-app,bundleType=zip,key=gixtr.zip
             fi
       - *notify-on-fail
+
+  notify-via-slack:
+    executor: slack-init
+    steps:
+      - run: echo "Slack notification"
+      - slack/notify:
+          event: 'always'
+          channel: 'gixtr-builds'
+          template: ''
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "✅ 👍 ✅ ${CIRCLE_BRANCH} branch backend deployment is complete. ✅ 👍 ✅",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Project*:\n$CIRCLE_PROJECT_REPONAME"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Job*: ${CIRCLE_JOB}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch*:\n$CIRCLE_BRANCH"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*When*:\n$(date +'%m/%d/%Y %T')"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Build*:\n$CIRCLE_BUILD_NUM"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author*:\n$CIRCLE_PROJECT_USERNAME"
+                    }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Job"
+                      },
+                      "url": "${CIRCLE_BUILD_URL}"
+                    }
+                  ]
+                }
+              ]
+            }

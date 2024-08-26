@@ -302,3 +302,93 @@ jobs:
                 }
               ]
             }
+
+workflows:
+  build_and_deploy:
+    jobs:
+      - build
+      - code-lint:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - dev
+                - stage
+                - main
+      - code-format:
+          requires:
+            - code-lint
+          filters:
+            branches:
+              only:
+                - dev
+                - stage
+                - main
+      - code-test:
+          requires:
+            - code-format
+          filters:
+            branches:
+              only:
+                - dev
+                - stage
+                - main
+      - terraform-validate:
+          requires:
+            - code-test
+          filters:
+            branches:
+              only:
+                - dev
+                - stage
+                - main
+      - terraform-plan-and-apply:
+          requires:
+            - terraform-validate
+          filters:
+            branches:
+              only:
+                - dev
+                - stage
+                - main
+      - upload-project-to-s3:
+          requires:
+            - terraform-plan-and-apply
+          filters:
+            branches:
+              only:
+                - dev
+                - stage
+                - main
+      - push-to-aws-code-deploy:
+          requires:
+            - upload-project-to-s3
+          filters:
+            branches:
+              only:
+                - dev
+                - stage
+                - main
+      - notify-via-slack:
+          requires:
+            - push-to-aws-code-deploy
+          filters:
+            branches:
+              only:
+                - dev
+                - stage
+                - main
+      - hold:
+          type: approval
+          requires:
+            - notify-via-slack
+      - terraform-destroy:
+          requires:
+            - hold
+          filters:
+            branches:
+              only:
+                - dev
+                - stage
+                - main

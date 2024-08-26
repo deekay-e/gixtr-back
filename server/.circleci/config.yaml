@@ -96,6 +96,42 @@ jobs:
       - codecov/upload
       - *notify-on-fail
 
+  terraform-validate:
+    executor: terraform-init
+    steps:
+      - checkout
+      - *show-current-branch-name
+      - run:
+          name: Terraform validate & format
+          command: |
+            cd deployment/
+            terraform init -backend=false
+            terraform validate
+            terraform fmt
+      - *notify-on-fail
+
+  terraform-plan-and-apply:
+    executor: terraform-init
+    steps:
+      - checkout
+      - *show-current-branch-name
+      - aws-cli/setup:
+          profile-name: default
+      - run:
+          name: Terraform plan
+          command: |
+            cd deployment/
+            terraform init
+            terraform workspace select ${CIRCLE_BRANCH} || terraform workspace new ${CIRCLE_BRANCH}
+            terraform plan
+      - run:
+          name: Terraform apply
+          command: |
+            cd deployment/
+            terraform workspace select ${CIRCLE_BRANCH}
+            terraform apply -auto-approve
+      - *notify-on-fail
+
   upload-project-to-s3:
     executor: aws-cli/default
     steps:

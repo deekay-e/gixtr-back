@@ -144,3 +144,24 @@ jobs:
           command: |
             aws --region us-east-1 s3 cp gxitr.zip s3://gixtr-server-${CIRCLE_BRANCH}-app
       - *notify-on-fail
+
+  push-to-aws-code-deploy:
+    executor: aws-cli/default
+    steps:
+      - checkout
+      - aws-cli/setup:
+          profile-name: default
+      - run:
+          name: Deploy changes with AWS code deploy
+          command: |
+            if [ "${CODE_DEPLOY_UPDATE}" == "true" ]
+            then
+                aws deploy create-deployment \
+                    --region us-east-1 \
+                    --application-name gixtr-server-${CIRCLE_BRANCH}-app \
+                    --deployment-config-name CodeDeployDefault.AllAtOnce \
+                    --deployment-group-name gixtr-server-${CIRCLE_BRANCH}-group \
+                    --file-exists-behavior "OVERWRITE" \
+                    --s3-location bucket=gixtr-server-${CIRCLE_BRANCH}-app,bundleType=zip,key=gixtr.zip
+            fi
+      - *notify-on-fail

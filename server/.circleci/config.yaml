@@ -1,4 +1,8 @@
 version: 2.1
+orbs:
+  codecov: codecov/codecov@3.2.5
+  aws-cli: circleci/aws-cli@4.0.0
+  slack: circleci/slack@4.12.5
 executors:
   app-init:
     docker:
@@ -90,4 +94,17 @@ jobs:
             sleep 3
             npm run test
       - codecov/upload
+      - *notify-on-fail
+
+  upload-project-to-s3:
+    executor: aws-cli/default
+    steps:
+      - checkout
+      - aws-cli/setup:
+          profile-name: default
+      - *zip-project
+      - run:
+          name: Upload project to S3
+          command: |
+            aws --region us-east-1 s3 cp gxitr.zip s3://gixtr-server-${CIRCLE_BRANCH}-app
       - *notify-on-fail

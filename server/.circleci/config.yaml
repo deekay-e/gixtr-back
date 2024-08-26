@@ -1,0 +1,15 @@
+version: 2.1
+executors:
+  app-init:
+    docker:
+      - image: cimg/node:20.17.0
+      - image: cimg/redis:7.2.5
+      - image: 'cibuilds/base:latest'
+    working_directory: ~/repo
+  terraform-init:
+    docker:
+      - image: hashicorp/terraform:latest
+  slack-init:
+    docker:
+      - image: 'cibuilds/base:latest'
+    resource_class: small
